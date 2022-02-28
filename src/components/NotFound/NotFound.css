@@ -1,0 +1,61 @@
+.not-found {
+  padding-bottom: 60px;
+}
+
+.not-found__title {
+  margin: 246px 0 5px;
+  text-align: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 140px;
+  line-height: 169px;
+}
+
+.not-found__text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  margin: 0 0 184px;
+}
+
+.not-found__link {
+  display: block;
+  max-width: 42px;
+  margin: 0 auto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #3456F3;
+  text-decoration: none;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .not-found__title {
+    margin: 410px 0 5px;
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .not-found__title {
+    margin: 329px 0 10px;
+    font-size: 80px;
+    line-height: 97px;
+  }
+  .not-found__text {
+    margin: 0 0 284px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .not-found__link {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

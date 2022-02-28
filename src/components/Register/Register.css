@@ -1,0 +1,146 @@
+.register {
+  padding-top: 70px;
+  margin: 0 auto;
+  max-width: 396px;
+}
+
+.register__title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  margin: 38px 0;
+}
+
+.register__form-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  margin-bottom: 123px;
+}
+
+.register__form-label {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12px;
+  color: #A0A0A0;
+}
+
+.register__form-input {
+  display: block;
+  width: 100%;
+  padding: 0 0 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  border: none;
+  border-bottom: 1px solid #E8E8E8;
+  margin-bottom: 24px;
+}
+
+.register__form-input:focus {
+  outline: none;
+  border-bottom: 1px solid #3456F3;
+}
+
+.register__form-button {
+  display: block;
+  width: 100%;
+  height: 45px;
+  background: #3456F3;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  margin-bottom: 16px;
+  transition: opacity .3s linear;
+}
+
+.register__form-button:hover {
+  cursor: pointer;
+  opacity: .6;
+}
+
+.register__form-login-container {
+  text-align: center;
+}
+
+.register__form-span {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #A0A0A0;
+  margin-right: 6px;
+}
+
+.register__form-link {
+  text-decoration: none;
+  color: #3456F3;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  transition: opacity .3s linear;
+}
+
+.register__form-link:hover {
+  opacity: .6;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .register {
+    padding-top: 224px;
+  }
+  .register__logo {
+    margin-top: 8px;
+  }
+  .register__title {
+    margin: 38px 0 34px;
+  }
+  .register__form-fieldset {
+    margin-bottom: 126px;
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .register {
+    padding-top: 50px;
+  }
+  .register__logo {
+    display: block;
+    margin: 6px auto 0px;
+  }
+  .register__title {
+    margin: 50px 0 75px;
+    text-align: center;
+  }
+  .register__form {
+    padding: 0 20px;
+  }
+  .register__form-fieldset {
+    margin-bottom: 216px;
+  }
+  .register__form-button {
+    margin-bottom: 13px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .register__form-span {
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .register__form-link {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

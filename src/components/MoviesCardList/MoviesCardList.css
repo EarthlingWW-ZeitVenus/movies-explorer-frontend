@@ -1,0 +1,26 @@
+.movies-card-list__list {
+  list-style-type: none;
+  padding: 0;
+  margin: 65px 0 125px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 28px;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .movies-card-list__list {
+    margin: 75px 0 110px;
+    grid-template-columns: repeat(2, fit-content(342px));
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .movies-card-list__list {
+    margin: 45px 0 110px;
+    grid-template-columns: 1fr;
+  }
+}
