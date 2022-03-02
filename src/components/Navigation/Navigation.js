@@ -26,7 +26,7 @@ function Navigation({ onBurgerMenu }) {
             </li>
           </ul>
           <a className="navigation-internal__button navigation-internal__button_active" href="/profile">Аккаунт</a>
-        </div>    
+        </div>
       </Route>
     </Switch>
   );

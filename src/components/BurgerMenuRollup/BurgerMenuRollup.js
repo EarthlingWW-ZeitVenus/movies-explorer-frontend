@@ -3,8 +3,8 @@ import closeButton from '../../images/close-button.svg';
 
 function BurgerMenuRollup({ isOpen, onClose }) {
   return (
-    <section className={`burger-menu-rollup ${isOpen && "burger-menu-rollup_active"} page_format_side-padding`}>
-      <div className={`burger-menu-rollup__container ${isOpen && "burger-menu-rollup__container_active"}`}>
+    <section className={`burger-menu-rollup ${isOpen && 'burger-menu-rollup_active'} page_format_side-padding`}>
+      <div className={`burger-menu-rollup__container ${isOpen && 'burger-menu-rollup__container_active'}`}>
         <button
           className="burger-menu-rollup__close-button"
           type="button"

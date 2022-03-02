@@ -3,12 +3,12 @@ import './Profile.css';
 function Profile() {
   return (
     <main className="content page_format_side-padding">
-      <section className="profile">       
+      <section className="profile">
         <h2 className="profile__title page_format_all-title">Привет, Виталий!</h2>
         <form className="profile__form">
           <fieldset className="profile__form-fieldset">
             <div className="profile__form-container profile__form-container_bottom-line">
-              <label className="profile__form-label" for="profile-name">Имя</label>
+              <label className="profile__form-label" htmlFor="profile-name">Имя</label>
               <input
                 className="profile__form-input"
                 name="profile-name"
@@ -19,7 +19,7 @@ function Profile() {
               <span className="profile__form-input-error"></span>
             </div>
             <div className="profile__form-container">
-              <label className="profile__form-label" for="profile-email">E-mail</label>
+              <label className="profile__form-label" htmlFor="profile-email">E-mail</label>
               <input
                 className="profile__form-input"
                 name="profile-email"

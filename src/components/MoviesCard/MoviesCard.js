@@ -1,10 +1,6 @@
-import "./MoviesCard.css";
-
+import './MoviesCard.css';
 
 function MoviesCard({ title, duration, image }) {
-
-  console.log(image);
-
   return (
     <li className="movies-card">
       <div className="movies-card__title-container">
@@ -13,7 +9,7 @@ function MoviesCard({ title, duration, image }) {
       </div>
       <a className="movies-card__link" href="http://www.link-to-trailer.org" target="_blank" rel="noreferrer">
         <img
-          className="movies-card__image"  
+          className="movies-card__image"
           src={image}
           alt="Картинка с кадром из фильма"
         />
