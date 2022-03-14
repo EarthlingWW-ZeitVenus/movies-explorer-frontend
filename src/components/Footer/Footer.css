@@ -68,7 +68,7 @@
 
 
 /* стили для смартфона */
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 392px) {
   .footer {
     padding-top: 48px;
   }
@@ -98,6 +98,6 @@
   .footer__copyright {
     margin-top: 17px;
     font-size: 12px;
-    line-height: 15px;  
+    line-height: 15px;
   }
 }

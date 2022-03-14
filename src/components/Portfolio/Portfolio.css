@@ -75,7 +75,7 @@
 
 
 /* стили для смартфона */
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 360px) {
   .portfolio {
     padding: 0px 18px;
   }

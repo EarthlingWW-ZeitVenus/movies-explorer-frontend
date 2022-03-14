@@ -1,6 +1,21 @@
 import './MoviesCard.css';
+// import savedMovieButton from '../../images/saved-movie-button.jpg';
 
-function MoviesCard({ title, duration, image }) {
+function MoviesCard({
+  title, duration, image, number,
+}) {
+  // const swKey = key;
+  const whichTypeIsButton = () => {
+    switch (number) {
+      case 1:
+        return '_type_saved';
+      case 2:
+        return '_type_save';
+      default:
+        return '_type_deleted';
+    }
+  };
+
   return (
     <li className="movies-card">
       <div className="movies-card__title-container">
@@ -14,8 +29,13 @@ function MoviesCard({ title, duration, image }) {
           alt="Картинка с кадром из фильма"
         />
       </a>
-      <button type="button" className="movies-card__button">
-        <div className="movie-card__button-icon movies-card__button-icon_type_delete" />
+      <button type="button" className={`movies-card__button movies-card__button${whichTypeIsButton()}`}>
+        { (whichTypeIsButton() === '_type_save')
+          ? 'Сохранить'
+          : <div
+              className={`movie-card__button-icon movies-card__button-icon${whichTypeIsButton()}`}
+            />
+        }
       </button>
     </li>
   );

@@ -45,6 +45,10 @@
   margin: 18px auto;
   border: none;
   transition: opacity .3s linear;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 11px;
 }
 
 .movies-card__button:hover {
@@ -56,7 +60,18 @@
   width: 100%;
 }
 
-.movies-card__button-icon_type_delete {
+.movies-card__button_type_saved {
+  background: #FF3055;
+}
+
+.movies-card__button-icon_type_saved {
+  width: 7px;
+  height: 7px;
+  background: url(../../images/saved-button-icon.svg) no-repeat center;
+  margin: 0 auto;
+}
+
+.movies-card__button-icon_type_deleted {
   width: 7px;
   height: 7px;
   background: url(../../images/delete-button-icon.svg) no-repeat center;

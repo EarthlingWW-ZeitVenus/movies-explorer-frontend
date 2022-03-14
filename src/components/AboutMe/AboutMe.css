@@ -17,11 +17,13 @@
   font-style: normal;
   font-size: 50px;
   line-height: 1.16;
+  padding-right: 50px;
 }
 
 .about-me__photo {
   grid-area: about-me__photo;
   width: 100%;
+  min-width: 255px;
   margin-top: 66px;
 }
 
@@ -32,6 +34,7 @@
   font-size: 18px;
   line-height: 1.11;
   margin: 0;
+  padding-right: 50px;
 }
 
 .about-me__text {
@@ -41,6 +44,7 @@
   font-size: 14px;
   line-height: 1.57;
   margin: 0;
+  padding-right: 50px;
 }
 
 .about-me__contacts-container {
@@ -72,6 +76,7 @@
   }
   .about-me__photo {
     max-width: 255px;
+    min-width: unset;
   }
   .about-me__title-name {
     font-size: 40px;
@@ -90,9 +95,15 @@
   }
 }
 
+/* промежуточный стиль для фотографии */
+@media screen and (max-width: 706px) {
+  .about-me__photo {
+    width: 202px;
+  }
+}
 
 /* стили для смартфона */
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 498px) {
   .about-me {
     padding: 0px 18px;
   }
@@ -103,9 +114,11 @@
     grid-template-columns: fit-content(292px);
     grid-template-areas:
     "about-me__photo" "about-me__title-name" "about-me__title-profession"
-    "about-me__text" "about-me__contacts"
+    "about-me__text" "about-me__contacts";
+    justify-content: center;
   }
   .about-me__photo {
+    width: 100%;
     max-width: unset;
   }
   .about-me__title-name {

@@ -1,13 +1,13 @@
 import './Movies.css';
 import SearchForm from '../SearchForm/SearchForm';
+import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 
-function Movies() {
+function Movies({ isLoaded }) {
   return (
     <main className="content page_format_side-padding">
       <SearchForm/>
-      {/* <MoviesCardList/> */}
-      <Preloader/>
+      { isLoaded ? <MoviesCardList/> : <Preloader/> }
     </main>
   );
 }

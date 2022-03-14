@@ -13,6 +13,7 @@ function SearchForm() {
             placeholder="Фильм"
             type="text"
             autoComplete="off"
+            required
           />
           <button className="search-form__submit" type="submit">Поиск</button>
         </fieldset>

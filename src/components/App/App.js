@@ -33,7 +33,7 @@ function App() {
         </Route>
         <Route path="/movies">
           <Header onBurgerMenu={handleBurgerMenuClick}/>
-          <Movies />
+          <Movies isLoaded={true}/>
           <Footer />
         </Route>
         <Route path="/saved-movies">

@@ -11,7 +11,7 @@ function AboutMe() {
 
       <div className="about-me__container">
         <h2 className="about-me__title-name page_format_all-title">Виталий</h2>
-        <img className="about-me__photo" src={aboutMePhoto} alt="леприкон в зеленой шляпе"/>
+        <img className="about-me__photo" src={aboutMePhoto} alt="моя фотография"/>
         <h2 className="about-me__title-profession page_format_all-title">Фронтенд-разработчик, 30 лет</h2>
         <p className="about-me__text">Я родился и живу в Саратове, закончил факультет экономики СГУ.
           У меня есть жена и дочь. Я люблю слушать музыку, а ещё увлекаюсь бегом.

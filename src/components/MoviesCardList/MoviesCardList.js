@@ -17,6 +17,7 @@ function MoviesCardList() {
             title={movie.title}
             duration={movie.duration}
             image={movie.image}
+            number={i + 1}
           />)}
       </ul>
     </section>
