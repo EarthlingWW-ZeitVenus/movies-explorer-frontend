@@ -1,0 +1,104 @@
+/* * {
+  border: 1px solid red;
+} */
+
+.promo {
+  display: flex;
+  justify-content: space-between;
+}
+
+.promo__title {
+  max-width: 640px;
+  min-height: 174px;
+  font-size: 50px;
+  line-height: 1.16;
+  margin: 0px 0px 36px;
+}
+
+.promo__landing-logo {
+  width: 310px;
+  height: 304px;
+}
+
+.promo__container {
+  font-style: normal;
+  font-weight: normal;
+}
+
+.promo__help-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 16px;
+  opacity: 0.5;
+}
+
+.promo__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 129px;
+  height: 36px;
+  margin: 146px 0 5px;
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  transition: opacity .3s linear;
+}
+
+.promo__button:hover {
+  cursor: pointer;
+  opacity: .6;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .promo {
+    flex-direction: column;
+  }
+  .promo__landing-logo {
+    order: -1;
+    margin: 70px auto 40px;
+  }
+  .promo__title {
+    margin: 10px auto 18px;
+    min-height: unset;
+    text-align: center;
+    font-size: 40px;
+    line-height: 1.25;
+  }
+  .promo__help-text {
+    text-align: center;
+  }
+  .promo__button {
+    margin: 93px auto 5px;
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 370px) {
+  .promo__landing-logo {
+    width: 210px;
+    height: 206px;
+    margin: 0px auto 40px;
+  }
+  .promo__title {
+    margin: 5px auto 20px;
+    font-size: 30px;
+    line-height: 1.27;
+    letter-spacing: -0.04em;
+  }
+  .promo__help-text {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .promo__button {
+    margin: 82px auto 5px;
+  }
+}

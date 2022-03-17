@@ -1,0 +1,36 @@
+/* Общий формат для всех контейнеров заголовков секций блока "Main" */
+.main__section_format_title-container {
+  height: 160px;
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Общий формат для всех заголовков секций блока "Main" */
+.main__section_format_title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 27px;
+  margin: 0px 0px 23px;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .main__section_format_title-container {
+    height: 140px;
+  }
+}
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .main__section_format_title-container {
+    height: 120px;
+  }
+  .main__section_format_title {
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: -0.04em;
+  }
+}

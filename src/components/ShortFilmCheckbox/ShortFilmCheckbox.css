@@ -1,0 +1,50 @@
+.checkbox-switcher {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  margin-right: 14px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.checkbox-switcher__input {
+  position: absolute;
+  /* если у элемента не будет размеров, некоторые браузеры посчитают, что его вообще нет */
+  width: 1px; 
+  height: 1px;
+   /* без этого свойства тоже сработает, но так наверняка - скрывает элементы, выходящие за границы родителя */
+  overflow: hidden;
+  /* прячет изначальный элемент */
+  clip: rect(0 0 0 0);
+}
+
+.checkbox-switcher__span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #343434;
+  border-radius: 20px;
+}
+
+.checkbox-switcher__span:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background: #A0A0A0;
+  border-radius: 50%;
+  transition: .3s;
+}
+
+.checkbox-switcher__input:checked + .checkbox-switcher__span {
+  background: #2BE080;
+}
+
+.checkbox-switcher__input:checked + .checkbox-switcher__span:before {
+  transform: translateX(16px);
+  background: white;
+}

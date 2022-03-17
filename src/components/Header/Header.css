@@ -1,0 +1,19 @@
+.header__container {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 0px;
+}
+
+.header__logo {
+  height: 38px;
+  width: 38px;
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .header {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

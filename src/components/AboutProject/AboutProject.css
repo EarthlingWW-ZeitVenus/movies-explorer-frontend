@@ -1,0 +1,122 @@
+/* * {
+  border: 1px solid red;
+} */
+
+.about-project__title-container {
+  margin-bottom: 70px;
+}
+
+.about-project__text-container {
+  display: flex;
+  justify-content: space-between;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.about-project__text-block {
+  padding: 0px 40px 0px 0px;
+  max-width: 550px;
+}
+
+.about-project__text-block:last-of-type {
+  padding: 0;
+}
+
+.about-project__text-title {
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 24px;
+  margin: 0 0 26px;
+}
+
+.about-project__text {
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0 0 110px;
+}
+
+.about-project__info-week-container {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: repeat(2, 36px);
+  margin-bottom: 100px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.about-project__info-week {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-project__info-week-annot {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  color: #A0A0A0;
+}
+
+.about-project__info-week:nth-child(1) {
+  background: #2BE080;
+}
+
+.about-project__info-week:nth-child(2) {
+  background: #F2F2F2;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .about-project {
+    padding: 0px 50px;
+  }
+  .about-project__text-block {
+    padding: 0px 30px 0px 0px;
+  }
+  .about-project__text-title {
+    margin: 0 0 23px;
+  }
+  .about-project__text {
+    margin: 0 0 90px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 418px) {
+  .about-project {
+    padding: 0px 18px;
+  }
+  .about-project__text-container {
+    flex-direction: column;
+  }
+  .about-project__text-title {
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: -0.04em;
+  }
+  .about-project__title-container {
+    margin-bottom: 60px;
+  }
+  .about-project__text-title {
+    margin: 0 0 16px;
+  }
+  .about-project__text {
+    margin: 0 0 58px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .about-project__info-week-container {
+    grid-template-columns: 1fr 2fr;
+    font-size: 11px;
+    line-height: 13px;
+  }
+}

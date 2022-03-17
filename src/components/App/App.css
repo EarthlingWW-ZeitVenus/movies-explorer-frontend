@@ -1,0 +1,61 @@
+.page {
+  position: relative;
+  min-width: 242px;
+}
+
+/* Форматирование отступа всех страниц */
+.page_format_side-padding {
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+.page_format_top-bottom-padding {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+/* Темный фон страниц */
+.page_theme_dark {
+  background: #073042;
+  color: white;
+}
+
+/* Общий формат шрифта страниц */
+.page_format_all-font {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+}
+
+/* Уточнение формата шрифта для заголовков страниц */
+.page_format_all-title {
+  text-rendering: optimizeLegibility;
+}
+
+
+/* стили для планшета */
+@media screen and (max-width: 768px) {
+  .page_format_side-padding {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .page_format_top-bottom-padding {
+    padding-top: 225px;
+    padding-bottom: 70px;
+  }
+}
+
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .page_format_side-padding {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .page_format_top-bottom-padding {
+    padding-bottom: 23px;
+  }
+}

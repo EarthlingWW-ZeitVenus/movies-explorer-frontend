@@ -1,0 +1,113 @@
+.burger-menu-rollup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .3);
+  /* Установил тут overflow: hidden иначе либо красивый эффект не работает,
+  либо полоса горизонтальной прокрутки появляется - если принципиально - уберу
+  и сделаю через display: none - но тогда красивого эффекта не будет */
+  transition: visibility 1s;
+  overflow: hidden;
+  visibility: hidden;
+  /* display: none; */
+}
+
+.burger-menu-rollup_active {
+  visibility: visible;
+  /* display: block; */
+}
+
+.burger-menu-rollup__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 68%;
+  height: 100%;
+  background: white;
+  transform: translateX(100%);
+  transition: transform .7s ease-in-out;
+  z-index: 4;
+}
+
+.burger-menu-rollup__container_active {
+  transform: translateX(0%);
+}
+
+.burger-menu-rollup__close-button {
+  position: absolute;
+  top: 23px;
+  right: 23px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transition: opacity .3s linear;
+}
+
+.burger-menu-rollup__close-button:hover {
+  opacity: .6;
+  cursor: pointer;
+}
+
+.burger-menu-rollup__links-container {
+  list-style-type: none;
+  /* display: flex; */
+  padding: 0;
+  margin: 159px auto 0px;
+  max-width: calc( 100% - 2 * 90px );
+  text-align: center;
+}
+
+.burger-menu-rollup__item {
+  margin-bottom: 24px;
+}
+
+.burger-menu-rollup__link {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  transition: opacity .3s linear;
+}
+
+.burger-menu-rollup__link:hover {
+  opacity: .6;
+}
+
+.burger-menu-rollup__link_active {
+  padding-bottom: 4px;
+  border-bottom: 1px solid black;
+}
+
+.burger-menu-rollup__profile-link {
+  width: 100px;
+  height: 36px;
+  margin: 0 auto 88px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  background: #F9F9F9;
+  border-radius: 20px;
+  transition: opacity .3s linear;
+}
+
+.burger-menu-rollup__profile-link:hover {
+  opacity: .6;
+}
+
+/* стили для смартфона */
+@media screen and (max-width: 320px) {
+  .burger-menu-rollup__container {
+    width: 100%;
+  }
+}
