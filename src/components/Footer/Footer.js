@@ -1,6 +1,7 @@
 import './Footer.css';
 
 function Footer() {
+  console.log('обращение к компоненту Footer');
   return (
     <footer className="footer page_format_side-padding">
 

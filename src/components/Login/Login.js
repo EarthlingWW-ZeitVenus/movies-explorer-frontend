@@ -1,7 +1,8 @@
 import './Login.css';
 import logo from '../../images/logo.svg';
 
-function Login() {
+function Login() {console.log('обращение к компоненту Login');
+
   return (
     <section className="login page_format_side-padding">
       <img className="login__logo" src={logo} alt="Логотип" />

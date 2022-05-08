@@ -2,6 +2,7 @@ import './Register.css';
 import logo from '../../images/logo.svg';
 
 function Register() {
+  console.log('обращение к компоненту Register');
   return (
     <section className="register page_format_side-padding">
       <img className="register__logo" src={logo} alt="Логотип" />

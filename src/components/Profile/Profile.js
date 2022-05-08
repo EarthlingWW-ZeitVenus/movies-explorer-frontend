@@ -1,6 +1,7 @@
 import './Profile.css';
 
 function Profile() {
+  console.log('обращение к компоненту Profile');
   return (
     <main className="content page_format_side-padding">
       <section className="profile">

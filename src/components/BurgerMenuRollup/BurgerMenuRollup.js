@@ -1,7 +1,14 @@
 import './BurgerMenuRollup.css';
 import closeButton from '../../images/close-button.svg';
+// import useAllSimpleStates from '../../utils/use-simple-states';
 
 function BurgerMenuRollup({ isOpen, onClose }) {
+  // const { values, closeAllOpened } = useAllSimpleStates();
+  // const { isBurgerMenu } = values;
+  // console.log('Произошел рендер компонента-функции BurgerMenuRollup');
+  // console.log('Внутрь BurgerMenuRollup передан такой объект values:');
+  // console.log(values);
+  // console.log(`Внутри values значение поля isBurgerMenu такое - ${isBurgerMenu}`);
   return (
     <section className={`burger-menu-rollup ${isOpen && 'burger-menu-rollup_active'} page_format_side-padding`}>
       <div className={`burger-menu-rollup__container ${isOpen && 'burger-menu-rollup__container_active'}`}>

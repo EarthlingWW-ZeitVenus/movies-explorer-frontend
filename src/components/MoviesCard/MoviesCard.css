@@ -2,6 +2,9 @@
   background: #FDFDFD;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .movies-card__title-container {
@@ -57,6 +60,7 @@
 }
 
 .movies-card__image {
+  /* display: block; */
   width: 100%;
 }
 

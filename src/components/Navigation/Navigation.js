@@ -1,7 +1,9 @@
 import { Switch, Route } from 'react-router-dom';
 import './Navigation.css';
+// import useAllSimpleStates from '../../utils/use-simple-states';
 
 function Navigation({ onBurgerMenu }) {
+  // const { handleChange } = useAllSimpleStates();
   return (
     <Switch>
       <Route exact path="/">

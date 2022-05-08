@@ -1,24 +1,28 @@
+import React from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
-import movieImage from '../../images/movie-image.jpg';
+// import movieImage from '../../images/movie-image.jpg';
+import CurrentDataContext from '../../contexts/CurrentDataContext';
 
-const tempCardObject = {
-  title: 'В погоне за Бенкси',
-  duration: '27 минут',
-  image: movieImage,
-};
+// const tempCardObject = {
+//   title: 'В погоне за Бенкси',
+//   duration: '27 минут',
+//   image: movieImage,
+// };
 
 function MoviesCardList() {
+  const { filteredMoviesCards } = React.useContext(CurrentDataContext);
   return (
     <section className="movies-card-list">
       <ul className="movies-card-list__list">
-        {new Array(3).fill(tempCardObject).map((movie, i) => <MoviesCard
-            key={i}
-            title={movie.title}
-            duration={movie.duration}
-            image={movie.image}
-            number={i + 1}
-          />)}
+        {filteredMoviesCards.map((movieCardItem) => <MoviesCard
+            key={movieCardItem.id}
+            title={movieCardItem.nameRU}
+            duration={movieCardItem.duration}
+            image={movieCardItem.image.url}
+            trailer={movieCardItem.trailerLink}
+          />)
+        }
       </ul>
     </section>
   );

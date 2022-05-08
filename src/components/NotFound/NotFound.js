@@ -1,6 +1,7 @@
 import './NotFound.css';
 
 function NotFound() {
+  console.log('обращение к компоненту NotFound');
   return (
     <section className="not-found page_format_side-padding">
       <h2 className="not-found__title page_format_all-title">404</h2>
