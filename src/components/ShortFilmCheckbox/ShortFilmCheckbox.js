@@ -1,11 +1,13 @@
+/* eslint-disable react/display-name */
 // import React from 'react';
 import './ShortFilmCheckbox.css';
 // import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
-import useForms from '../../utils/use-forms';
+// import useForms from '../../utils/use-forms';
 
-function ShortFilmCheckbox() {
+const ShortFilmCheckbox = ({ isFilmShort, handleChange, statesData }) => {
   console.log('обращение к компоненту ShortFilmCheckbox');
-  const { values: { shortFilm }, handleChange } = useForms();
+  const { isUseSaveLocal, savedIsShortFilm } = statesData;
+  // const { values: { shortFilm }, handleChange } = useForms();
   // const [isChecked, setIsChecked] = React.useState(false);
   // const [values, setValues] = React.useState({});
   // const { handleSetAllFormsStates } = React.useContext(CurrentFunctionsContext);
@@ -27,11 +29,11 @@ function ShortFilmCheckbox() {
         // onChange={handleSetIsShortFilm}
         // checked={values}
         onChange={handleChange}
-        checked={shortFilm}
+        checked={isUseSaveLocal ? savedIsShortFilm : isFilmShort}
       />
       <span className="checkbox-switcher__span"/>
     </label>
   );
-}
+};
 
 export default ShortFilmCheckbox;

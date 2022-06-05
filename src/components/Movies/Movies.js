@@ -22,7 +22,7 @@ function Movies({ statesData, handlers }) {
     if (isNothingFound) {
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
-    return (<MoviesCardList/>);
+    return (<MoviesCardList statesData={statesData}/>);
   }
 
   // const [isProcessing, setIsProcessing] = React.useState(false);
@@ -34,7 +34,7 @@ function Movies({ statesData, handlers }) {
 
   return (
     <main className="content page_format_side-padding">
-      <SearchForm handlers={handlers}/>
+      <SearchForm handlers={handlers} statesData={statesData}/>
       {/* {isProcessing ? <Preloader/>
         : (isNothingFound ? <p className="content__error-text">Ничего не найдено</p>
         : <MoviesCardList/>)} */}

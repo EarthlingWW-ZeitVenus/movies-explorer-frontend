@@ -14,6 +14,8 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFound from '../NotFound/NotFound';
 import BurgerMenuRollup from '../BurgerMenuRollup/BurgerMenuRollup';
+import useLocalStorage from '../../utils/use-local-storage';
+// import { countRowsAndCards } from '../../utils/utils';
 // import getMoviesCards from '../../utils/MoviesApi';
 
 function App() {
@@ -28,6 +30,23 @@ function App() {
   // const [isShortFilm, setIsShortFilm] = React.useState(false);
   // const [moviesString, setMoviesString] = React.useState('');
   const [filteredMoviesCards, setFilteredMoviesCards] = React.useState([]);
+  const {
+    savedMoviesArray,
+    savedMoviesString,
+    savedIsShortFilm,
+    isUseSaveLocal,
+    handleSaveMoviesArray,
+    handleSaveMoviesString,
+    handleSaveIsShortFilm,
+    handleSaveIsUseSaveLocal,
+  } = useLocalStorage('SAVED_ARRAY', 'SAVED_STRING', 'SAVED_IS_SHORT', 'SAVED_IS_USE_LOCAL');
+  // const arrayToDisplay = isUseSaveLocal ? savedMoviesArray : filteredMoviesCards;
+  // debugger;
+  // console.log('arrayToDisplay in App:');
+  // console.log(arrayToDisplay);
+  console.log(`isUseSaveLocal in App: ${isUseSaveLocal}`);
+  console.log(`savedIsShortFilm in App: ${savedIsShortFilm}`);
+  // const {} = countRowsAndCards
   // const [allFormsStates, setAllFormsStates] = React.useState({});
   // const [allSimpleStates, setAllSimpleStates] = React.useState({});
 
@@ -113,7 +132,7 @@ function App() {
 
   return (
     <CurrentDataContext.Provider
-      value={{ filteredMoviesCards }}
+      value={isUseSaveLocal ? savedMoviesArray : filteredMoviesCards}
       // value={{
       //   filteredMoviesCards,
       //   moviesString,
@@ -146,20 +165,46 @@ function App() {
           <Route path="/movies">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
             <Movies
-              statesData={{ isProcessing, isNothingFound }}
-              handlers={{
-                handleSetIsProcessing, handleSetIsNothingFound, handleSetFilteredMoviesCards,
+              statesData={{
+                isProcessing,
+                isNothingFound,
+                isUseSaveLocal,
+                savedMoviesString,
+                savedIsShortFilm,
               }}
+              handlers={{
+                handleSetIsProcessing,
+                handleSetIsNothingFound,
+                handleSetFilteredMoviesCards,
+                handleSaveMoviesArray,
+                handleSaveIsUseSaveLocal,
+                handleSaveMoviesString,
+                handleSaveIsShortFilm,
+              }}
+              // functions={}
             />
             <Footer />
           </Route>
           <Route path="/saved-movies">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
             <SavedMovies
-              statesData={{ isProcessing, isNothingFound }}
-              handlers={{
-                handleSetIsProcessing, handleSetIsNothingFound, handleSetFilteredMoviesCards,
+              statesData={{
+                isProcessing,
+                isNothingFound,
+                isUseSaveLocal,
+                savedMoviesString,
+                savedIsShortFilm,
               }}
+              handlers={{
+                handleSetIsProcessing,
+                handleSetIsNothingFound,
+                handleSetFilteredMoviesCards,
+                handleSaveMoviesArray,
+                handleSaveIsUseSaveLocal,
+                handleSaveMoviesString,
+                handleSaveIsShortFilm,
+              }}
+              // functions={}
             />
             <Footer />
           </Route>

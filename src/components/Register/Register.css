@@ -16,7 +16,7 @@
   margin: 0;
   padding: 0;
   border: none;
-  margin-bottom: 123px;
+  margin-bottom: 130px;
 }
 
 .register__form-label {
@@ -37,13 +37,32 @@
   line-height: 17px;
   border: none;
   border-bottom: 1px solid #E8E8E8;
-  margin-bottom: 24px;
+  /* margin-bottom: 24px; */
 }
 
 .register__form-input:focus {
   outline: none;
   border-bottom: 1px solid #3456F3;
 }
+
+.register__form-input:invalid {
+  border-bottom: 1px solid #FF3055;
+}
+
+.register__form-input-error {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12.1px;
+  min-height: 22px;
+  color: #FF3055;
+  margin: 0;
+}
+
+/* .register__form-input-error_active {
+  display: block;
+} */
+
 
 .register__form-button {
   display: block;
@@ -61,13 +80,24 @@
   transition: opacity .3s linear;
 }
 
+.register__form-button_disabled {
+  background: #EBEBEB;
+  transition: unset;
+}
+
 .register__form-button:hover {
   cursor: pointer;
   opacity: .6;
 }
 
+.register__form-button_disabled:hover {
+  cursor: unset;
+  opacity: unset;
+}
+
 .register__form-login-container {
   text-align: center;
+  margin-bottom: 70px;
 }
 
 .register__form-span {

@@ -1,15 +1,18 @@
-import React from 'react';
+/* eslint-disable react/display-name */
+import React, { useCallback } from 'react';
 
-// хук управления всеми формами проекта
+// хук управления всеми формами и их валидацией
 function useForms() {
   const [values, setValues] = React.useState({});
-  const [valueToForceUpdate, setValueToForceUpdate] = React.useState(0);
+  const [errors, setErrors] = React.useState({});
+  const [isValid, setIsValid] = React.useState(false);
+  // const [valueToForceUpdate, setValueToForceUpdate] = React.useState(0);
 
   // forceUpdate hook
-  function useForceUpdate() {
-    // update the state to force render
-    return () => setValueToForceUpdate(() => valueToForceUpdate + 1);
-  }
+  // function useForceUpdate() {
+  // update the state to force render
+  // return () => setValueToForceUpdate(() => valueToForceUpdate + 1);
+  // }
 
   const handleChange = (event) => {
     const { target } = event;
@@ -34,17 +37,30 @@ function useForms() {
     // const finalObject = (Object.keys(valueObject).length !== 0) ? valueObject : emptyObject;
     // const stateObject = { ...finalObject, [name]: valueData };
     // stateObject = (Object.keys(tempObject).length !== 0) && tempObject;
-    const stateObject = { ...values, [name]: valueData };
-    console.log('stateObject in hook useForms after "stateObject = { ...values, [name]: valueData }"');
-    console.log(stateObject);
-    setValues(stateObject);
-    console.log('values in hook useForms after "setValues(stateObject)"');
+    // const stateObject = { ...values, [name]: valueData };
+    setValues({ ...values, [name]: valueData });
+    console.log('values in hook useForms after "setValues({ ...values, [name]: valueData })"');
     console.log(values);
-    useForceUpdate();
-    console.log('values in hook useForms after "useForceUpdate()"');
-    console.log(values);
+    setErrors({ ...errors, [`${name}Error`]: target.validationMessage });
+    console.log('errors in hook useForms after "setErrors({ ...errors, [name]: target.validationMessage })"');
+    console.log(errors);
+    setIsValid(target.closest('form').checkValidity());
+    console.log('isValid in hook useForms after "setIsValid(target.closest("form").checkValidity())"');
+    console.log(isValid);
+    // useForceUpdate();
+    // console.log('values in hook useForms after "useForceUpdate()"');
+    // console.log(values);
     // setValues({...values, [name]: valueData });
   };
+
+  const resetForm = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setValues(newValues);
+      setErrors(newErrors);
+      setIsValid(newIsValid);
+    },
+    [setValues, setErrors, setIsValid],
+  );
 
   // const { isBurgerMenu } = values;
   console.log('***Все нижеперечисленное происходит после какого-либо обращения к хуку useForms***');
@@ -55,7 +71,7 @@ function useForms() {
   // console.log(isBurgerMenu);
 
   return {
-    values, handleChange, setValues,
+    values, errors, isValid, handleChange, resetForm,
   };
 }
 
