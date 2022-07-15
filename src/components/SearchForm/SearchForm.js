@@ -1,26 +1,33 @@
-/* eslint-disable no-undef */
+/* eslint-disable no-alert */
 // import React from 'react';
 import './SearchForm.css';
 // import CurrentDataContext from '../../contexts/CurrentDataContext';
 // import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
 import ShortFilmCheckbox from '../ShortFilmCheckbox/ShortFilmCheckbox';
 import getMoviesCards from '../../utils/MoviesApi';
-import useForms from '../../utils/use-forms';
+// import useForms from '../../utils/use-forms';
 // import useLocalStorage from '../../utils/use-local-storage';
 
 function SearchForm({ handlers, statesData }) {
+  // debugger;
   console.log('обращение к компоненту SearchForm');
-  const { values: { shortFilm, filmName }, handleChange } = useForms();
+  const { searchFormValues, isSearchFormStatesEqual } = statesData;
+  const { filmName, shortFilm } = searchFormValues;
+  console.log(`значение isSearchFormStatesEqual - ${isSearchFormStatesEqual}`);
+  // const { localSavedFormState } = React.useContext(CurrentDataContext);
+  // const [prevMoviesString, setPrevMoviesString] = React.useState('');
+  // const { initialFormStateValue } = statesData;
+  // const { values: { shortFilm, filmName }, handleChange, handleInitialFormState } = useForms();
   const {
     handleSetIsProcessing,
     handleSetIsNothingFound,
-    handleSetFilteredMoviesCards,
-    handleSaveIsUseSaveLocal,
-    handleSaveMoviesArray,
-    handleSaveMoviesString,
-    handleSaveIsShortFilm,
+    // handleSetFilteredMoviesCards,
+    handleSaveArray,
+    handleSaveFormState,
+    handleSearchFormChange,
   } = handlers;
-  const { savedMoviesString, isUseSaveLocal } = statesData;
+  // debugger;
+  const isShortFilm = shortFilm || false;
   // const { hasSavedLocal, valueFromStorage } = useLocalStorage();
   // const allSimpleStates = React.useContext(CurrentDataContext);
   // const {
@@ -48,6 +55,9 @@ function SearchForm({ handlers, statesData }) {
   console.log('Ниже текущие состояние стейта shortFilm из хука useForms внутри SearchForm:');
   console.log(shortFilm);
 
+  console.log('Ниже текущие состояние константы isShortFilm внутри SearchForm:');
+  console.log(isShortFilm);
+
   // console.log('allFormsStates:');
   // console.log(allFormsStates);
 
@@ -55,28 +65,33 @@ function SearchForm({ handlers, statesData }) {
   function catchResponse(err) {
     debugger;
     if (err.status) {
+      // eslint-disable-next-line no-undef
       alert(`Сервер ответил ошибкой со статусом ${err.status}`);
     } else {
+      // eslint-disable-next-line no-undef
       alert(`Ваш запрос не ушел на сервер или сервер не ответил, ошибка ${err}`);
     }
   }
 
   function handleChangeString(event) {
-    handleChange(event);
+    handleSearchFormChange(event);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
+    // console.log(event.target);
+    // console.log(event.target.name);
+    // console.log(event.target.shortFilm);
+    // console.log(event.target.shortFilm.checked);
     // handleSetIsNothingFound(false);
     debugger;
-    handleSetIsProcessing(true);
     handleSetIsNothingFound(false);
     // При сабмите формы устанавливаю стейт использующий локальное хранилище
     // в состояние по умолчанию (false), чтоб после логики подгрузки новых данных,
     // использовались новые данные, а не те, что сохранены в локальном хранилище.
     // В случае если строка запроса совпадает с сохраненной для ускорения загрузки
     // будут использованы данные их локального хранилища.
-    handleSaveIsUseSaveLocal(false);
+    // handleSaveIsUseSaveLocal(false);
     // handleSetIsProcessing(true);
     // let savedMoviesCardsData = [];
     // let savedMoviesString = '';
@@ -86,14 +101,13 @@ function SearchForm({ handlers, statesData }) {
     //   const savedIsShorFilm = localStorage.getItem('SAVED_IS_SHORT_STATE');
     //   handleSetFilteredMoviesCards(savedMoviesCardsData);
     // handleSetIsProcessing(false);
-    if ((String(filmName)).toLowerCase() === (String(savedMoviesString)).toLowerCase()) {
+    if (!isSearchFormStatesEqual) {
       debugger;
-      handleSaveIsUseSaveLocal(true);
-    } else {
+      handleSetIsProcessing(true);
       getMoviesCards()
         .then((moviesCardsData) => {
           let filteredMoviesCardsData;
-          if (shortFilm) {
+          if (isShortFilm) {
             filteredMoviesCardsData = moviesCardsData.filter(
               (movieCard) => (Number(movieCard.duration) <= 40),
             );
@@ -109,17 +123,16 @@ function SearchForm({ handlers, statesData }) {
           );
           // debugger;
           if (!filteredMoviesCardsData.length) {
-            handleSetIsNothingFound(true);
-          } else {
-            handleSetFilteredMoviesCards(filteredMoviesCardsData);
             debugger;
-            handleSaveMoviesArray(filteredMoviesCardsData);
-            handleSaveMoviesString(filmName);
-            handleSaveIsShortFilm(shortFilm);
-            // Устанавливаем состояние в true для того, чтобы все зависимые свойства,
-            // состояния и данные сразу (до сабмита формы) грузились из локального хранилища.
-            handleSaveIsUseSaveLocal(true);
+            handleSetIsNothingFound(true);
+            handleSaveArray([]);
+          } else {
+            // handleSetFilteredMoviesCards(filteredMoviesCardsData);
+            debugger;
+            handleSaveArray(filteredMoviesCardsData);
           }
+          handleSaveFormState({ filmName, isShortFilm });
+          // setPrevMoviesString(filmName);
         })
         .catch((err) => catchResponse(err))
         .finally(() => handleSetIsProcessing(false));
@@ -149,9 +162,14 @@ function SearchForm({ handlers, statesData }) {
     // при обращении к стейту изнутри промиса-хендлера - ${filteredMoviesCards}`);
   }
 
+  // React.useEffect(() => {
+  //   console.log('Хук эффекта внутри SearchForm устанавливающий состояние формы');
+  //   handleInitialFormState(localSavedFormState);
+  // });
+
   return (
     <section className="search-form">
-      <form className="search-form__form" onSubmit={handleSubmit}>
+      <form className="search-form__form" name="searchForm" onSubmit={handleSubmit}>
 
         <fieldset className="search-form__fieldset">
           <input
@@ -161,7 +179,7 @@ function SearchForm({ handlers, statesData }) {
             type="text"
             autoComplete="off"
             onChange={handleChangeString}
-            value={isUseSaveLocal ? savedMoviesString : filmName}
+            value={filmName || ''}
             required
             noValidate
           />
@@ -170,8 +188,8 @@ function SearchForm({ handlers, statesData }) {
 
         <fieldset className="search-form__fieldset search-form__fieldset_type_for-checkbox">
           <ShortFilmCheckbox
-            isFilmShort={shortFilm}
-            handleChange={handleChange}
+            isShortFilm={isShortFilm}
+            handleChange={handleSearchFormChange}
             statesData={statesData}
           />
           <span className="search-form__text">Короткометражки</span>

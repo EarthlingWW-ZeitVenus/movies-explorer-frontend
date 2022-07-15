@@ -6,6 +6,7 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 
 function Movies({ statesData, handlers }) {
+  // debugger;
   // const { isNothingFound, isProcessing } = React.useContext(CurrentDataContext);
   // const allSimpleStates = React.useContext(CurrentDataContext);
   console.log('обращение к компоненту Movies');
@@ -22,7 +23,7 @@ function Movies({ statesData, handlers }) {
     if (isNothingFound) {
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
-    return (<MoviesCardList statesData={statesData}/>);
+    return (<MoviesCardList statesData={statesData} handlers={handlers}/>);
   }
 
   // const [isProcessing, setIsProcessing] = React.useState(false);
@@ -31,13 +32,10 @@ function Movies({ statesData, handlers }) {
   // const handleFilteringMoviesCards = (isFiltering) => {
   //   setIsProcessing(isFiltering);
   // };
-
+  // debugger;
   return (
     <main className="content page_format_side-padding">
       <SearchForm handlers={handlers} statesData={statesData}/>
-      {/* {isProcessing ? <Preloader/>
-        : (isNothingFound ? <p className="content__error-text">Ничего не найдено</p>
-        : <MoviesCardList/>)} */}
       {whichComponentToDisplay()}
     </main>
   );

@@ -1,7 +1,26 @@
+import React from 'react';
+import { logout } from '../../utils/MainApi';
 import './Profile.css';
+// import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Profile() {
+function Profile({ currentUserProp }) {
   console.log('обращение к компоненту Profile');
+  const [serverMessageText, setServerMessageText] = React.useState('');
+  // const allContext = React.useContext(CurrentDataContext);
+  // const currentUser = React.useContext(CurrentUserContext);
+  console.log('Контекст текущего пользователя currentUserProp внутри Profile:');
+  console.log(currentUserProp);
+  // console.log('Весь контекст:');
+  // console.log(allContext);
+
+  function handleLogout() {
+    logout()
+      .then((res) => {
+        console.log(res);
+        setServerMessageText(res);
+      });
+  }
+
   return (
     <main className="content page_format_side-padding">
       <section className="profile">
@@ -31,9 +50,19 @@ function Profile() {
               <span className="profile__form-input-error"></span>
             </div>
           </fieldset>
+          <p>{serverMessageText}</p>
           <div className="profile__form-buttons-container">
-            <button className="profile__form-button profile__form-button_disabled" type="button">Редактировать</button>
-            <button className="profile__form-button" type="button">Выйти из аккаунта</button>
+            <button
+              className="profile__form-button profile__form-button_disabled"
+              type="button">
+                Редактировать
+            </button>
+            <button
+              className="profile__form-button"
+              type="button"
+              onClick={handleLogout}>
+                Выйти из аккаунта
+            </button>
           </div>
         </form>
       </section>

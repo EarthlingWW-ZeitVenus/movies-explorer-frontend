@@ -6,7 +6,8 @@ const thenResponse = (res) => {
 
 // Поиск фильмов по заданным критериям
 function getMoviesCards() {
-  // debugger;
+  debugger;
+  // eslint-disable-next-line no-undef
   return fetch('https://api.nomoreparties.co/beatfilm-movies', {
   // credentials: 'include',
     headers: {

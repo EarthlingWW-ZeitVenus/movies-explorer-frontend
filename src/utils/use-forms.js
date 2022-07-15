@@ -1,77 +1,103 @@
 /* eslint-disable react/display-name */
 import React, { useCallback } from 'react';
+import { isEqual } from 'lodash';
 
 // хук управления всеми формами и их валидацией
-function useForms() {
-  const [values, setValues] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [isValid, setIsValid] = React.useState(false);
-  // const [valueToForceUpdate, setValueToForceUpdate] = React.useState(0);
+function useForms(localSavedFormState = {}) {
+  // debugger;
+  console.log('Обращение к кастомному хуку useForms');
+  const [searchFormValues, setSearchFormValues] = React.useState(localSavedFormState);
+  const [
+    registerAuthFormValues, setRegisterAuthFormValues,
+  ] = React.useState({
+    registerName: '', registerEmail: '', registerPassword: '', loginEmail: '', loginPassword: '',
+  });
+  const [
+    formErrors, setFormErrors,
+  ] = React.useState({
+    registerNameError: '', registerEmailError: '', registerPasswordError: '',
+  });
+  const [formIsValid, setFormIsValid] = React.useState(false);
+  // const [lastSubmitFormState, setLastSubmitFormState] = React.useState({});
 
-  // forceUpdate hook
-  // function useForceUpdate() {
-  // update the state to force render
-  // return () => setValueToForceUpdate(() => valueToForceUpdate + 1);
-  // }
+  // debugger;
+  const isSearchFormStatesEqual = isEqual(localSavedFormState, searchFormValues);
 
-  const handleChange = (event) => {
+  const handleRegisterAuthFormChange = (event) => {
     const { target } = event;
-    // console.log(target);
+    const { name } = target;
+    const valueData = target.value;
+    console.log('***Все нижеперечисленное происходит внутри handleRegisterAuthFormChange хука useForms***');
+    console.log('registerAuthFormValues in hook useForms before any setValues');
+    console.log(registerAuthFormValues);
+    setRegisterAuthFormValues({ ...registerAuthFormValues, [name]: valueData });
+    console.log('registerAuthFormValues in hook useForms after "setFormValues({ ...values, [name]: valueData })"');
+    console.log(registerAuthFormValues);
+    setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
+    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    console.log(formErrors);
+    setFormIsValid(target.closest('form').checkValidity());
+    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    console.log(formIsValid);
+  };
+
+  const handleSearchFormChange = (event) => {
+    const { target } = event;
     const { name } = target;
     const valueData = target.type === 'checkbox' ? target.checked : target.value;
-    // let stateObject = values;
-    console.log('***Все нижеперечисленное происходит внутри handleChange хука useForms***');
-    console.log('values in hook useForms before any setValues');
-    console.log(values);
-    // let counter = 0;
-    // counter += 1;
-    // let varObject = {};
-    // varObject = { ...stateObject, [name]: valueData };
-    // if (counter !== 1) {
-    //   const stateObject = {};
-    // } else {
-    //   let stateObject = { ...varObject, [name]: valueData };
-    // }
-    // const emptyObject = {};
-    // const valueObject = { ...emptyObject, [name]: valueData };
-    // const finalObject = (Object.keys(valueObject).length !== 0) ? valueObject : emptyObject;
-    // const stateObject = { ...finalObject, [name]: valueData };
-    // stateObject = (Object.keys(tempObject).length !== 0) && tempObject;
-    // const stateObject = { ...values, [name]: valueData };
-    setValues({ ...values, [name]: valueData });
-    console.log('values in hook useForms after "setValues({ ...values, [name]: valueData })"');
-    console.log(values);
-    setErrors({ ...errors, [`${name}Error`]: target.validationMessage });
-    console.log('errors in hook useForms after "setErrors({ ...errors, [name]: target.validationMessage })"');
-    console.log(errors);
-    setIsValid(target.closest('form').checkValidity());
-    console.log('isValid in hook useForms after "setIsValid(target.closest("form").checkValidity())"');
-    console.log(isValid);
-    // useForceUpdate();
-    // console.log('values in hook useForms after "useForceUpdate()"');
-    // console.log(values);
-    // setValues({...values, [name]: valueData });
+    console.log('***Все нижеперечисленное происходит внутри handleFormChange хука useForms***');
+    console.log('searchFormValues in hook useForms before any setValues');
+    console.log(searchFormValues);
+    setSearchFormValues({ ...searchFormValues, [name]: valueData });
+    console.log('searchFormValues in hook useForms after "setFormValues({ ...values, [name]: valueData })"');
+    console.log(searchFormValues);
+    setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
+    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    console.log(formErrors);
+    setFormIsValid(target.closest('form').checkValidity());
+    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    console.log(formIsValid);
   };
+
+  // const handleLastSubmitFormState = (event) => {
+  //   const { target } = event;
+  //   const { name } = target;
+  //   const valueData = target.type === 'checkbox' ? target.checked : target.value;
+  //   setLastSubmitFormState({ ...lastSubmitFormState, [name]: valueData });
+  // };
 
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
-      setValues(newValues);
-      setErrors(newErrors);
-      setIsValid(newIsValid);
+      setRegisterAuthFormValues(newValues);
+      setFormErrors(newErrors);
+      setFormIsValid(newIsValid);
     },
-    [setValues, setErrors, setIsValid],
+    [setRegisterAuthFormValues, setFormErrors, setFormIsValid],
   );
 
-  // const { isBurgerMenu } = values;
-  console.log('***Все нижеперечисленное происходит после какого-либо обращения к хуку useForms***');
-  console.log('Ниже текущие состояние стейта values внутри хука useForms:');
-  console.log(values);
+  // React.useEffect(() => {
+  // console.log('Произошел запрос внутри хука эффекта формы, для инициализации
+  // начальными данными из локального хранилища');
+  //   debugger;
+  //   if (!isFormStatesEqual) {
+  //     setFormValues(localSavedFormState);
+  //   }
+  // }, [isFormStatesEqual]);
 
-  // console.log('Ниже текущие состояние поля isBurgerMenu внутри объекта-стейта values:');
-  // console.log(isBurgerMenu);
+  console.log('Ниже текущие состояние стейта searchFormValues внутри хука useForms:');
+  console.log(searchFormValues);
+  console.log('Ниже текущие состояние стейта registerAuthFormValues внутри хука useForms:');
+  console.log(registerAuthFormValues);
 
   return {
-    values, errors, isValid, handleChange, resetForm,
+    searchFormValues,
+    registerAuthFormValues,
+    formErrors,
+    formIsValid,
+    isSearchFormStatesEqual,
+    handleRegisterAuthFormChange,
+    handleSearchFormChange,
+    resetForm,
   };
 }
 

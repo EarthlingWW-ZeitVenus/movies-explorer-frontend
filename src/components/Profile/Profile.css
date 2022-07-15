@@ -9,7 +9,7 @@
 
 .profile__form-fieldset {
   max-width: 410px;
-  margin: 0 auto;
+  margin: 0 auto calc( 220px - 2 * 16px + 10px - 22px);
   padding: 0;
   border: none;
 }
@@ -48,7 +48,6 @@
 }
 
 .profile__form-buttons-container {
-  margin-top: calc( 220px - 2 * 16px + 10px );
 }
 
 .profile__form-button {

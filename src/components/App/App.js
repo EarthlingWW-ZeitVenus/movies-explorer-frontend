@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CurrentDataContext from '../../contexts/CurrentDataContext';
+// import CurrentUserContext from '../../contexts/CurrentUserContext';
 // import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
 // import useAllSimpleStates from '../../utils/use-simple-states';
 import './App.css';
@@ -14,12 +15,32 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFound from '../NotFound/NotFound';
 import BurgerMenuRollup from '../BurgerMenuRollup/BurgerMenuRollup';
-import useLocalStorage from '../../utils/use-local-storage';
+import setAndGetFromLocalStorage from '../../utils/set-and-get-from-local-storage';
+import useForms from '../../utils/use-forms';
 // import { countRowsAndCards } from '../../utils/utils';
 // import getMoviesCards from '../../utils/MoviesApi';
 
 function App() {
+  // window.localStorage.clear();
+  // console.log(JSON.stringify(window.localStorage, null, 2));
   console.log('обращение к компоненту App');
+  // debugger;
+  const {
+    localSavedArray,
+    localSavedFormState,
+    handleSaveArray,
+    handleSaveFormState,
+  } = setAndGetFromLocalStorage();
+  const {
+    searchFormValues,
+    registerAuthFormValues,
+    formErrors,
+    formIsValid,
+    isSearchFormStatesEqual,
+    handleRegisterAuthFormChange,
+    handleSearchFormChange,
+    resetForm,
+  } = useForms(localSavedFormState);
 
   // const { values, closeAllOpened } = useAllSimpleStates();
   // console.log('Внутрь App из хука передан такой объект values:');
@@ -27,25 +48,23 @@ function App() {
   const [isBurgerMenuRollupOpen, setIsBurgerMenuRollupOpen] = React.useState(false);
   const [isNothingFound, setIsNothingFound] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState({});
+  // const [moviesCardsArray, setMoviesCardsArray] = React.useState([]);
   // const [isShortFilm, setIsShortFilm] = React.useState(false);
   // const [moviesString, setMoviesString] = React.useState('');
-  const [filteredMoviesCards, setFilteredMoviesCards] = React.useState([]);
-  const {
-    savedMoviesArray,
-    savedMoviesString,
-    savedIsShortFilm,
-    isUseSaveLocal,
-    handleSaveMoviesArray,
-    handleSaveMoviesString,
-    handleSaveIsShortFilm,
-    handleSaveIsUseSaveLocal,
-  } = useLocalStorage('SAVED_ARRAY', 'SAVED_STRING', 'SAVED_IS_SHORT', 'SAVED_IS_USE_LOCAL');
+  // const [isUseLocal, setIsUseLocal] = React.useState(false);
   // const arrayToDisplay = isUseSaveLocal ? savedMoviesArray : filteredMoviesCards;
   // debugger;
   // console.log('arrayToDisplay in App:');
   // console.log(arrayToDisplay);
-  console.log(`isUseSaveLocal in App: ${isUseSaveLocal}`);
-  console.log(`savedIsShortFilm in App: ${savedIsShortFilm}`);
+  console.log('localSavedArray in App:');
+  console.log(localSavedArray);
+  console.log('localSavedFormState in App:');
+  console.log(localSavedFormState);
+  console.log('currentUser in App:');
+  console.log(currentUser);
+  // console.log('moviesCardsArray in App:');
+  // console.log(moviesCardsArray);
   // const {} = countRowsAndCards
   // const [allFormsStates, setAllFormsStates] = React.useState({});
   // const [allSimpleStates, setAllSimpleStates] = React.useState({});
@@ -65,8 +84,8 @@ function App() {
   //   console.log(allSimpleStates);
   // };
 
-  console.log('Ниже текущие состояние стейта filteredMoviesCards внутри App:');
-  console.log(filteredMoviesCards);
+  // console.log('Ниже текущие состояние стейта filteredMoviesCards внутри App:');
+  // console.log(filteredMoviesCards);
   // console.log('Ниже текущие состояние стейта allFormStates внутри App:');
   // console.log(allFormsStates);
   // console.log('Ниже текущие состояние стейта allSimpleStates внутри App:');
@@ -80,20 +99,24 @@ function App() {
     setIsProcessing(isDataProcessing);
   };
 
+  // const handleSetIsUseLocal = (isUseLocalStorage) => {
+  //   setIsUseLocal(isUseLocalStorage);
+  // };
+
   // const handleSetIsShortFilm = (isShort) => {
   //   setIsShortFilm(isShort);
   // };
 
-  const handleSetFilteredMoviesCards = (filteredMoviesCardsData) => {
-    setFilteredMoviesCards(filteredMoviesCardsData);
-  };
+  // const handleSetFilteredMoviesCards = (filteredMoviesCardsData) => {
+  //   setFilteredMoviesCards(filteredMoviesCardsData);
+  // };
 
   // const handleSetMoviesString = (moviesStringData) => {
   //   setMoviesString(moviesStringData);
   // };
 
-  const handleSetIsNothingFound = (isMoviesFound) => {
-    setIsNothingFound(isMoviesFound);
+  const handleSetIsNothingFound = (isNothing) => {
+    setIsNothingFound(isNothing);
   };
   // const onUpdateMoviesString = (newMoviesString) => {
   //   setMoviesString(newMoviesString);
@@ -106,53 +129,11 @@ function App() {
     // setAllSimpleStates({});
   };
 
-  // Хук осуществляющий предварительный запрос всех необходимых данных с сервера,
-  // для их дальнейшей обработки.
-  // Имеет смысл так делать (запрашивать все данные сразу), когда нужна большая
-  // отзывчивость и более быстрая скорость работы приложения, наоборот лучше
-  // делать тогда, когда нужно сэкономить больше места на компьютере (ОЗУ и ПЗУ)
-  // (при этом запросы к серверу за данными для обработки будут происходить более часто)
-  // React.useEffect(() => {
-  //   console.log(`момент, когда происходит запрос к хуку эффекта, для запроса данных с сервера,
-  //   внутри компонента App`);
-  //   getMoviesCards()
-  //     .then((moviesCardsData) => {
-  //       setMoviesCards(moviesCardsData);
-  //     })
-  //     .catch((err) => catchResponse(err));
-  // Код внутри return в основном используется для удаления-зачистки оставшихся ненужных
-  // "функций-слушателей"
-  // return () => {
-  // }
-  // После запятой в массиве указывается список зависимостей, зависимости указывают хуку,
-  // что только при их изменении он должен запускаться.
-  // Если массив зависимостей пустой, то код внутри хука исполнится один раз
-  // после рендеринга компонента, внутри которого находится хук.
-  // }, []);
+  // ToDo: Не забыть тут потом указать параметр эффекта - isLoggedIn
 
   return (
-    <CurrentDataContext.Provider
-      value={isUseSaveLocal ? savedMoviesArray : filteredMoviesCards}
-      // value={{
-      //   filteredMoviesCards,
-      //   moviesString,
-      //   isNothingFound,
-      //   isProcessing,
-      //   allFormsStates,
-      //   allSimpleStates,
-      // }}
-    >
-      {/* <CurrentFunctionsContext.Provider
-        value={{ handleSetAllSimpleStates, handleSetFilteredMoviesCards }}
-        value={{
-          handleSetFilteredMoviesCards,
-          handleSetMoviesString,
-          handleSetIsNothingFound,
-          handleSetIsProcessing,
-          handleSetAllFormsStates,
-          handleSetAllSimpleStates,
-        }}
-      > */}
+  <CurrentDataContext.Provider value={localSavedArray}>
+    {/* <CurrentUserContext.Provider value={currentUser}> */}
 
       <div className="page page_format_all-font">
 
@@ -168,18 +149,22 @@ function App() {
               statesData={{
                 isProcessing,
                 isNothingFound,
-                isUseSaveLocal,
-                savedMoviesString,
-                savedIsShortFilm,
+                searchFormValues,
+                formErrors,
+                formIsValid,
+                isSearchFormStatesEqual,
+                // windowWidth,
+                // numberOffMoreButtonClicks,
               }}
               handlers={{
                 handleSetIsProcessing,
                 handleSetIsNothingFound,
-                handleSetFilteredMoviesCards,
-                handleSaveMoviesArray,
-                handleSaveIsUseSaveLocal,
-                handleSaveMoviesString,
-                handleSaveIsShortFilm,
+                handleSaveArray,
+                handleSaveFormState,
+                handleRegisterAuthFormChange,
+                handleSearchFormChange,
+                resetForm,
+                // handleMoreButtonClick,
               }}
               // functions={}
             />
@@ -191,18 +176,22 @@ function App() {
               statesData={{
                 isProcessing,
                 isNothingFound,
-                isUseSaveLocal,
-                savedMoviesString,
-                savedIsShortFilm,
+                searchFormValues,
+                formErrors,
+                formIsValid,
+                isSearchFormStatesEqual,
+                // windowWidth,
+                // numberOffMoreButtonClicks,
               }}
               handlers={{
                 handleSetIsProcessing,
                 handleSetIsNothingFound,
-                handleSetFilteredMoviesCards,
-                handleSaveMoviesArray,
-                handleSaveIsUseSaveLocal,
-                handleSaveMoviesString,
-                handleSaveIsShortFilm,
+                handleSaveArray,
+                handleSaveFormState,
+                handleRegisterAuthFormChange,
+                handleSearchFormChange,
+                resetForm,
+                // handleMoreButtonClick,
               }}
               // functions={}
             />
@@ -210,13 +199,35 @@ function App() {
           </Route>
           <Route path="/profile">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <Profile />
+            <Profile currentUserProp={currentUser} />
           </Route>
           <Route path="/signup">
-            <Register />
+            <Register
+              statesData={{
+                registerAuthFormValues,
+                formErrors,
+                formIsValid,
+              }}
+              handlers={{
+                handleRegisterAuthFormChange,
+                resetForm,
+                setCurrentUser,
+              }}
+            />
           </Route>
           <Route path="/signin">
-            <Login />
+            <Login
+              statesData={{
+                registerAuthFormValues,
+                formErrors,
+                formIsValid,
+              }}
+              handlers={{
+                handleRegisterAuthFormChange,
+                resetForm,
+                setCurrentUser,
+              }}
+            />
           </Route>
           <Route path="*">
             <NotFound />
@@ -228,8 +239,8 @@ function App() {
 
       </div>
 
-      {/* </CurrentFunctionsContext.Provider> */}
-    </CurrentDataContext.Provider>
+    {/* </CurrentUserContext.Provider> */}
+  </CurrentDataContext.Provider>
 
   );
 }

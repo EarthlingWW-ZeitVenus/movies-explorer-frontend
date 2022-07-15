@@ -1,19 +1,47 @@
-// import React from 'react';
-import useForms from '../../utils/use-forms';
+import React from 'react';
+// import useForms from '../../utils/use-forms';
+import { useHistory } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/logo.svg';
+import { register } from '../../utils/MainApi';
 
-function Register() {
+function Register({ statesData, handlers }) {
+  const history = useHistory();
+  const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
   const {
-    values: { registerName, registerEmail, registerPassword },
-    errors: { registerNameError, registerEmailError, registerPasswordError },
-    isValid,
-    handleChange,
-  } = useForms();
+    registerAuthFormValues: {
+      registerName,
+      registerEmail,
+      registerPassword,
+    },
+    formErrors: {
+      registerNameError,
+      registerEmailError,
+      registerPasswordError,
+    },
+    formIsValid,
+  } = statesData;
+  const { handleRegisterAuthFormChange, setCurrentUser /* resetForm */ } = handlers;
   console.log('обращение к компоненту Register');
   console.log(`registerNameError in Register - ${registerNameError}`);
   console.log(`registerEmailError in Register - ${registerEmailError}`);
   console.log(`registerPasswordError in Register - ${registerPasswordError}`);
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    setServerErrorMessageText('');
+    register(registerName, registerEmail, registerPassword)
+      .then((res) => {
+        console.log(res.data);
+        setCurrentUser(res.data);
+        history.push('/movies');
+      })
+      .catch((err) => {
+        err.json().then((jsonErr) => {
+          setServerErrorMessageText(jsonErr.message);
+        });
+      });
+  }
 
   const errorTag = (errorText) => (
     <p className = "register__form-input-error">
@@ -24,7 +52,7 @@ function Register() {
     <section className="register page_format_side-padding">
       <img className="register__logo" src={logo} alt="Логотип" />
       <h2 className="register__title page_format_all-title">Добро пожаловать!</h2>
-      <form className="register__form">
+      <form className="register__form" onSubmit={handleSubmit} noValidate>
         <fieldset className="register__form-fieldset">
           <label className="register__form-label" htmlFor="registerName">Имя</label>
           <input
@@ -33,11 +61,12 @@ function Register() {
             placeholder="Ваше имя"
             autoComplete="off"
             type="text"
-            onChange={handleChange}
+            onChange={handleRegisterAuthFormChange}
             value={registerName}
+            pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
             required
           />
-          {errorTag(registerNameError || '')}
+          {errorTag(registerNameError)}
           <label className="register__form-label" htmlFor="registerEmail">E-mail</label>
           <input
             className="register__form-input"
@@ -45,11 +74,11 @@ function Register() {
             placeholder="Ваша электронная почта"
             autoComplete="off"
             type="email"
-            onChange={handleChange}
+            onChange={handleRegisterAuthFormChange}
             value={registerEmail}
             required
           />
-          {errorTag(registerEmailError || '')}
+          {errorTag(registerEmailError)}
           <label className="register__form-label" htmlFor="registerPassword">Пароль</label>
           <input
             className="register__form-input"
@@ -57,16 +86,18 @@ function Register() {
             placeholder="Ваш пароль"
             autoComplete="off"
             type="password"
-            onChange={handleChange}
+            minLength={4}
+            onChange={handleRegisterAuthFormChange}
             value={registerPassword}
             required
           />
-          {errorTag(registerPasswordError || '')}
+          {errorTag(registerPasswordError)}
         </fieldset>
+        {errorTag(serverErrorMessageText)}
         <button
-          className={`register__form-button ${!isValid && 'register__form-button_disabled'}`}
+          className={`register__form-button ${!formIsValid && 'register__form-button_disabled'}`}
           type="submit"
-          disabled={!isValid}
+          disabled={!formIsValid}
         >
           Зарегистрироваться
         </button>

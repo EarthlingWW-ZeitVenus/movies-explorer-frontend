@@ -4,9 +4,9 @@ import './ShortFilmCheckbox.css';
 // import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
 // import useForms from '../../utils/use-forms';
 
-const ShortFilmCheckbox = ({ isFilmShort, handleChange, statesData }) => {
+const ShortFilmCheckbox = ({ isShortFilm, handleChange }) => {
   console.log('обращение к компоненту ShortFilmCheckbox');
-  const { isUseSaveLocal, savedIsShortFilm } = statesData;
+  // const { isUseSaveLocal, savedIsShortFilm } = statesData;
   // const { values: { shortFilm }, handleChange } = useForms();
   // const [isChecked, setIsChecked] = React.useState(false);
   // const [values, setValues] = React.useState({});
@@ -29,7 +29,7 @@ const ShortFilmCheckbox = ({ isFilmShort, handleChange, statesData }) => {
         // onChange={handleSetIsShortFilm}
         // checked={values}
         onChange={handleChange}
-        checked={isUseSaveLocal ? savedIsShortFilm : isFilmShort}
+        checked={isShortFilm}
       />
       <span className="checkbox-switcher__span"/>
     </label>

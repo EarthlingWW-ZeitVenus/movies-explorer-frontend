@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
@@ -8,50 +7,46 @@ import getMoviesListParameters from '../../utils/get-movies-list-parameters';
 
 function MoviesCardList() {
   console.log('Обращение к компоненту MoviesCardList');
-  // debugger;
-  // const { isUseSaveLocal } = statesData;
-  const resultingMoviesCardsArray = React.useContext(CurrentDataContext);
-  // const resultingMoviesCardsArray = isUseSaveLocal ? savedMoviesArray : filteredMoviesCards;
-  console.log('resultingMoviesCardsArray in MoviesCardList:');
-  console.log(resultingMoviesCardsArray);
+  // eslint-disable-next-line no-undef
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [numberOfClicks, setNumberOfClicks] = React.useState(0);
+  // debugger;
+  // const { windowWidth, numberOfFindButtonClicks: numberOfClicks } = statesData;
+  // const { handleMoreButtonClick } = handlers;
+  const moviesCardsArray = React.useContext(CurrentDataContext);
+  console.log('moviesCardsArray in MoviesCardList:');
+  console.log(moviesCardsArray);
   const {
     cardsInRow,
     cardsInList,
     cardsLoadedByButton,
-    // cardWidth,
     marginsField,
     gridTemplateColumnsField,
     maxClicksOnButton,
-  } = getMoviesListParameters(windowWidth, resultingMoviesCardsArray.length);
-  // console.log(`filteredMoviesCards in MoviesCardList - ${filteredMoviesCards}`);
-  // console.log(`savedMoviesArray in MoviesCardList - ${savedMoviesArray}`);
-  // const { rowsInArray } = functions;
+  } = getMoviesListParameters(windowWidth, moviesCardsArray.length);
   console.log(`Состояние стейта windowWidth - ${windowWidth}`);
   console.log(`Состояние стейта numberOfClicks - ${numberOfClicks}`);
   console.log(`cardsInRow - ${cardsInRow}`);
   console.log(`cardsInList - ${cardsInList}`);
   console.log(`cardsLoadedByButton - ${cardsLoadedByButton}`);
-  // console.log(`cardWidth - ${cardWidth}`);
   console.log(`marginsField - ${marginsField}`);
   console.log(`gridTemplateColumnsField - ${gridTemplateColumnsField}`);
   console.log(`maxClicksOnButton - ${maxClicksOnButton}`);
 
-  // const numberOfFilteredCards = resultingMoviesCardsArray.length;
+  // const numberOfFilteredCards = moviesCardsArray.length;
   // const maxClicksOnMoreButton = Math.ceil(
-  //   (resultingMoviesCardsArray.length - cardsInList) / cardsInRow,
+  //   (moviesCardsArray.length - cardsInList) / cardsInRow,
   // );
 
   // console.log(`maxClicksOnMoreButton - ${maxClicksOnMoreButton}`);
 
-  const moviesCardsToDisplay = resultingMoviesCardsArray
+  const moviesCardsToDisplay = moviesCardsArray
     .filter(
       (movieCard, index) => (index) < (cardsInList + numberOfClicks * cardsLoadedByButton),
     );
 
-  console.log('resultingMoviesCardsArray:');
-  console.log(resultingMoviesCardsArray);
+  console.log('moviesCardsArray:');
+  console.log(moviesCardsArray);
   console.log('moviesCardsToDisplay:');
   console.log(moviesCardsToDisplay);
 
@@ -60,9 +55,21 @@ function MoviesCardList() {
     padding: '0',
     margin: String(marginsField),
     display: 'grid',
-    // gridTemplateColumns: 'repeat(3, minmax(360px, 1fr))',
     gridTemplateColumns: String(gridTemplateColumnsField),
     gap: '28px',
+  };
+
+  const handleChangeWindowWidth = () => {
+    debugger;
+    console.log('Сработал код внутри метода handleChangeWindowWidth');
+    // eslint-disable-next-line no-undef
+    setWindowWidth(window.innerWidth);
+    setNumberOfClicks(0);
+  };
+
+  const handleMoreButtonClick = () => {
+    debugger;
+    setNumberOfClicks((state) => state + 1);
   };
 
   // const moreButton = Styled.button`
@@ -78,24 +85,21 @@ function MoviesCardList() {
   //   lines-height: 1.2;
   // `;
 
-  const handleChangeWindowWidth = () => {
-    // debugger;
-    setWindowWidth(window.innerWidth);
-    setNumberOfClicks(0);
-  };
-
-  const handleButtonClick = () => {
-    debugger;
-    setNumberOfClicks((state) => state + 1);
-  };
-
   React.useEffect(() => {
-    console.log('Сработал useEffect на событии "resize"');
-    window.addEventListener('resize', handleChangeWindowWidth);
+    console.log('Обращение к useEffect для события "resize", установка слушателей');
+    // eslint-disable-next-line no-undef
+    window.addEventListener('resize', () => setTimeout(() => {
+      console.log('Сработал вызов колбека на событие resize по таймауту');
+      handleChangeWindowWidth();
+    }, 3000));
     return () => {
-      window.removeEventListener('resize', handleChangeWindowWidth);
+      // eslint-disable-next-line no-undef
+      window.removeEventListener('resize', () => setTimeout(() => {
+        console.log('Сработал вызов колбека на событие resize по таймауту');
+        handleChangeWindowWidth();
+      }, 3000));
     };
-  }, [handleChangeWindowWidth]);
+  }, []);
 
   return (
     <section className="movies-card-list">
@@ -110,7 +114,7 @@ function MoviesCardList() {
         }
       </ul>
       {(numberOfClicks < maxClicksOnButton)
-      && <button className="movies-card-list__button" onClick={handleButtonClick}>Ещё</button>}
+      && <button className="movies-card-list__button" onClick={handleMoreButtonClick}>Ещё</button>}
     </section>
   );
 }

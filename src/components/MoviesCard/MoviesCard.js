@@ -1,5 +1,6 @@
+import React from 'react';
 import './MoviesCard.css';
-// import savedMovieButton from '../../images/saved-movie-button.jpg';
+import savedButtonIcon from '../../images/saved-button-icon.svg';
 
 function MoviesCard({
   title,
@@ -7,6 +8,14 @@ function MoviesCard({
   image,
   trailer,
 }) {
+  const [isMovieSaved, setIsMovieSaved] = React.useState(false);
+
+  const handleButtonClick = () => {
+    setIsMovieSaved(true);
+  };
+
+  // console.log(savedButtonIcon);
+
   return (
     <li className="movies-card">
       <div className="movies-card__title-container">
@@ -29,8 +38,8 @@ function MoviesCard({
             />
         }
       </button> */}
-      <button type="button" className="movies-card__button">
-        Сохранить
+      <button type="button" className={`movies-card__button ${isMovieSaved && 'movies-card__button_type_saved'}`} onClick={handleButtonClick}>
+        {isMovieSaved ? <img src={savedButtonIcon} alt="иконка сохранения или удаления фильма" /> : 'Сохранить'}
       </button>
     </li>
   );

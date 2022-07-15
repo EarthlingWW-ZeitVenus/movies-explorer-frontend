@@ -9,7 +9,7 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
   let cardsLoadedByButton = 2;
   // let cardWidth = 360;
   let marginsField = '45px 0 110px';
-  let gridTemplateColumnsField = 'repeat(3, minmax(360px, 1fr))';
+  let gridTemplateColumnsField = 'repeat(3, fit-content(360px))';
   let maxClicksOnButton;
 
   const countMaxClicksOnButton = (cardsInListNumber, cardsInRowNumber) => (
@@ -37,6 +37,7 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
       marginsField = '65px 0 125px';
       // cardWidth = 360;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
+      gridTemplateColumnsField = 'repeat(2, fit-content(342px))';
       // cardsInRow = 2;
       // cardsInList = 8;
       // cardsLoadedByButton = 2;
