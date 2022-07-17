@@ -21,7 +21,7 @@ function Register({ statesData, handlers }) {
     },
     formIsValid,
   } = statesData;
-  const { handleRegisterAuthFormChange, setCurrentUser /* resetForm */ } = handlers;
+  const { handleRegisterAuthFormChange, handleSetСurrentUser /* resetForm */ } = handlers;
   console.log('обращение к компоненту Register');
   console.log(`registerNameError in Register - ${registerNameError}`);
   console.log(`registerEmailError in Register - ${registerEmailError}`);
@@ -33,13 +33,20 @@ function Register({ statesData, handlers }) {
     register(registerName, registerEmail, registerPassword)
       .then((res) => {
         console.log(res.data);
-        setCurrentUser(res.data);
+        handleSetСurrentUser(res.data);
         history.push('/movies');
       })
       .catch((err) => {
-        err.json().then((jsonErr) => {
-          setServerErrorMessageText(jsonErr.message);
-        });
+        console.log(err);
+        console.log(err.body);
+        if (!err.ok) {
+          err.json().then((jsonErr) => {
+            setServerErrorMessageText(jsonErr.message);
+          });
+        }
+        // err.json().then((jsonErr) => {
+        // setServerErrorMessageText(jsonErr.message);
+        // });
       });
   }
 

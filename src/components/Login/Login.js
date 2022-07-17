@@ -19,7 +19,7 @@ function Login({ statesData, handlers }) {
     },
     formIsValid,
   } = statesData;
-  const { handleRegisterAuthFormChange, setCurrentUser /* resetForm */ } = handlers;
+  const { handleRegisterAuthFormChange, handleSetСurrentUser /* resetForm */ } = handlers;
 
   function handleSubmit(evt) {
     evt.preventDefault();
@@ -29,8 +29,8 @@ function Login({ statesData, handlers }) {
         console.log(res);
         console.log(res.data);
         debugger;
+        handleSetСurrentUser(res.data);
         history.push('/movies');
-        setCurrentUser(res.data);
       })
       .catch((err) => {
         console.log(err);

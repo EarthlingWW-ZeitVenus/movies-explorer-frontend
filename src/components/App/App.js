@@ -118,6 +118,10 @@ function App() {
   const handleSetIsNothingFound = (isNothing) => {
     setIsNothingFound(isNothing);
   };
+
+  const handleSetСurrentUser = (serverUserResponse) => {
+    setCurrentUser(serverUserResponse);
+  };
   // const onUpdateMoviesString = (newMoviesString) => {
   //   setMoviesString(newMoviesString);
   //   console.log(`После обновления строки поиска фильмов,
@@ -211,7 +215,7 @@ function App() {
               handlers={{
                 handleRegisterAuthFormChange,
                 resetForm,
-                setCurrentUser,
+                handleSetСurrentUser,
               }}
             />
           </Route>
@@ -225,7 +229,7 @@ function App() {
               handlers={{
                 handleRegisterAuthFormChange,
                 resetForm,
-                setCurrentUser,
+                handleSetСurrentUser,
               }}
             />
           </Route>
