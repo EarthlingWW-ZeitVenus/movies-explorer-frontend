@@ -1,13 +1,13 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { login } from '../../utils/MainApi';
 import './Login.css';
 import logo from '../../images/logo.svg';
 
-function Login({ statesData, handlers }) {
+function Login({
+  registerAuthForm,
+  neededHandlers,
+  serverErrorMessageText,
+  onLogin,
+}) {
   console.log('обращение к компоненту Login');
-  const history = useHistory();
-  const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
   const {
     registerAuthFormValues: {
       loginEmail,
@@ -18,26 +18,12 @@ function Login({ statesData, handlers }) {
       loginPasswordError,
     },
     formIsValid,
-  } = statesData;
-  const { handleRegisterAuthFormChange, handleSetСurrentUser /* resetForm */ } = handlers;
+  } = registerAuthForm;
+  const { handleRegisterAuthFormChange /* resetForm */ } = neededHandlers;
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    setServerErrorMessageText('');
-    login(loginEmail, loginPassword)
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        debugger;
-        handleSetСurrentUser(res.data);
-        history.push('/movies');
-      })
-      .catch((err) => {
-        console.log(err);
-        err.json().then((jsonErr) => {
-          setServerErrorMessageText(jsonErr.message);
-        });
-      });
+    onLogin(loginEmail, loginPassword);
   }
 
   const errorTag = (errorText) => (

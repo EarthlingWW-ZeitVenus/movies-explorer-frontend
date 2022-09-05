@@ -8,10 +8,10 @@ import getMoviesCards from '../../utils/MoviesApi';
 // import useForms from '../../utils/use-forms';
 // import useLocalStorage from '../../utils/use-local-storage';
 
-function SearchForm({ handlers, statesData }) {
+function SearchForm({ searchForm, neededHandlers }) {
   // debugger;
   console.log('обращение к компоненту SearchForm');
-  const { searchFormValues, isSearchFormStatesEqual } = statesData;
+  const { searchFormValues, isSearchFormStatesEqual } = searchForm;
   const { filmName, shortFilm } = searchFormValues;
   console.log(`значение isSearchFormStatesEqual - ${isSearchFormStatesEqual}`);
   // const { localSavedFormState } = React.useContext(CurrentDataContext);
@@ -21,11 +21,10 @@ function SearchForm({ handlers, statesData }) {
   const {
     handleSetIsProcessing,
     handleSetIsNothingFound,
-    // handleSetFilteredMoviesCards,
     handleSaveArray,
-    handleSaveFormState,
+    handleSaveForm,
     handleSearchFormChange,
-  } = handlers;
+  } = neededHandlers;
   // debugger;
   const isShortFilm = shortFilm || false;
   // const { hasSavedLocal, valueFromStorage } = useLocalStorage();
@@ -101,6 +100,7 @@ function SearchForm({ handlers, statesData }) {
     //   const savedIsShorFilm = localStorage.getItem('SAVED_IS_SHORT_STATE');
     //   handleSetFilteredMoviesCards(savedMoviesCardsData);
     // handleSetIsProcessing(false);
+    debugger;
     if (!isSearchFormStatesEqual) {
       debugger;
       handleSetIsProcessing(true);
@@ -131,7 +131,7 @@ function SearchForm({ handlers, statesData }) {
             debugger;
             handleSaveArray(filteredMoviesCardsData);
           }
-          handleSaveFormState({ filmName, isShortFilm });
+          handleSaveForm({ filmName, isShortFilm });
           // setPrevMoviesString(filmName);
         })
         .catch((err) => catchResponse(err))
@@ -190,7 +190,6 @@ function SearchForm({ handlers, statesData }) {
           <ShortFilmCheckbox
             isShortFilm={isShortFilm}
             handleChange={handleSearchFormChange}
-            statesData={statesData}
           />
           <span className="search-form__text">Короткометражки</span>
         </fieldset>

@@ -1,13 +1,15 @@
-import React from 'react';
+// import React from 'react';
 // import useForms from '../../utils/use-forms';
-import { useHistory } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/logo.svg';
-import { register } from '../../utils/MainApi';
 
-function Register({ statesData, handlers }) {
-  const history = useHistory();
-  const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
+function Register({
+  registerAuthForm,
+  neededHandlers,
+  embeddedMessageText,
+  onRegister,
+}) {
+  // const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
   const {
     registerAuthFormValues: {
       registerName,
@@ -20,8 +22,8 @@ function Register({ statesData, handlers }) {
       registerPasswordError,
     },
     formIsValid,
-  } = statesData;
-  const { handleRegisterAuthFormChange, handleSetСurrentUser /* resetForm */ } = handlers;
+  } = registerAuthForm;
+  const { handleRegisterAuthFormChange } = neededHandlers;
   console.log('обращение к компоненту Register');
   console.log(`registerNameError in Register - ${registerNameError}`);
   console.log(`registerEmailError in Register - ${registerEmailError}`);
@@ -29,25 +31,7 @@ function Register({ statesData, handlers }) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    setServerErrorMessageText('');
-    register(registerName, registerEmail, registerPassword)
-      .then((res) => {
-        console.log(res.data);
-        handleSetСurrentUser(res.data);
-        history.push('/movies');
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(err.body);
-        if (!err.ok) {
-          err.json().then((jsonErr) => {
-            setServerErrorMessageText(jsonErr.message);
-          });
-        }
-        // err.json().then((jsonErr) => {
-        // setServerErrorMessageText(jsonErr.message);
-        // });
-      });
+    onRegister(registerName, registerEmail, registerPassword);
   }
 
   const errorTag = (errorText) => (
@@ -100,7 +84,7 @@ function Register({ statesData, handlers }) {
           />
           {errorTag(registerPasswordError)}
         </fieldset>
-        {errorTag(serverErrorMessageText)}
+        {errorTag(embeddedMessageText)}
         <button
           className={`register__form-button ${!formIsValid && 'register__form-button_disabled'}`}
           type="submit"

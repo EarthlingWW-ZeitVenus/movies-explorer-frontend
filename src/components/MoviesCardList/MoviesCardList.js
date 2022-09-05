@@ -2,10 +2,9 @@ import React from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
 // import movieImage from '../../images/movie-image.jpg';
-import CurrentDataContext from '../../contexts/CurrentDataContext';
 import getMoviesListParameters from '../../utils/get-movies-list-parameters';
 
-function MoviesCardList() {
+function MoviesCardList({ moviesArray, onChangeSaveMovie }) {
   console.log('Обращение к компоненту MoviesCardList');
   // eslint-disable-next-line no-undef
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -13,9 +12,8 @@ function MoviesCardList() {
   // debugger;
   // const { windowWidth, numberOfFindButtonClicks: numberOfClicks } = statesData;
   // const { handleMoreButtonClick } = handlers;
-  const moviesCardsArray = React.useContext(CurrentDataContext);
-  console.log('moviesCardsArray in MoviesCardList:');
-  console.log(moviesCardsArray);
+  console.log('moviesArray in MoviesCardList:');
+  console.log(moviesArray);
   const {
     cardsInRow,
     cardsInList,
@@ -23,7 +21,7 @@ function MoviesCardList() {
     marginsField,
     gridTemplateColumnsField,
     maxClicksOnButton,
-  } = getMoviesListParameters(windowWidth, moviesCardsArray.length);
+  } = getMoviesListParameters(windowWidth, moviesArray.length);
   console.log(`Состояние стейта windowWidth - ${windowWidth}`);
   console.log(`Состояние стейта numberOfClicks - ${numberOfClicks}`);
   console.log(`cardsInRow - ${cardsInRow}`);
@@ -40,13 +38,13 @@ function MoviesCardList() {
 
   // console.log(`maxClicksOnMoreButton - ${maxClicksOnMoreButton}`);
 
-  const moviesCardsToDisplay = moviesCardsArray
+  const moviesCardsToDisplay = moviesArray
     .filter(
       (movieCard, index) => (index) < (cardsInList + numberOfClicks * cardsLoadedByButton),
     );
 
-  console.log('moviesCardsArray:');
-  console.log(moviesCardsArray);
+  console.log('moviesArray:');
+  console.log(moviesArray);
   console.log('moviesCardsToDisplay:');
   console.log(moviesCardsToDisplay);
 
@@ -57,10 +55,12 @@ function MoviesCardList() {
     display: 'grid',
     gridTemplateColumns: String(gridTemplateColumnsField),
     gap: '28px',
+    justifyContent: 'space-evenly',
+    alignContent: 'space-evenly',
   };
 
   const handleChangeWindowWidth = () => {
-    debugger;
+    // debugger;
     console.log('Сработал код внутри метода handleChangeWindowWidth');
     // eslint-disable-next-line no-undef
     setWindowWidth(window.innerWidth);
@@ -105,11 +105,13 @@ function MoviesCardList() {
     <section className="movies-card-list">
       <ul style={cssMoviesCardListRowsAndColumns}>
         {moviesCardsToDisplay.map((movieCardItem) => <MoviesCard
-            key={movieCardItem.id}
+            key={movieCardItem.id ? movieCardItem.id : movieCardItem.movieId}
+            movieInfoObject={movieCardItem}
             title={movieCardItem.nameRU}
             duration={movieCardItem.duration}
-            image={movieCardItem.image.url}
-            trailer={movieCardItem.trailerLink}
+            image={movieCardItem.image.url ? movieCardItem.image.url : movieCardItem.imageUrl}
+            trailer={movieCardItem.trailerLink ? movieCardItem.trailerLink : movieCardItem.trailer}
+            onChangeSaveMovie={onChangeSaveMovie}
           />)
         }
       </ul>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import CurrentDataContext from '../../contexts/CurrentDataContext';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 // import CurrentUserContext from '../../contexts/CurrentUserContext';
 // import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
 // import useAllSimpleStates from '../../utils/use-simple-states';
@@ -15,22 +15,42 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFound from '../NotFound/NotFound';
 import BurgerMenuRollup from '../BurgerMenuRollup/BurgerMenuRollup';
-import setAndGetFromLocalStorage from '../../utils/set-and-get-from-local-storage';
+import useLocalStorage from '../../utils/use-local-storage';
 import useForms from '../../utils/use-forms';
+import Infotooltip from '../Infotooltip/Infotooltip';
+import PopupRollup from '../PopupRollup/PopupRollup';
+import {
+  register,
+  login,
+  logout,
+  addMovie,
+  deleteMovie,
+} from '../../utils/MainApi';
 // import { countRowsAndCards } from '../../utils/utils';
 // import getMoviesCards from '../../utils/MoviesApi';
 
 function App() {
-  // window.localStorage.clear();
+  // eslint-disable-next-line no-undef
   // console.log(JSON.stringify(window.localStorage, null, 2));
+  // eslint-disable-next-line no-undef
+  window.localStorage.clear();
+  // eslint-disable-next-line no-undef
+  console.log(JSON.stringify(window.localStorage, null, 2));
   console.log('обращение к компоненту App');
   // debugger;
+  const history = useHistory();
   const {
-    localSavedArray,
-    localSavedFormState,
+    moviesArray,
+    ownedMoviesArray,
+    formState,
+    currentUser,
+    handleSetArray,
     handleSaveArray,
-    handleSaveFormState,
-  } = setAndGetFromLocalStorage();
+    handleSaveForm,
+    handleSaveCurrentUser,
+    handleSetIsLoggedIn,
+    handleSaveOwnedMovies,
+  } = useLocalStorage();
   const {
     searchFormValues,
     registerAuthFormValues,
@@ -40,104 +60,195 @@ function App() {
     handleRegisterAuthFormChange,
     handleSearchFormChange,
     resetForm,
-  } = useForms(localSavedFormState);
+  } = useForms(formState);
 
-  // const { values, closeAllOpened } = useAllSimpleStates();
-  // console.log('Внутрь App из хука передан такой объект values:');
-  // console.log(values);
   const [isBurgerMenuRollupOpen, setIsBurgerMenuRollupOpen] = React.useState(false);
   const [isNothingFound, setIsNothingFound] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState({});
-  // const [moviesCardsArray, setMoviesCardsArray] = React.useState([]);
-  // const [isShortFilm, setIsShortFilm] = React.useState(false);
-  // const [moviesString, setMoviesString] = React.useState('');
-  // const [isUseLocal, setIsUseLocal] = React.useState(false);
-  // const arrayToDisplay = isUseSaveLocal ? savedMoviesArray : filteredMoviesCards;
-  // debugger;
-  // console.log('arrayToDisplay in App:');
-  // console.log(arrayToDisplay);
-  console.log('localSavedArray in App:');
-  console.log(localSavedArray);
-  console.log('localSavedFormState in App:');
-  console.log(localSavedFormState);
+  const [infotooltipData, setInfotooltipData] = React.useState({ message: '', isError: false });
+  // const [infotooltipMessage, setInfotooltipMessage] = React.useState('');
+  const [isInfotooltipPopupOpen, setIsInfotooltipPopupOpen] = React.useState(false);
+  const [embeddedMessageText, setEmbeddedMessageText] = React.useState('');
+
+  console.log('moviesArray in App:');
+  console.log(moviesArray);
+  console.log('formState in App:');
+  console.log(formState);
   console.log('currentUser in App:');
   console.log(currentUser);
-  // console.log('moviesCardsArray in App:');
-  // console.log(moviesCardsArray);
-  // const {} = countRowsAndCards
-  // const [allFormsStates, setAllFormsStates] = React.useState({});
-  // const [allSimpleStates, setAllSimpleStates] = React.useState({});
+  console.log('ownedMoviesArray in App:');
+  console.log(ownedMoviesArray);
 
-  // const [allData, setAllData] = React.useState(null);
+  // Минифункции (использую для компоновки более сложных функций)
+  function catchResponse(error) {
+    if (error.status) {
+      setInfotooltipData({
+        message: `Сервер ответил ошибкой со статусом - ${error.status}`,
+        isError: true,
+      });
+    } else {
+      setInfotooltipData({
+        message: `Ваш запрос не ушел на сервер или сервер не ответил, ошибка - ${error}`,
+        isError: true,
+      });
+    }
+    setIsInfotooltipPopupOpen(true);
+  }
 
-  // const handleSetAllFormsStates = (event) => {
-  //   const { target } = event;
-  //   const { name } = target;
-  //   const valueData = target.type === 'checkbox' ? target.checked : target.value;
-  //   setAllFormsStates({ [name]: valueData });
-  // };
-
-  // const handleSetAllSimpleStates = (someData, keyString) => {
-  //   setAllSimpleStates({ ...allSimpleStates, [keyString]: someData });
-  //   console.log('allSimpleStates изнутри handleSetAllSimpleStates (App):');
-  //   console.log(allSimpleStates);
-  // };
-
-  // console.log('Ниже текущие состояние стейта filteredMoviesCards внутри App:');
-  // console.log(filteredMoviesCards);
-  // console.log('Ниже текущие состояние стейта allFormStates внутри App:');
-  // console.log(allFormsStates);
-  // console.log('Ниже текущие состояние стейта allSimpleStates внутри App:');
-  // console.log(allSimpleStates);
-
+  // Handlers
   const handleBurgerMenuClick = () => {
     setIsBurgerMenuRollupOpen(true);
   };
-
   const handleSetIsProcessing = (isDataProcessing) => {
     setIsProcessing(isDataProcessing);
   };
-
-  // const handleSetIsUseLocal = (isUseLocalStorage) => {
-  //   setIsUseLocal(isUseLocalStorage);
-  // };
-
-  // const handleSetIsShortFilm = (isShort) => {
-  //   setIsShortFilm(isShort);
-  // };
-
-  // const handleSetFilteredMoviesCards = (filteredMoviesCardsData) => {
-  //   setFilteredMoviesCards(filteredMoviesCardsData);
-  // };
-
-  // const handleSetMoviesString = (moviesStringData) => {
-  //   setMoviesString(moviesStringData);
-  // };
-
   const handleSetIsNothingFound = (isNothing) => {
     setIsNothingFound(isNothing);
   };
 
-  const handleSetСurrentUser = (serverUserResponse) => {
-    setCurrentUser(serverUserResponse);
-  };
-  // const onUpdateMoviesString = (newMoviesString) => {
-  //   setMoviesString(newMoviesString);
-  //   console.log(`После обновления строки поиска фильмов,
-  //   новая строка выглядит так - ${moviesString}`);
-  // };
-
+  // Функции
+  // Закрытие всех окон
   const closeAllOpened = () => {
     setIsBurgerMenuRollupOpen(false);
-    // setAllSimpleStates({});
+    setIsInfotooltipPopupOpen(false);
   };
-
-  // ToDo: Не забыть тут потом указать параметр эффекта - isLoggedIn
+  // Добавление нового фильма в сохраненные
+  function handleChangeSaveMovie(movieInfoObject) {
+    if ('owner' in movieInfoObject) {
+      debugger;
+      deleteMovie(movieInfoObject._id);
+      const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
+      // delete movieInfoObject.owner;
+      handleSaveArray(() => {
+        moviesArray.map((mai) => (
+          mai.movieId === movieInfoObject.movieId ? movieInfoObjectWithoutOwner : mai
+        ));
+      });
+      handleSaveOwnedMovies(() => {
+        ownedMoviesArray.filter((omai) => (omai.movieId !== movieInfoObject.movieId));
+      });
+    } else {
+      debugger;
+      console.log(movieInfoObject);
+      const {
+        country,
+        director,
+        duration,
+        year,
+        description,
+        trailerLink: trailer,
+        nameRU,
+        nameEN,
+        image: { url },
+        id: movieId,
+      } = movieInfoObject;
+      const thumbnail = `https://api.nomoreparties.co${url}`;
+      console.log(url);
+      console.log(thumbnail);
+      debugger;
+      const imageUrl = thumbnail;
+      addMovie(
+        country,
+        director,
+        duration,
+        year,
+        description,
+        imageUrl,
+        trailer,
+        thumbnail,
+        movieId,
+        nameRU,
+        nameEN,
+      )
+        .then((res) => {
+          debugger;
+          console.log(res);
+          console.log(res.data);
+          console.log('***Проверка функциональности метода map***');
+          console.log(moviesArray);
+          let moviesArray2 = [];
+          console.log(moviesArray2);
+          moviesArray2 = moviesArray.map((mai) => (mai.id === movieInfoObject.id ? res.data : mai));
+          console.log(moviesArray2);
+          debugger;
+          handleSetArray(moviesArray2);
+          // handleSaveArray(() => {
+          //   debugger;
+          //   console.log(moviesArray);
+          //   moviesArray.map((mai) => (mai.id === movieInfoObject.id ? res.data : mai));
+          console.log(moviesArray);
+          debugger;
+          // });
+          handleSaveOwnedMovies([...ownedMoviesArray, res.data]);
+        })
+        .catch((err) => {
+          debugger;
+          console.log(err);
+          catchResponse(err);
+        });
+    }
+  }
+  // Регистрация пользователя
+  function onRegister(registerName, registerEmail, registerPassword) {
+    setEmbeddedMessageText('');
+    register(registerName, registerEmail, registerPassword)
+      .then((res) => {
+        console.log(res.data);
+        handleSaveCurrentUser(res.data);
+        handleSetIsLoggedIn(true);
+        history.push('/movies');
+        debugger;
+        setInfotooltipData({ message: 'Вы успешно зарегистрировались!', isError: false });
+        setIsInfotooltipPopupOpen(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.body);
+        if (!err.ok) {
+          err.json().then((jsonErr) => {
+            setEmbeddedMessageText(jsonErr.message);
+          });
+        }
+      });
+  }
+  // Вход пользователя
+  function onLogin(loginEmail, loginPassword) {
+    setEmbeddedMessageText('');
+    login(loginEmail, loginPassword)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        handleSaveCurrentUser(res.data);
+        handleSetIsLoggedIn(true);
+        history.push('/movies');
+        debugger;
+        setInfotooltipData({ message: 'Вы успешно вошли!', isError: false });
+        setIsInfotooltipPopupOpen(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.json()) {
+          err.json().then((jsonErr) => {
+            setEmbeddedMessageText(jsonErr.message);
+          });
+        }
+      });
+  }
+  // Выход пользователя
+  function onSignOut() {
+    logout()
+      .then((res) => {
+        debugger;
+        console.log(res);
+        handleSetIsLoggedIn(false);
+        history.push('/');
+        setInfotooltipData({ message: String(res.message), isError: false });
+        setIsInfotooltipPopupOpen(true);
+      });
+  }
 
   return (
-  <CurrentDataContext.Provider value={localSavedArray}>
-    {/* <CurrentUserContext.Provider value={currentUser}> */}
+    <CurrentUserContext.Provider value={currentUser}>
 
       <div className="page page_format_all-font">
 
@@ -150,52 +261,46 @@ function App() {
           <Route path="/movies">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
             <Movies
-              statesData={{
+              moviesArray={moviesArray}
+              commonProcessStates={{
                 isProcessing,
                 isNothingFound,
-                searchFormValues,
-                formErrors,
-                formIsValid,
-                isSearchFormStatesEqual,
-                // windowWidth,
-                // numberOffMoreButtonClicks,
               }}
-              handlers={{
+              searchForm={{
+                searchFormValues,
+                isSearchFormStatesEqual,
+              }}
+              neededHandlers={{
                 handleSetIsProcessing,
                 handleSetIsNothingFound,
                 handleSaveArray,
-                handleSaveFormState,
-                handleRegisterAuthFormChange,
+                handleSaveForm,
                 handleSearchFormChange,
-                resetForm,
-                // handleMoreButtonClick,
+                handleChangeSaveMovie,
               }}
-              // functions={}
             />
             <Footer />
           </Route>
           <Route path="/saved-movies">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
             <SavedMovies
-              statesData={{
+              moviesArray={moviesArray}
+              commonProcessStates={{
                 isProcessing,
                 isNothingFound,
-                searchFormValues,
-                formErrors,
-                formIsValid,
-                isSearchFormStatesEqual,
-                // windowWidth,
-                // numberOffMoreButtonClicks,
               }}
-              handlers={{
+              searchForm={{
+                searchFormValues,
+                isSearchFormStatesEqual,
+              }}
+              AllHandlers={{
                 handleSetIsProcessing,
                 handleSetIsNothingFound,
                 handleSaveArray,
-                handleSaveFormState,
+                handleSaveForm,
                 handleRegisterAuthFormChange,
                 handleSearchFormChange,
-                resetForm,
-                // handleMoreButtonClick,
+                handleChangeSaveMovie,
               }}
               // functions={}
             />
@@ -203,33 +308,45 @@ function App() {
           </Route>
           <Route path="/profile">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <Profile currentUserProp={currentUser} />
+            <Profile onSignOut={onSignOut}/>
           </Route>
           <Route path="/signup">
             <Register
-              statesData={{
+              // isLoggedIn={isLoggedIn}
+              embeddedMessageText={embeddedMessageText}
+              onRegister={onRegister}
+              registerAuthForm={{
                 registerAuthFormValues,
                 formErrors,
                 formIsValid,
-              }}
-              handlers={{
-                handleRegisterAuthFormChange,
                 resetForm,
-                handleSetСurrentUser,
+              }}
+              neededHandlers={{
+                handleRegisterAuthFormChange,
+                handleSaveCurrentUser,
+                handleSetIsLoggedIn,
+                // handleSetInfotooltipMessage,
+                // handleSetIsInfotooltipPopupOpen,
               }}
             />
           </Route>
           <Route path="/signin">
             <Login
-              statesData={{
+              // isLoggedIn={isLoggedIn}
+              embeddedMessageText={embeddedMessageText}
+              onLogin={onLogin}
+              registerAuthForm={{
                 registerAuthFormValues,
                 formErrors,
                 formIsValid,
-              }}
-              handlers={{
-                handleRegisterAuthFormChange,
                 resetForm,
-                handleSetСurrentUser,
+              }}
+              neededHandlers={{
+                handleRegisterAuthFormChange,
+                handleSaveCurrentUser,
+                handleSetIsLoggedIn,
+                // handleSetInfotooltipMessage,
+                // handleSetIsInfotooltipPopupOpen,
               }}
             />
           </Route>
@@ -238,13 +355,23 @@ function App() {
          </Route>
         </Switch>
 
-        <BurgerMenuRollup isOpen={isBurgerMenuRollupOpen} onClose={closeAllOpened}/>
-        {/* <BurgerMenuRollup onClose={closeAllOpened}/> */}
+        <PopupRollup
+          component={BurgerMenuRollup}
+          isOpen={isBurgerMenuRollupOpen}
+          onClose={closeAllOpened}
+        />
+
+        <PopupRollup
+          component={Infotooltip}
+          // isOpen={isInfotooltipPopupOpen}
+          isOpen={isInfotooltipPopupOpen}
+          onClose={closeAllOpened}
+          infotooltipData={infotooltipData}
+        />
 
       </div>
 
-    {/* </CurrentUserContext.Provider> */}
-  </CurrentDataContext.Provider>
+    </CurrentUserContext.Provider>
 
   );
 }

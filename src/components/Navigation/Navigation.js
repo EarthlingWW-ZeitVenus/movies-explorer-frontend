@@ -1,18 +1,24 @@
-import { Switch, Route } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  Link,
+  NavLink,
+} from 'react-router-dom';
 import './Navigation.css';
 // import useAllSimpleStates from '../../utils/use-simple-states';
 
 function Navigation({ onBurgerMenu }) {
   // const { handleChange } = useAllSimpleStates();
   return (
+    <nav className="navigation">
     <Switch>
       <Route exact path="/">
         <ul className="navigation-landing">
           <li className="navigation-landing__item">
-            <a className="navigation-landing__button" href="/signup">Регистрация</a>
+            <Link className="navigation-landing__button" to="/signup">Регистрация</Link>
           </li>
           <li className="navigation-landing__item navigation-landing__item_signin">
-            <a className="navigation-landing__button" href="/signin">Войти</a>
+            <Link className="navigation-landing__button" to="/signin">Войти</Link>
           </li>
         </ul>
       </Route>
@@ -21,16 +27,32 @@ function Navigation({ onBurgerMenu }) {
         <div className="navigation-internal">
           <ul className="navigation-internal__links-container">
             <li className="navigation-internal__item">
-              <a className="navigation-internal__link navigation-internal__link_active" href="/movies">Фильмы</a>
+              <NavLink
+                className="navigation-internal__link"
+                activeClassName="navigation__link_active"
+                to="/movies">
+                Фильмы
+              </NavLink>
             </li>
             <li className="navigation-internal__item">
-              <a className="navigation-internal__link" href="/saved-movies">Сохранённые фильмы</a>
+              <NavLink
+                className="navigation-internal__link"
+                activeClassName="navigation__link_active"
+                to="/saved-movies">
+                Сохранённые фильмы
+              </NavLink>
             </li>
           </ul>
-          <a className="navigation-internal__button navigation-internal__button_active" href="/profile">Аккаунт</a>
+          <NavLink
+            className="navigation-internal__button"
+            activeClassName="navigation__link_active"
+            to="/profile">
+            Аккаунт
+          </NavLink>
         </div>
       </Route>
     </Switch>
+    </nav>
   );
 }
 

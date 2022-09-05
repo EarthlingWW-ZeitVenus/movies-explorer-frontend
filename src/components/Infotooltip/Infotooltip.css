@@ -1,0 +1,47 @@
+.infotooltip-rollup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: calc( 50% - 50% / 2 );
+  width: 50%;
+  /* height: 15%; */
+  background: white;
+  transform: translateY(-100%);
+  transition: transform .5s ease-in-out;
+  z-index: 4;
+}
+
+.infotooltip-rollup_active {
+  transform: translateY(0%);
+  /* display: block; */
+}
+
+.infotooltip-rollup__close-button {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transition: opacity .3s linear;
+}
+
+.infotooltip-rollup__close-button:hover {
+  opacity: .6;
+  cursor: pointer;
+}
+
+.infotooltip-rollup__text {
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  margin: 45px 15px 45px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.infotooltip-rollup__text_error {
+  color: #FF3055;
+}

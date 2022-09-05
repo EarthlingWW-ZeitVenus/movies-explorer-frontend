@@ -80,7 +80,7 @@
   opacity: .6;
 }
 
-.navigation-internal__link_active {
+.navigation__link_active {
   font-weight: 500;
 }
 
@@ -105,9 +105,9 @@
   opacity: .6;
 }
 
-.navigation-internal__button_active {
+/* .navigation-internal__button_active {
   font-weight: 500;
-}
+} */
 
 .navigation-burger-menu {
   display: none;

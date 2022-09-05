@@ -1,30 +1,23 @@
 import React from 'react';
-import { logout } from '../../utils/MainApi';
 import './Profile.css';
-// import CurrentUserContext from '../../contexts/CurrentUserContext';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Profile({ currentUserProp }) {
+function Profile({ onSignOut }) {
   console.log('обращение к компоненту Profile');
-  const [serverMessageText, setServerMessageText] = React.useState('');
+  const currentUser = React.useContext(CurrentUserContext);
   // const allContext = React.useContext(CurrentDataContext);
   // const currentUser = React.useContext(CurrentUserContext);
-  console.log('Контекст текущего пользователя currentUserProp внутри Profile:');
-  console.log(currentUserProp);
+  console.log('Контекст текущего пользователя currentUser внутри Profile:');
+  console.log(currentUser);
   // console.log('Весь контекст:');
   // console.log(allContext);
-
-  function handleLogout() {
-    logout()
-      .then((res) => {
-        console.log(res);
-        setServerMessageText(res);
-      });
-  }
 
   return (
     <main className="content page_format_side-padding">
       <section className="profile">
-        <h2 className="profile__title page_format_all-title">Привет, Виталий!</h2>
+        <h2 className="profile__title page_format_all-title">
+          {`Привет, ${currentUser.name ? currentUser.name : 'незнакомец!'}`}
+        </h2>
         <form className="profile__form">
           <fieldset className="profile__form-fieldset">
             <div className="profile__form-container profile__form-container_bottom-line">
@@ -35,6 +28,7 @@ function Profile({ currentUserProp }) {
                 placeholder="Ваше имя"
                 autoComplete="off"
                 type="text"
+                defaultValue={currentUser.name ? currentUser.name : 'незнакомец'}
               />
               <span className="profile__form-input-error"></span>
             </div>
@@ -46,11 +40,11 @@ function Profile({ currentUserProp }) {
                 placeholder="Ваша электронная почта"
                 autoComplete="off"
                 type="email"
+                defaultValue={currentUser.email ? currentUser.email : 'pochta@neznacomec.ru'}
               />
               <span className="profile__form-input-error"></span>
             </div>
           </fieldset>
-          <p>{serverMessageText}</p>
           <div className="profile__form-buttons-container">
             <button
               className="profile__form-button profile__form-button_disabled"
@@ -60,7 +54,7 @@ function Profile({ currentUserProp }) {
             <button
               className="profile__form-button"
               type="button"
-              onClick={handleLogout}>
+              onClick={onSignOut}>
                 Выйти из аккаунта
             </button>
           </div>

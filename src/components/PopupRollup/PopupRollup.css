@@ -1,0 +1,20 @@
+.popup-rollup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .3);
+  /* Установил тут overflow: hidden иначе либо красивый эффект не работает,
+  либо полоса горизонтальной прокрутки появляется - если принципиально - уберу
+  и сделаю через display: none - но тогда красивого эффекта не будет */
+  transition: visibility 1s;
+  overflow: hidden;
+  visibility: hidden;
+  /* display: none; */
+}
+
+.popup-rollup_opened {
+  visibility: visible;
+  /* display: block; */
+}

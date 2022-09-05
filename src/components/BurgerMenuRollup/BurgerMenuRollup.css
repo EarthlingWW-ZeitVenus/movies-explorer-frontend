@@ -1,25 +1,4 @@
 .burger-menu-rollup {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, .3);
-  /* Установил тут overflow: hidden иначе либо красивый эффект не работает,
-  либо полоса горизонтальной прокрутки появляется - если принципиально - уберу
-  и сделаю через display: none - но тогда красивого эффекта не будет */
-  transition: visibility 1s;
-  overflow: hidden;
-  visibility: hidden;
-  /* display: none; */
-}
-
-.burger-menu-rollup_active {
-  visibility: visible;
-  /* display: block; */
-}
-
-.burger-menu-rollup__container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -34,8 +13,9 @@
   z-index: 4;
 }
 
-.burger-menu-rollup__container_active {
+.burger-menu-rollup_active {
   transform: translateX(0%);
+  /* display: block; */
 }
 
 .burger-menu-rollup__close-button {
@@ -99,6 +79,10 @@
   background: #F9F9F9;
   border-radius: 20px;
   transition: opacity .3s linear;
+}
+
+.burger-menu-rollup__profile-link_active {
+  border: solid black 1px;
 }
 
 .burger-menu-rollup__profile-link:hover {
