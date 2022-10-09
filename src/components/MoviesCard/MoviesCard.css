@@ -75,7 +75,7 @@
   margin: 0 auto;
 }
 
-.movies-card__button-icon_type_deleted {
+.movies-card__button-icon_type_delete {
   width: 7px;
   height: 7px;
   background: url(../../images/delete-button-icon.svg) no-repeat center;

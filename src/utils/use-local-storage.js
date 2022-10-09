@@ -4,8 +4,8 @@ import React from 'react';
 function useLocalStorage(
   keyForArray = 'SAVED_ARRAY',
   keyForForm = 'SAVED_FORM_STATE',
-  keyForCurrentUser = 'SAVED_CURRENT_USER_STATE',
-  keyForSavedMovies = 'SAVED_MOVIES',
+  // keyForCurrentUser = 'SAVED_CURRENT_USER_STATE',
+  // keyForSavedMovies = 'SAVED_MOVIES',
 ) {
   // debugger;
   console.log('Произошло обращение к кастомному хуку useLocalStorage');
@@ -15,9 +15,8 @@ function useLocalStorage(
     console.log(`Обращение к инициализации стейта внутри getInitialValue, с ключом - ${key}`);
     // debugger;
     // window.localStorage.clear();
-    // console.log(JSON.stringify(window.localStorage, null, 2));
     let initialValue;
-    if ((key === keyForArray) || (key === keyForSavedMovies)) {
+    if (key === keyForArray) {
       initialValue = [];
     } else {
       initialValue = {};
@@ -40,14 +39,17 @@ function useLocalStorage(
   // const handleSetMoviesArray = () => {
   //   setMoviesArray(getLocalValue(keyForArray));
   // };
-
+  console.log('moviesArrai in use-local-storage:');
+  console.log(moviesArray);
+  console.log('ownedMoviesArray in use-local-storage:');
+  // console.log(ownedMoviesArray);
   // const handleStateSavedFormState = () => {
   //   setLocalSavedFormState(getLocalValue(keyForFormState));
   // };
 
-  const handleSetArray = (moviesArrayData) => {
-    setMoviesArray(moviesArrayData);
-  };
+  // const handleSetArray = (moviesArrayData) => {
+  //   setMoviesArray(moviesArrayData);
+  // };
 
   const handleSaveArray = (moviesArrayData) => {
     window.localStorage.setItem(keyForArray, JSON.stringify(moviesArrayData));
@@ -55,22 +57,22 @@ function useLocalStorage(
   };
 
   const handleSaveOwnedMovies = (ownedMoviesArrayData) => {
-    window.localStorage.setItem(keyForSavedMovies, JSON.stringify(ownedMoviesArrayData));
+    // window.localStorage.setItem(keyForSavedMovies, JSON.stringify(ownedMoviesArrayData));
     setOwnedMoviesArray(ownedMoviesArrayData);
   };
 
   const handleSaveForm = (formStateData) => {
     debugger;
-    console.log('formState in handleSaveFormState:');
-    console.log(formStateData);
+    // console.log('formState in handleSaveFormState:');
+    // console.log(formStateData);
     const { filmName, isShortFilm: shortFilm } = formStateData;
-    console.log(`Значение shortFilm внутри handleSaveFormState - ${shortFilm}`);
+    // console.log(`Значение shortFilm внутри handleSaveFormState - ${shortFilm}`);
     window.localStorage.setItem(keyForForm, JSON.stringify({ filmName, shortFilm }));
     // setSavedStateObject(...savedStateObject, stateObjectForSave);
   };
 
-  const handleSaveCurrentUser = (currentUserData) => {
-    window.localStorage.setItem(keyForCurrentUser, JSON.stringify(currentUserData));
+  const handleSetCurrentUser = (currentUserData) => {
+    // window.localStorage.setItem(keyForCurrentUser, JSON.stringify(currentUserData));
     setCurrentUser(currentUserData);
   };
 
@@ -84,7 +86,8 @@ function useLocalStorage(
     if (isLoggedIn) {
       setMoviesArray(getLocalValue(keyForArray));
       setFormState(getLocalValue(keyForForm));
-      setCurrentUser(getLocalValue(keyForCurrentUser));
+      // setCurrentUser(getLocalValue(keyForCurrentUser));
+      // setOwnedMoviesArray(getLocalValue(keyForSavedMovies));
     }
   }, [isLoggedIn]);
 
@@ -97,10 +100,10 @@ function useLocalStorage(
     formState,
     currentUser,
     isLoggedIn,
-    handleSetArray,
+    // handleSetArray,
     handleSaveArray,
     handleSaveForm,
-    handleSaveCurrentUser,
+    handleSetCurrentUser,
     handleSetIsLoggedIn,
     handleSaveOwnedMovies,
   };

@@ -11,14 +11,14 @@ function PopupRollup({
 
   const otherProps = props;
 
-  console.log('onClose in PopupRollup:');
-  console.log(onClose);
+  // console.log('onClose in PopupRollup:');
+  // console.log(onClose);
 
-  console.log('isOpen in PopupRollup:');
-  console.log(isOpen);
+  // console.log('isOpen in PopupRollup:');
+  // console.log(isOpen);
 
-  console.log('...props in PopupRollup:');
-  console.log(props);
+  // console.log('...props in PopupRollup:');
+  // console.log(props);
 
   React.useEffect(() => {
     // debugger;
@@ -30,9 +30,9 @@ function PopupRollup({
     };
     const handleOverlayClose = (evt) => {
       console.log('Сработал метод handleOverlayClose');
-      console.log(evt);
-      console.log(evt.target);
-      console.log(evt.currentTarget);
+      // console.log(evt);
+      // console.log(evt.target);
+      // console.log(evt.currentTarget);
       // debugger;
       if (evt.target === evt.currentTarget) {
         onClose();

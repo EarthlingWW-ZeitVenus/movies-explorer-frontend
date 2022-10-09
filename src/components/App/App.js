@@ -25,6 +25,7 @@ import {
   logout,
   addMovie,
   deleteMovie,
+  editUser,
 } from '../../utils/MainApi';
 // import { countRowsAndCards } from '../../utils/utils';
 // import getMoviesCards from '../../utils/MoviesApi';
@@ -33,7 +34,7 @@ function App() {
   // eslint-disable-next-line no-undef
   // console.log(JSON.stringify(window.localStorage, null, 2));
   // eslint-disable-next-line no-undef
-  window.localStorage.clear();
+  // window.localStorage.clear();
   // eslint-disable-next-line no-undef
   console.log(JSON.stringify(window.localStorage, null, 2));
   console.log('обращение к компоненту App');
@@ -44,23 +45,23 @@ function App() {
     ownedMoviesArray,
     formState,
     currentUser,
-    handleSetArray,
+    // isLoggedIn,
     handleSaveArray,
     handleSaveForm,
-    handleSaveCurrentUser,
+    handleSetCurrentUser,
     handleSetIsLoggedIn,
     handleSaveOwnedMovies,
   } = useLocalStorage();
   const {
     searchFormValues,
-    registerAuthFormValues,
+    registerAuthProfileFormValues,
     formErrors,
     formIsValid,
     isSearchFormStatesEqual,
-    handleRegisterAuthFormChange,
+    handleRegisterAuthProfileFormChange,
     handleSearchFormChange,
     resetForm,
-  } = useForms(formState);
+  } = useForms(formState, currentUser);
 
   const [isBurgerMenuRollupOpen, setIsBurgerMenuRollupOpen] = React.useState(false);
   const [isNothingFound, setIsNothingFound] = React.useState(false);
@@ -83,7 +84,7 @@ function App() {
   function catchResponse(error) {
     if (error.status) {
       setInfotooltipData({
-        message: `Сервер ответил ошибкой со статусом - ${error.status}`,
+        message: `Сервер ответил ошибкой со статусом - ${error.status} - ${error.statusText}`,
         isError: true,
       });
     } else {
@@ -116,17 +117,25 @@ function App() {
   function handleChangeSaveMovie(movieInfoObject) {
     if ('owner' in movieInfoObject) {
       debugger;
-      deleteMovie(movieInfoObject._id);
-      const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
+      deleteMovie(movieInfoObject._id)
+        .then((res) => {
+          debugger;
+          console.log(res);
+          setInfotooltipData({
+            message: `Операция выполнена - ${res.message}`,
+            isError: false,
+          });
+          setIsInfotooltipPopupOpen(true);
+          const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
+          const newMoviesArray = moviesArray.map((mai) => (
+            mai.movieId === movieInfoObject.movieId ? movieInfoObjectWithoutOwner : mai));
+          handleSaveArray(newMoviesArray);
+          const newOwnedMoviesArray = ownedMoviesArray.filter((omai) => (
+            omai._id !== movieInfoObject._id));
+          handleSaveOwnedMovies(newOwnedMoviesArray);
+        })
+        .catch((err) => catchResponse(err));
       // delete movieInfoObject.owner;
-      handleSaveArray(() => {
-        moviesArray.map((mai) => (
-          mai.movieId === movieInfoObject.movieId ? movieInfoObjectWithoutOwner : mai
-        ));
-      });
-      handleSaveOwnedMovies(() => {
-        ownedMoviesArray.filter((omai) => (omai.movieId !== movieInfoObject.movieId));
-      });
     } else {
       debugger;
       console.log(movieInfoObject);
@@ -164,21 +173,16 @@ function App() {
           debugger;
           console.log(res);
           console.log(res.data);
-          console.log('***Проверка функциональности метода map***');
-          console.log(moviesArray);
-          let moviesArray2 = [];
-          console.log(moviesArray2);
-          moviesArray2 = moviesArray.map((mai) => (mai.id === movieInfoObject.id ? res.data : mai));
-          console.log(moviesArray2);
-          debugger;
-          handleSetArray(moviesArray2);
-          // handleSaveArray(() => {
-          //   debugger;
-          //   console.log(moviesArray);
-          //   moviesArray.map((mai) => (mai.id === movieInfoObject.id ? res.data : mai));
-          console.log(moviesArray);
-          debugger;
-          // });
+          // console.log('***Проверка функциональности метода map***');
+          // console.log(moviesArray);
+          // let moviesArray2 = [];
+          // console.log(moviesArray2);
+          const newMoviesArray = moviesArray.map((mai) => (
+            mai.id === movieInfoObject.id ? res.data : mai));
+          // console.log(moviesArray2);
+          // debugger;
+          // handleSetArray(newMoviesArray);
+          handleSaveArray(newMoviesArray);
           handleSaveOwnedMovies([...ownedMoviesArray, res.data]);
         })
         .catch((err) => {
@@ -194,7 +198,7 @@ function App() {
     register(registerName, registerEmail, registerPassword)
       .then((res) => {
         console.log(res.data);
-        handleSaveCurrentUser(res.data);
+        handleSetCurrentUser(res.data);
         handleSetIsLoggedIn(true);
         history.push('/movies');
         debugger;
@@ -218,7 +222,7 @@ function App() {
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        handleSaveCurrentUser(res.data);
+        handleSetCurrentUser(res.data);
         handleSetIsLoggedIn(true);
         history.push('/movies');
         debugger;
@@ -243,6 +247,24 @@ function App() {
         handleSetIsLoggedIn(false);
         history.push('/');
         setInfotooltipData({ message: String(res.message), isError: false });
+        setIsInfotooltipPopupOpen(true);
+      });
+  }
+
+  function onProfileChange(email, name) {
+    editUser(email, name)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        handleSetCurrentUser(res.data);
+        setInfotooltipData({ message: 'Профиль успешно изменён!', isError: false });
+        setIsInfotooltipPopupOpen(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setInfotooltipData(
+          { message: `При изменении профиля произошла ошибка - ${err}`, isError: true },
+        );
         setIsInfotooltipPopupOpen(true);
       });
   }
@@ -284,23 +306,25 @@ function App() {
           <Route path="/saved-movies">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
             <SavedMovies
-              moviesArray={moviesArray}
+              catchResponse={catchResponse}
+              ownedMoviesArray={ownedMoviesArray}
               commonProcessStates={{
                 isProcessing,
                 isNothingFound,
+                // isLoggedIn,
               }}
               searchForm={{
                 searchFormValues,
                 isSearchFormStatesEqual,
               }}
-              AllHandlers={{
+              neededHandlers={{
                 handleSetIsProcessing,
                 handleSetIsNothingFound,
                 handleSaveArray,
                 handleSaveForm,
-                handleRegisterAuthFormChange,
                 handleSearchFormChange,
                 handleChangeSaveMovie,
+                handleSaveOwnedMovies,
               }}
               // functions={}
             />
@@ -308,23 +332,36 @@ function App() {
           </Route>
           <Route path="/profile">
             <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <Profile onSignOut={onSignOut}/>
+            <Profile
+              onSignOut={onSignOut}
+              onProfileChange={onProfileChange}
+              neededHandlers={{
+                handleRegisterAuthProfileFormChange,
+                handleSetCurrentUser,
+              }}
+              registerAuthProfileForm={{
+                registerAuthProfileFormValues,
+                formErrors,
+                formIsValid,
+                resetForm,
+              }}
+            />
           </Route>
           <Route path="/signup">
             <Register
               // isLoggedIn={isLoggedIn}
               embeddedMessageText={embeddedMessageText}
               onRegister={onRegister}
-              registerAuthForm={{
-                registerAuthFormValues,
+              registerAuthProfileForm={{
+                registerAuthProfileFormValues,
                 formErrors,
                 formIsValid,
                 resetForm,
               }}
               neededHandlers={{
-                handleRegisterAuthFormChange,
-                handleSaveCurrentUser,
-                handleSetIsLoggedIn,
+                handleRegisterAuthProfileFormChange,
+                // handleSetCurrentUser,
+                // handleSetIsLoggedIn,
                 // handleSetInfotooltipMessage,
                 // handleSetIsInfotooltipPopupOpen,
               }}
@@ -335,16 +372,16 @@ function App() {
               // isLoggedIn={isLoggedIn}
               embeddedMessageText={embeddedMessageText}
               onLogin={onLogin}
-              registerAuthForm={{
-                registerAuthFormValues,
+              registerAuthProfileForm={{
+                registerAuthProfileFormValues,
                 formErrors,
                 formIsValid,
                 resetForm,
               }}
               neededHandlers={{
-                handleRegisterAuthFormChange,
-                handleSaveCurrentUser,
-                handleSetIsLoggedIn,
+                handleRegisterAuthProfileFormChange,
+                // handleSetCurrentUser,
+                // handleSetIsLoggedIn,
                 // handleSetInfotooltipMessage,
                 // handleSetIsInfotooltipPopupOpen,
               }}

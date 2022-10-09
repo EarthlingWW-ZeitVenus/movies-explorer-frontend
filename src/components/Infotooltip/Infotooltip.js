@@ -3,11 +3,11 @@ import closeButton from '../../images/close-button.svg';
 
 // function Infotooltip({ infotooltipMessage, isOpen, onClose }) {
 function Infotooltip({ isOpen, onClose, otherProprs }) {
-  console.log(otherProprs);
-  console.log(onClose);
+  // console.log(otherProprs);
+  // console.log(onClose);
   const { infotooltipData: { message, isError } } = otherProprs;
-  console.log(message);
-  console.log(isError);
+  // console.log(message);
+  // console.log(isError);
   return (
       <div className={`infotooltip-rollup ${isOpen && 'infotooltip-rollup_active'}`}>
         <button

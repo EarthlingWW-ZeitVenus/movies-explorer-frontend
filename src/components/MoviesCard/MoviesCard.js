@@ -1,32 +1,47 @@
 // import React from 'react';
 import './MoviesCard.css';
 import savedButtonIcon from '../../images/saved-button-icon.svg';
+import deleteButtonIcon from '../../images/delete-button-icon.svg';
 
 function MoviesCard({
   movieInfoObject,
   onChangeSaveMovie,
+  isSavedMoviesCase,
 }) {
   console.log('movieInfoObject in MoviesCard');
   console.log(movieInfoObject);
   const isOwned = 'owner' in movieInfoObject;
   console.log(`isOwned - ${isOwned}`);
-  const {
-    // country,
-    // director,
-    duration,
-    // year,
-    // description,
-    image: { url: image },
-    trailerLink: trailer,
-    nameRU,
-    // nameEN,
-    // id: movieId,
-  } = movieInfoObject;
+  const { duration, nameRU } = movieInfoObject;
+  const image = movieInfoObject.imageUrl;
+  const imagePath = movieInfoObject.image && movieInfoObject.image.url;
+  const trailer = movieInfoObject.trailer || movieInfoObject.trailerLink;
+  // if (isOwned) {
+  //   const {
+  //     imageUrl: image,
+  //     trailer,
+  //   } = movieInfoObject;
+  // } else {
+  // const {
+  // country,
+  // director,
+  // duration,
+  // year,
+  // description,
+  // image: { url: image },
+  // trailerLink: trailer,
+  // nameRU,
+  // nameEN,
+  // id: movieId,
+  //   } = movieInfoObject;
+  // }
+
   // const [isMovieSaved, setIsMovieSaved] = React.useState(false);
 
-  const thumbnail = `https://api.nomoreparties.co${image}`;
+  const thumbnail = image || `https://api.nomoreparties.co${imagePath}`;
 
   console.log(image);
+  console.log(imagePath);
   console.log(thumbnail);
 
   const handleButtonClick = () => {
@@ -47,6 +62,16 @@ function MoviesCard({
     );
     // setIsMovieSaved(true);
   };
+
+  function whichElementToDisplay() {
+    if (isSavedMoviesCase) {
+      return (<img src={deleteButtonIcon} alt="иконка удаления фильма" />);
+    }
+    if (isOwned) {
+      return (<img src={savedButtonIcon} alt="иконка сохраненного фильма" />);
+    }
+    return ('Сохранить');
+  }
 
   // console.log(savedButtonIcon);
 
@@ -72,8 +97,15 @@ function MoviesCard({
             />
         }
       </button> */}
-      <button type="button" className={`movies-card__button ${isOwned && 'movies-card__button_type_saved'}`} onClick={handleButtonClick}>
-        {isOwned ? <img src={savedButtonIcon} alt="иконка сохраненного фильма" /> : 'Сохранить'}
+      <button
+        type="button"
+        className={`movies-card__button
+          ${isOwned && !isSavedMoviesCase && 'movies-card__button_type_saved'}`}
+        onClick={handleButtonClick}>
+        {/* {isSavedMoviesCase ? <img src={deleteButtonIcon} alt="иконка удаления фильма" />
+          : isOwned ? <img src={savedButtonIcon} alt="иконка сохраненного фильма" />
+            : 'Сохранить'} */}
+        {whichElementToDisplay()}
       </button>
     </li>
   );

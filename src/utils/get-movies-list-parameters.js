@@ -58,7 +58,7 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
   }
 
   return {
-    cardsInRow,
+    // cardsInRow,
     cardsInList,
     cardsLoadedByButton,
     // cardWidth,

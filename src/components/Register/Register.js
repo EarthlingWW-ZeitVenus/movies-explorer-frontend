@@ -4,14 +4,14 @@ import './Register.css';
 import logo from '../../images/logo.svg';
 
 function Register({
-  registerAuthForm,
+  registerAuthProfileForm,
   neededHandlers,
   embeddedMessageText,
   onRegister,
 }) {
   // const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
   const {
-    registerAuthFormValues: {
+    registerAuthProfileFormValues: {
       registerName,
       registerEmail,
       registerPassword,
@@ -22,8 +22,8 @@ function Register({
       registerPasswordError,
     },
     formIsValid,
-  } = registerAuthForm;
-  const { handleRegisterAuthFormChange } = neededHandlers;
+  } = registerAuthProfileForm;
+  const { handleRegisterAuthProfileFormChange } = neededHandlers;
   console.log('обращение к компоненту Register');
   console.log(`registerNameError in Register - ${registerNameError}`);
   console.log(`registerEmailError in Register - ${registerEmailError}`);
@@ -52,7 +52,7 @@ function Register({
             placeholder="Ваше имя"
             autoComplete="off"
             type="text"
-            onChange={handleRegisterAuthFormChange}
+            onChange={handleRegisterAuthProfileFormChange}
             value={registerName}
             pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
             required
@@ -65,7 +65,7 @@ function Register({
             placeholder="Ваша электронная почта"
             autoComplete="off"
             type="email"
-            onChange={handleRegisterAuthFormChange}
+            onChange={handleRegisterAuthProfileFormChange}
             value={registerEmail}
             required
           />
@@ -78,7 +78,7 @@ function Register({
             autoComplete="off"
             type="password"
             minLength={4}
-            onChange={handleRegisterAuthFormChange}
+            onChange={handleRegisterAuthProfileFormChange}
             value={registerPassword}
             required
           />

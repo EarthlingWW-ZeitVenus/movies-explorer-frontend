@@ -4,7 +4,7 @@ import './MoviesCardList.css';
 // import movieImage from '../../images/movie-image.jpg';
 import getMoviesListParameters from '../../utils/get-movies-list-parameters';
 
-function MoviesCardList({ moviesArray, onChangeSaveMovie }) {
+function MoviesCardList({ moviesArray, onChangeSaveMovie, isSavedMoviesCase }) {
   console.log('Обращение к компоненту MoviesCardList');
   // eslint-disable-next-line no-undef
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -14,17 +14,31 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie }) {
   // const { handleMoreButtonClick } = handlers;
   console.log('moviesArray in MoviesCardList:');
   console.log(moviesArray);
+  // const cardsInRow = !isSavedMoviesCase
+  //   && getMoviesListParameters(windowWidth, moviesArray.length).cardsInRow;
+  const cardsInList = !isSavedMoviesCase
+    && getMoviesListParameters(windowWidth, moviesArray.length).cardsInList;
+  const cardsLoadedByButton = !isSavedMoviesCase
+    && getMoviesListParameters(windowWidth, moviesArray.length).cardsLoadedByButton;
   const {
-    cardsInRow,
-    cardsInList,
-    cardsLoadedByButton,
     marginsField,
     gridTemplateColumnsField,
-    maxClicksOnButton,
   } = getMoviesListParameters(windowWidth, moviesArray.length);
+  // const gridTemplateColumnsField = !isSavedMoviesCase
+  //   && getMoviesListParameters(windowWidth, moviesArray.length).gridTemplateColumnsField;
+  const maxClicksOnButton = !isSavedMoviesCase
+    && getMoviesListParameters(windowWidth, moviesArray.length).maxClicksOnButton;
+  // const {
+    // cardsInRow,
+    // cardsInList,
+    // cardsLoadedByButton,
+    // marginsField,
+    // gridTemplateColumnsField,
+    // maxClicksOnButton,
+  // } = getMoviesListParameters(windowWidth, moviesArray.length);
   console.log(`Состояние стейта windowWidth - ${windowWidth}`);
   console.log(`Состояние стейта numberOfClicks - ${numberOfClicks}`);
-  console.log(`cardsInRow - ${cardsInRow}`);
+  // console.log(`cardsInRow - ${cardsInRow}`);
   console.log(`cardsInList - ${cardsInList}`);
   console.log(`cardsLoadedByButton - ${cardsLoadedByButton}`);
   console.log(`marginsField - ${marginsField}`);
@@ -38,7 +52,7 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie }) {
 
   // console.log(`maxClicksOnMoreButton - ${maxClicksOnMoreButton}`);
 
-  const moviesCardsToDisplay = moviesArray
+  const moviesCardsToDisplay = isSavedMoviesCase ? moviesArray : moviesArray
     .filter(
       (movieCard, index) => (index) < (cardsInList + numberOfClicks * cardsLoadedByButton),
     );
@@ -105,17 +119,22 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie }) {
     <section className="movies-card-list">
       <ul style={cssMoviesCardListRowsAndColumns}>
         {moviesCardsToDisplay.map((movieCardItem) => <MoviesCard
-            key={movieCardItem.id ? movieCardItem.id : movieCardItem.movieId}
+            key={movieCardItem.id || movieCardItem.movieId}
             movieInfoObject={movieCardItem}
-            title={movieCardItem.nameRU}
-            duration={movieCardItem.duration}
-            image={movieCardItem.image.url ? movieCardItem.image.url : movieCardItem.imageUrl}
-            trailer={movieCardItem.trailerLink ? movieCardItem.trailerLink : movieCardItem.trailer}
+            // title={movieCardItem.nameRU}
+            // duration={movieCardItem.duration}
+            // image={movieCardItem.imageUrl || movieCardItem.image.url}
+            // imagePath={movieCardItem.image && movieCardItem.image.url}
+            // image={movieCardItem.image
+            //   && movieCardItem.image.url ? movieCardItem.image.url : movieCardItem.imageUrl}
+            // trailer={movieCardItem.trailerLink?movieCardItem.trailerLink:movieCardItem.trailer}
+            // trailer={movieCardItem.trailerLink || movieCardItem.trailer}
             onChangeSaveMovie={onChangeSaveMovie}
+            isSavedMoviesCase={isSavedMoviesCase}
           />)
         }
       </ul>
-      {(numberOfClicks < maxClicksOnButton)
+      {!isSavedMoviesCase && (numberOfClicks < maxClicksOnButton)
       && <button className="movies-card-list__button" onClick={handleMoreButtonClick}>Ещё</button>}
     </section>
   );

@@ -22,14 +22,17 @@ function Movies({
   console.log('isNothingFound внутри компонента Movies:');
   console.log(isNothingFound);
 
-  function whichComponentToDisplay() {
+  function whichElementToDisplay() {
     if (isProcessing) {
       return (<Preloader/>);
     }
     if (isNothingFound) {
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
-    return (<MoviesCardList moviesArray={moviesArray} onChangeSaveMovie={handleChangeSaveMovie}/>);
+    return (<MoviesCardList
+      moviesArray={moviesArray}
+      onChangeSaveMovie={handleChangeSaveMovie}
+      isSavedMoviesCase={false}/>);
   }
 
   // const [isProcessing, setIsProcessing] = React.useState(false);
@@ -41,8 +44,11 @@ function Movies({
   // debugger;
   return (
     <main className="content page_format_side-padding">
-      <SearchForm searchForm={searchForm} neededHandlers={otherNeededHandlers}/>
-      {whichComponentToDisplay()}
+      <SearchForm
+        searchForm={searchForm}
+        neededHandlers={otherNeededHandlers}
+        isSavedMoviesCase={false}/>
+      {whichElementToDisplay()}
     </main>
   );
 }
