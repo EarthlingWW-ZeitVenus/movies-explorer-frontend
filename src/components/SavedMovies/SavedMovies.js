@@ -55,7 +55,7 @@ function SavedMovies({
   }
 
   React.useEffect(() => {
-    debugger;
+    // debugger;
     console.log('запрос за сохраненными фильмами внутри SavedMovies.js');
     getMovies()
       .then((res) => handleSaveOwnedMovies(res.data))

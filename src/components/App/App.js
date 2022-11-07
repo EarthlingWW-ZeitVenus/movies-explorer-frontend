@@ -298,29 +298,29 @@ function App() {
   // Хук авто-авторизации пользователя
   React.useEffect(() => {
     console.log(getUser);
-    debugger;
+    // debugger;
     getUser()
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        debugger;
+        // debugger;
         setCurrentUser(res.data);
         setIsLoggedIn(true);
         history.push('/movies');
-        debugger;
+        // debugger;
       })
       .catch((err) => catchResponse(err));
   }, [history]);
 
   // Хук установки значений текущего пользователя для данных профиля
   React.useEffect(() => {
-    debugger;
+    // debugger;
     console.log('запрос внутри хука эффекта установки значений текущего пользователя');
     if (isLoggedIn || isProfileChanged) {
-      debugger;
+      // debugger;
       handleSetProfileValues(currentUser.name, currentUser.email);
       handleSetInitialProfileValues(currentUser.name, currentUser.email);
-      debugger;
+      // debugger;
     }
   }, [isLoggedIn, isProfileChanged]);
 

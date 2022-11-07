@@ -61,29 +61,29 @@ function SearchForm({
   // Общий сабмит для фильмов и сохраненных фильмов
   function handleSubmitForMovies(event) {
     event.preventDefault();
-    debugger;
+    // debugger;
     handleSetIsNothingFound(false);
     if (String(filmName).length === 0) {
       setErrorText('Нужно ввести ключевое слово');
       return;
     }
     if (!isSearchFormStatesEqual) {
-      debugger;
+      // debugger;
       handleSetIsProcessing(true);
       handleSetIsNothingFound(false);
       let resultedMoviesArray;
       // Логика фильтрации для сохраненных фильмов
       if (isSavedMoviesCase) {
-        debugger;
+        // debugger;
         resultedMoviesArray = filterNameFilm(ownedMoviesArrayToDisplay, filmName);
         if (!resultedMoviesArray.length) {
-          debugger;
+          // debugger;
           handleNeededSaveArray([]);
           // handleFilteredNeededSaveArray([]);
           handleSetIsNothingFound(true);
         } else {
           handleNeededSaveArray(resultedMoviesArray);
-          debugger;
+          // debugger;
         }
         // if (shortFilm) {
         //   resultedMoviesArray = filterShortFilm(resultedMoviesArray, SHORT_FILM_MAX_DURATION);
@@ -93,18 +93,18 @@ function SearchForm({
         handleSetIsProcessing(false);
       // Логика фильтрации для фильмов
       } else {
-        debugger;
+        // debugger;
         getMoviesCards()
           .then((moviesCardsData) => {
-            debugger;
+            // debugger;
             resultedMoviesArray = filterNameFilm(moviesCardsData, filmName);
             if (!resultedMoviesArray.length) {
-              debugger;
+              // debugger;
               handleNeededSaveArray([]);
               // handleFilteredNeededSaveArray([]);
               handleSetIsNothingFound(true);
             } else {
-              debugger;
+              // debugger;
               handleNeededSaveArray(resultedMoviesArray);
             }
             // if (shortFilm) {

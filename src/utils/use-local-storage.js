@@ -53,17 +53,17 @@ function useLocalStorage(isLoggedIn) {
   };
 
   const handleSaveForm = (formStateData) => {
-    debugger;
+    // debugger;
     const { filmName, shortFilm } = formStateData;
     window.localStorage.setItem(KEY_FOR_FORM, JSON.stringify({ filmName, shortFilm }));
     setFormState({ filmName, shortFilm });
   };
 
   React.useEffect(() => {
-    debugger;
+    // debugger;
     console.log('запрос внутри хука эффекта локального хранилища');
     if (isLoggedIn) {
-      debugger;
+      // debugger;
       setMoviesArray(getLocalValue(KEY_FOR_MOVIES_ARRAY));
       // setOwnedMoviesArray(getLocalValue(KEY_FOR_OWNED_MOVIES_ARRAY));
       // setFilteredMoviesArray(filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION));
