@@ -11,15 +11,6 @@ function PopupRollup({
 
   const otherProps = props;
 
-  // console.log('onClose in PopupRollup:');
-  // console.log(onClose);
-
-  // console.log('isOpen in PopupRollup:');
-  // console.log(isOpen);
-
-  // console.log('...props in PopupRollup:');
-  // console.log(props);
-
   React.useEffect(() => {
     // debugger;
     if (!isOpen) return;

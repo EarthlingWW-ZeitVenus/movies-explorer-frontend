@@ -1,14 +1,16 @@
 // import React from 'react';
 import './Profile.css';
+import Header from '../Header/Header';
+import { regExpConstants } from '../../utils/constants';
 // import CurrentUserContext from '../../contexts/CurrentUserContext';
+const { NAME_PATTERN } = regExpConstants;
 
-// В контекст засунуть registerAuthProfileForm
 function Profile({
-  onSignOut, neededHandlers, registerAuthProfileForm, onProfileChange,
+  onSignOut, neededHandlers, profileForm, onProfileChange, onBurgerMenu, isProcessing,
 }) {
   console.log('обращение к компоненту Profile');
   const {
-    registerAuthProfileFormValues: {
+    profileValues: {
       profileName,
       profileEmail,
     },
@@ -17,22 +19,26 @@ function Profile({
       profileEmailError,
     },
     formIsValid,
-  } = registerAuthProfileForm;
-  const { handleRegisterAuthProfileFormChange /* resetForm */ } = neededHandlers;
+    isProfileValuesEqual,
+  } = profileForm;
+  const { handleProfileFormChange, handleSetIsProcessing /* resetForm */ } = neededHandlers;
   // const currentUser = React.useContext(CurrentUserContext);
   // const allContext = React.useContext(CurrentDataContext);
-  // const currentUser = React.useContext(CurrentUserContext);
   console.log('Данные текущего пользователя currentUser внутри Profile:');
-  console.log('registerAuthProfileForm:');
-  console.log(registerAuthProfileForm);
+  // console.log(currentUser);
+  console.log('profileForm:');
+  console.log(profileForm);
   console.log(`profileName - ${profileName}`);
   console.log(`profileEmail - ${profileEmail}`);
+  console.log(`isProfileValuesEqual - ${isProfileValuesEqual}`);
   // console.log('Весь контекст:');
   // console.log(allContext);
 
   function handleSubmit(evt) {
+    handleSetIsProcessing(true);
     evt.preventDefault();
     onProfileChange(profileEmail, profileName);
+    handleSetIsProcessing(false);
   }
 
   const errorTag = (errorText) => (
@@ -41,60 +47,67 @@ function Profile({
     </p>);
 
   return (
-    <main className="content page_format_side-padding">
-      <section className="profile">
-        <h2 className="profile__title page_format_all-title">
-          {`Привет, ${profileName || 'незнакомец!'}`}
-        </h2>
-        <form className="profile__form" onSubmit={handleSubmit} noValidate>
-          <fieldset className="profile__form-fieldset">
-            <div className="profile__form-container profile__form-container_bottom-line">
-              <label className="profile__form-label" htmlFor="profile-name">Имя</label>
-              <input
-                className="profile__form-input"
-                name="profileName"
-                placeholder="Ваше имя"
-                autoComplete="off"
-                type="text"
-                value={profileName || 'незнакомец'}
-                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
-                onChange={handleRegisterAuthProfileFormChange}
-                required
-              />
+    <>
+      <Header onBurgerMenu={onBurgerMenu} />
+      <main className="content page_format_side-padding">
+        <section className="profile">
+          <h2 className="profile__title page_format_all-title">
+            {`Привет, ${profileName}!`}
+          </h2>
+          <form className="profile__form" onSubmit={handleSubmit} noValidate>
+            <fieldset className="profile__form-fieldset">
+              <div className="profile__form-container">
+                <label className="profile__form-label" htmlFor="profile-name">Имя</label>
+                <input
+                  className="profile__form-input"
+                  name="profileName"
+                  placeholder="Ваше имя"
+                  autoComplete="off"
+                  type="text"
+                  value={profileName}
+                  // defaultValue={currentUser.name}
+                  pattern={NAME_PATTERN}
+                  onChange={handleProfileFormChange}
+                  disabled={isProcessing}
+                  required />
+              </div>
               {errorTag(profileNameError)}
-            </div>
-            <div className="profile__form-container">
-              <label className="profile__form-label" htmlFor="profile-email">E-mail</label>
-              <input
-                className="profile__form-input"
-                name="profileEmail"
-                placeholder="Ваша электронная почта"
-                autoComplete="off"
-                type="email"
-                value={profileEmail || 'pochta@neznacomec.ru'}
-                onChange={handleRegisterAuthProfileFormChange}
-                required
-              />
+              <div className="profile__dividing-line" />
+              <div className="profile__form-container">
+                <label className="profile__form-label" htmlFor="profile-email">E-mail</label>
+                <input
+                  className="profile__form-input"
+                  name="profileEmail"
+                  placeholder="Ваша электронная почта"
+                  autoComplete="off"
+                  type="email"
+                  value={profileEmail}
+                  onChange={handleProfileFormChange}
+                  disabled={isProcessing}
+                  required />
+              </div>
               {errorTag(profileEmailError)}
-            </div>
-          </fieldset>
-          <div className="profile__form-buttons-container">
-            <button
-              className={`profile__form-button ${!formIsValid && 'profile__form-button_disabled'}`}
-              type="submit"
-              disabled={!formIsValid}>
+            </fieldset>
+            <div className="profile__form-buttons-container">
+              <button
+                className={`profile__form-button
+                  ${(!formIsValid || isProfileValuesEqual || isProcessing)
+                    && 'profile__form-button_disabled'}`}
+                type="submit"
+                disabled={!formIsValid || isProfileValuesEqual || isProcessing}>
                 Редактировать
-            </button>
-            <button
-              className="profile__form-button"
-              type="button"
-              onClick={onSignOut}>
+              </button>
+              <button
+                className="profile__form-button"
+                type="button"
+                onClick={onSignOut}>
                 Выйти из аккаунта
-            </button>
-          </div>
-        </form>
-      </section>
-    </main>
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </>
   );
 }
 

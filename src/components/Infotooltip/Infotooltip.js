@@ -1,7 +1,6 @@
 import './Infotooltip.css';
 import closeButton from '../../images/close-button.svg';
 
-// function Infotooltip({ infotooltipMessage, isOpen, onClose }) {
 function Infotooltip({ isOpen, onClose, otherProprs }) {
   // console.log(otherProprs);
   // console.log(onClose);

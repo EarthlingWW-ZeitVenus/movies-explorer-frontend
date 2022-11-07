@@ -1,9 +1,7 @@
 import React from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import CurrentUserContext from '../../contexts/CurrentUserContext';
+import CurrentDataContext from '../../contexts/CurrentDataContext';
 // import CurrentUserContext from '../../contexts/CurrentUserContext';
-// import CurrentFunctionsContext from '../../contexts/CurrentFunctionsContext';
-// import useAllSimpleStates from '../../utils/use-simple-states';
 import './App.css';
 import Main from '../Main/Main';
 import Header from '../Header/Header';
@@ -19,6 +17,7 @@ import useLocalStorage from '../../utils/use-local-storage';
 import useForms from '../../utils/use-forms';
 import Infotooltip from '../Infotooltip/Infotooltip';
 import PopupRollup from '../PopupRollup/PopupRollup';
+import ProtectedRoute from '../ProtectedRoute';
 import {
   register,
   login,
@@ -26,61 +25,111 @@ import {
   addMovie,
   deleteMovie,
   editUser,
+  getUser,
 } from '../../utils/MainApi';
-// import { countRowsAndCards } from '../../utils/utils';
-// import getMoviesCards from '../../utils/MoviesApi';
+import { textConstants, numberConstants } from '../../utils/constants';
+import { filterShortFilm } from '../../utils/utils';
 
 function App() {
+  console.log('обращение к компоненту App');
+  const { SUCCESS_PROFILE_CHANGE, SUCCESS_LOGIN, SUCCESS_REGISTER } = textConstants;
+  const { SHORT_FILM_MAX_DURATION } = numberConstants;
   // eslint-disable-next-line no-undef
   // console.log(JSON.stringify(window.localStorage, null, 2));
   // eslint-disable-next-line no-undef
   // window.localStorage.clear();
   // eslint-disable-next-line no-undef
-  console.log(JSON.stringify(window.localStorage, null, 2));
-  console.log('обращение к компоненту App');
-  // debugger;
-  const history = useHistory();
-  const {
-    moviesArray,
-    ownedMoviesArray,
-    formState,
-    currentUser,
-    // isLoggedIn,
-    handleSaveArray,
-    handleSaveForm,
-    handleSetCurrentUser,
-    handleSetIsLoggedIn,
-    handleSaveOwnedMovies,
-  } = useLocalStorage();
-  const {
-    searchFormValues,
-    registerAuthProfileFormValues,
-    formErrors,
-    formIsValid,
-    isSearchFormStatesEqual,
-    handleRegisterAuthProfileFormChange,
-    handleSearchFormChange,
-    resetForm,
-  } = useForms(formState, currentUser);
-
+  // console.log(JSON.stringify(window.localStorage, null, 2));
   const [isBurgerMenuRollupOpen, setIsBurgerMenuRollupOpen] = React.useState(false);
   const [isNothingFound, setIsNothingFound] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [infotooltipData, setInfotooltipData] = React.useState({ message: '', isError: false });
-  // const [infotooltipMessage, setInfotooltipMessage] = React.useState('');
   const [isInfotooltipPopupOpen, setIsInfotooltipPopupOpen] = React.useState(false);
   const [embeddedMessageText, setEmbeddedMessageText] = React.useState('');
+  const [currentUser, setCurrentUser] = React.useState({});
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isProfileChanged, setIsProfileChanged] = React.useState(false);
+
+  const history = useHistory();
+
+  const {
+    moviesArray,
+    ownedMoviesArray,
+    formState,
+    // filteredMoviesArray,
+    // filteredOwnedMoviesArray,
+    handleSaveArray,
+    handleSaveForm,
+    handleSaveOwnedMovies,
+    // handleSaveFilteredMoviesArray,
+    // handleSaveFilteredOwnedMoviesArray,
+  } = useLocalStorage(isLoggedIn);
+  const {
+    searchFormValues,
+    registerValues,
+    loginValues,
+    profileValues,
+    formErrors,
+    formIsValid,
+    isSearchFormStatesEqual,
+    isProfileValuesEqual,
+    handleSetInitialProfileValues,
+    handleSetProfileValues,
+    handleRegisterFormChange,
+    handleLoginFormChange,
+    handleProfileFormChange,
+    handleSearchFormChange,
+    resetRegisterForm,
+    resetLoginForm,
+    resetProfileForm,
+    // resetForm,
+  } = useForms(formState);
+
+  const shortFilm = searchFormValues.shortFilm || false;
+
+  const [isShortFilmChecked, setIsShortFilmChecked] = React.useState(shortFilm);
 
   console.log('moviesArray in App:');
   console.log(moviesArray);
+  // console.log('filteredMoviesArray in App:');
+  // console.log(filteredMoviesArray);
   console.log('formState in App:');
   console.log(formState);
   console.log('currentUser in App:');
   console.log(currentUser);
   console.log('ownedMoviesArray in App:');
   console.log(ownedMoviesArray);
+  // console.log('shortFilm in App:');
+  // console.log(shortFilm);
 
-  // Минифункции (использую для компоновки более сложных функций)
+  const moviesArrayToDisplay = isShortFilmChecked
+    ? filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION) : moviesArray;
+  const ownedMoviesArrayToDisplay = isShortFilmChecked
+    ? filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION) : ownedMoviesArray;
+  // const { shortFilm } = searchFormValues;
+
+  // Хэндлеры
+  const handleBurgerMenuClick = () => {
+    setIsBurgerMenuRollupOpen(true);
+  };
+  const handleSetIsProcessing = (isDataProcessing) => {
+    setIsProcessing(isDataProcessing);
+  };
+  const handleSetIsNothingFound = (isNothing) => {
+    setIsNothingFound(isNothing);
+  };
+  const handleSetCurrentUser = (currentUserData) => {
+    setCurrentUser(currentUserData);
+  };
+  const handleSetIsShortFilmChecked = (isChecked) => {
+    setIsShortFilmChecked(isChecked);
+  };
+  // const handleSetIsLoggedIn = (isUserLoggedIn) => {
+  //   setIsLoggedIn(isUserLoggedIn);
+  // };
+
+  // Функции
+  // Обработка ошибок
   function catchResponse(error) {
     if (error.status) {
       setInfotooltipData({
@@ -95,101 +144,70 @@ function App() {
     }
     setIsInfotooltipPopupOpen(true);
   }
-
-  // Handlers
-  const handleBurgerMenuClick = () => {
-    setIsBurgerMenuRollupOpen(true);
-  };
-  const handleSetIsProcessing = (isDataProcessing) => {
-    setIsProcessing(isDataProcessing);
-  };
-  const handleSetIsNothingFound = (isNothing) => {
-    setIsNothingFound(isNothing);
-  };
-
-  // Функции
   // Закрытие всех окон
   const closeAllOpened = () => {
     setIsBurgerMenuRollupOpen(false);
     setIsInfotooltipPopupOpen(false);
   };
-  // Добавление нового фильма в сохраненные
-  function handleChangeSaveMovie(movieInfoObject) {
+  // Добавление/удаление фильма в/из сохраненные
+  async function handleOwnMovie(movieInfoObject) {
     if ('owner' in movieInfoObject) {
-      debugger;
-      deleteMovie(movieInfoObject._id)
-        .then((res) => {
-          debugger;
-          console.log(res);
-          setInfotooltipData({
-            message: `Операция выполнена - ${res.message}`,
-            isError: false,
-          });
-          setIsInfotooltipPopupOpen(true);
-          const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
-          const newMoviesArray = moviesArray.map((mai) => (
-            mai.movieId === movieInfoObject.movieId ? movieInfoObjectWithoutOwner : mai));
-          handleSaveArray(newMoviesArray);
-          const newOwnedMoviesArray = ownedMoviesArray.filter((omai) => (
-            omai._id !== movieInfoObject._id));
-          handleSaveOwnedMovies(newOwnedMoviesArray);
-        })
-        .catch((err) => catchResponse(err));
-      // delete movieInfoObject.owner;
-    } else {
-      debugger;
-      console.log(movieInfoObject);
-      const {
-        country,
-        director,
-        duration,
-        year,
-        description,
-        trailerLink: trailer,
-        nameRU,
-        nameEN,
-        image: { url },
-        id: movieId,
-      } = movieInfoObject;
-      const thumbnail = `https://api.nomoreparties.co${url}`;
-      console.log(url);
-      console.log(thumbnail);
-      debugger;
-      const imageUrl = thumbnail;
-      addMovie(
-        country,
-        director,
-        duration,
-        year,
-        description,
-        imageUrl,
-        trailer,
-        thumbnail,
-        movieId,
-        nameRU,
-        nameEN,
-      )
-        .then((res) => {
-          debugger;
-          console.log(res);
-          console.log(res.data);
-          // console.log('***Проверка функциональности метода map***');
-          // console.log(moviesArray);
-          // let moviesArray2 = [];
-          // console.log(moviesArray2);
-          const newMoviesArray = moviesArray.map((mai) => (
-            mai.id === movieInfoObject.id ? res.data : mai));
-          // console.log(moviesArray2);
-          // debugger;
-          // handleSetArray(newMoviesArray);
-          handleSaveArray(newMoviesArray);
-          handleSaveOwnedMovies([...ownedMoviesArray, res.data]);
-        })
-        .catch((err) => {
-          debugger;
-          console.log(err);
-          catchResponse(err);
+      try {
+        // debugger;
+        console.log(movieInfoObject);
+        const response = await deleteMovie(movieInfoObject._id);
+        console.log(response);
+        const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
+        const newMoviesArray = moviesArray.map((mai) => (
+          mai.id === movieInfoObject.id ? movieInfoObjectWithoutOwner : mai));
+        handleSaveArray(newMoviesArray);
+        const newOwnedMoviesArray = ownedMoviesArray.filter((omai) => (
+          omai._id !== movieInfoObject._id));
+        handleSaveOwnedMovies(newOwnedMoviesArray);
+        setInfotooltipData({
+          message: `Операция выполнена - ${response.message}`,
+          isError: false,
         });
+        setIsInfotooltipPopupOpen(true);
+      } catch (error) {
+        catchResponse(error);
+      }
+    } else {
+      try {
+        // debugger;
+        console.log(movieInfoObject);
+        const {
+          country, director, duration, year, description, nameRU, nameEN, id,
+        } = movieInfoObject;
+        const thumbnail = movieInfoObject.image
+          ? `https://api.nomoreparties.co${movieInfoObject.image.url}` : movieInfoObject.thumbnail;
+        console.log(thumbnail);
+        const trailer = movieInfoObject.trailerLink || movieInfoObject.trailer;
+        const imageUrl = thumbnail;
+        const response = await addMovie(
+          country,
+          director,
+          duration,
+          String(year),
+          description,
+          imageUrl,
+          trailer,
+          thumbnail,
+          id,
+          nameRU,
+          nameEN,
+        );
+        console.log(response);
+        console.log(response.data);
+        const newMoviesArray = moviesArray.map((mai) => (
+          mai.id === movieInfoObject.id ? response.data : mai));
+        handleSaveArray(newMoviesArray);
+        handleSaveOwnedMovies([...ownedMoviesArray, response.data]);
+      } catch (error) {
+        debugger;
+        console.log(error);
+        catchResponse(error);
+      }
     }
   }
   // Регистрация пользователя
@@ -198,11 +216,13 @@ function App() {
     register(registerName, registerEmail, registerPassword)
       .then((res) => {
         console.log(res.data);
-        handleSetCurrentUser(res.data);
-        handleSetIsLoggedIn(true);
+        setCurrentUser(res.data);
+        // handleSetProfileValues(res.data.name, res.data.email);
+        // handleSetInitialProfileValues(res.data.name, res.data.email);
+        setIsLoggedIn(true);
         history.push('/movies');
         debugger;
-        setInfotooltipData({ message: 'Вы успешно зарегистрировались!', isError: false });
+        setInfotooltipData({ message: String(SUCCESS_REGISTER), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
@@ -222,20 +242,23 @@ function App() {
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        handleSetCurrentUser(res.data);
-        handleSetIsLoggedIn(true);
+        setCurrentUser(res.data);
+        // handleSetProfileValues(res.data.name, res.data.email);
+        // handleSetInitialProfileValues(res.data.name, res.data.email);
+        setIsLoggedIn(true);
         history.push('/movies');
         debugger;
-        setInfotooltipData({ message: 'Вы успешно вошли!', isError: false });
+        setInfotooltipData({ message: String(SUCCESS_LOGIN), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
         console.log(err);
-        if (err.json()) {
-          err.json().then((jsonErr) => {
-            setEmbeddedMessageText(jsonErr.message);
-          });
-        }
+        console.log(err.body);
+        // console.log(err.json());
+        err.json().then((jsonErr) => {
+          console.log(jsonErr);
+          setEmbeddedMessageText(jsonErr.message);
+        });
       });
   }
   // Выход пользователя
@@ -244,20 +267,23 @@ function App() {
       .then((res) => {
         debugger;
         console.log(res);
-        handleSetIsLoggedIn(false);
+        setIsLoggedIn(false);
         history.push('/');
         setInfotooltipData({ message: String(res.message), isError: false });
         setIsInfotooltipPopupOpen(true);
       });
   }
-
+  // Изменеие данных профиля пользователя
   function onProfileChange(email, name) {
     editUser(email, name)
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        handleSetCurrentUser(res.data);
-        setInfotooltipData({ message: 'Профиль успешно изменён!', isError: false });
+        debugger;
+        setCurrentUser(res.data);
+        setIsProfileChanged(true);
+        // handleSetInitialProfileValues(res.data.name, res.data.email);
+        setInfotooltipData({ message: String(SUCCESS_PROFILE_CHANGE), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
@@ -269,127 +295,190 @@ function App() {
       });
   }
 
+  // Хук авто-авторизации пользователя
+  React.useEffect(() => {
+    console.log(getUser);
+    debugger;
+    getUser()
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        debugger;
+        setCurrentUser(res.data);
+        setIsLoggedIn(true);
+        history.push('/movies');
+        debugger;
+      })
+      .catch((err) => catchResponse(err));
+  }, [history]);
+
+  // Хук установки значений текущего пользователя для данных профиля
+  React.useEffect(() => {
+    debugger;
+    console.log('запрос внутри хука эффекта установки значений текущего пользователя');
+    if (isLoggedIn || isProfileChanged) {
+      debugger;
+      handleSetProfileValues(currentUser.name, currentUser.email);
+      handleSetInitialProfileValues(currentUser.name, currentUser.email);
+      debugger;
+    }
+  }, [isLoggedIn, isProfileChanged]);
+
+  // Хук фильтрации массива фильмов по переключателю "короткометражки" при изменении "сhecked"
+  // React.useEffect(() => {
+  //   console.log('запрос внутри хука эффекта фильтрации по переключателю');
+  //   debugger;
+  // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
+  //   let finalMoviesArray = ownedMoviesArray;
+  //   if (isShortFilmChecked) {
+  //     debugger;
+  //     finalMoviesArray = filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION);
+  //   }
+  //   handleSetMoviesArrayToDisplay(finalMoviesArray);
+  //   debugger;
+  // }, [isShortFilmChecked]);
+
   return (
-    <CurrentUserContext.Provider value={currentUser}>
+    <CurrentDataContext.Provider value={{
+      isLoggedIn,
+      moviesArrayToDisplay,
+      ownedMoviesArrayToDisplay,
+    }}>
 
       <div className="page page_format_all-font">
 
         <Switch>
+
           <Route exact path="/">
-            <Header colorThemeDark={true}/>
+            <Header colorThemeDark={true} onBurgerMenu={handleBurgerMenuClick}/>
             <Main />
             <Footer />
           </Route>
-          <Route path="/movies">
-            <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <Movies
-              moviesArray={moviesArray}
-              commonProcessStates={{
-                isProcessing,
-                isNothingFound,
-              }}
-              searchForm={{
-                searchFormValues,
-                isSearchFormStatesEqual,
-              }}
-              neededHandlers={{
-                handleSetIsProcessing,
-                handleSetIsNothingFound,
-                handleSaveArray,
-                handleSaveForm,
-                handleSearchFormChange,
-                handleChangeSaveMovie,
-              }}
-            />
-            <Footer />
-          </Route>
-          <Route path="/saved-movies">
-            <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <SavedMovies
-              catchResponse={catchResponse}
-              ownedMoviesArray={ownedMoviesArray}
-              commonProcessStates={{
-                isProcessing,
-                isNothingFound,
-                // isLoggedIn,
-              }}
-              searchForm={{
-                searchFormValues,
-                isSearchFormStatesEqual,
-              }}
-              neededHandlers={{
-                handleSetIsProcessing,
-                handleSetIsNothingFound,
-                handleSaveArray,
-                handleSaveForm,
-                handleSearchFormChange,
-                handleChangeSaveMovie,
-                handleSaveOwnedMovies,
-              }}
-              // functions={}
-            />
-            <Footer />
-          </Route>
-          <Route path="/profile">
-            <Header onBurgerMenu={handleBurgerMenuClick}/>
-            <Profile
-              onSignOut={onSignOut}
-              onProfileChange={onProfileChange}
-              neededHandlers={{
-                handleRegisterAuthProfileFormChange,
-                handleSetCurrentUser,
-              }}
-              registerAuthProfileForm={{
-                registerAuthProfileFormValues,
-                formErrors,
-                formIsValid,
-                resetForm,
-              }}
-            />
-          </Route>
+
+          <ProtectedRoute
+            path="/movies"
+            component={Movies}
+            isLoggedIn={isLoggedIn}
+            // shortFilm={shortFilm}
+            catchResponse={catchResponse}
+            // moviesArray={moviesArray}
+            onBurgerMenu={handleBurgerMenuClick}
+            colorThemeDark={false}
+            commonProcessStates={{
+              isProcessing,
+              isNothingFound,
+            }}
+            searchForm={{
+              searchFormValues,
+              isSearchFormStatesEqual,
+            }}
+            neededHandlers={{
+              handleSetIsProcessing,
+              handleSetIsNothingFound,
+              handleSaveArray,
+              handleSaveForm,
+              handleSearchFormChange,
+              handleOwnMovie,
+              // handleSaveFilteredMoviesArray,
+              handleSetIsShortFilmChecked,
+            }}
+          />
+
+          <ProtectedRoute
+            path="/saved-movies"
+            component={SavedMovies}
+            isLoggedIn={isLoggedIn}
+            // shortFilm={shortFilm}
+            catchResponse={catchResponse}
+            // ownedMoviesArray={ownedMoviesArray}
+            onBurgerMenu={handleBurgerMenuClick}
+            colorThemeDark={false}
+            commonProcessStates={{
+              isProcessing,
+              isNothingFound,
+            }}
+            searchForm={{
+              searchFormValues,
+              isSearchFormStatesEqual,
+            }}
+            neededHandlers={{
+              handleSetIsProcessing,
+              handleSetIsNothingFound,
+              handleSaveArray,
+              handleSaveForm,
+              handleSearchFormChange,
+              handleOwnMovie,
+              handleSaveOwnedMovies,
+              // handleSaveFilteredOwnedMoviesArray,
+              handleSetIsShortFilmChecked,
+            }}
+          />
+
+          <ProtectedRoute
+            path="/profile"
+            component={Profile}
+            isLoggedIn={isLoggedIn}
+            isProcessing={isProcessing}
+            onBurgerMenu={handleBurgerMenuClick}
+            onSignOut={onSignOut}
+            onProfileChange={onProfileChange}
+            neededHandlers={{
+              handleProfileFormChange,
+              handleSetCurrentUser,
+              handleSetIsProcessing,
+            }}
+            profileForm={{
+              profileValues,
+              formErrors,
+              formIsValid,
+              isProfileValuesEqual,
+              resetProfileForm,
+            }}
+          />
+
           <Route path="/signup">
             <Register
               // isLoggedIn={isLoggedIn}
+              isProcessing={isProcessing}
               embeddedMessageText={embeddedMessageText}
               onRegister={onRegister}
-              registerAuthProfileForm={{
-                registerAuthProfileFormValues,
+              registerForm={{
+                registerValues,
                 formErrors,
                 formIsValid,
-                resetForm,
+                resetRegisterForm,
               }}
               neededHandlers={{
-                handleRegisterAuthProfileFormChange,
-                // handleSetCurrentUser,
-                // handleSetIsLoggedIn,
-                // handleSetInfotooltipMessage,
-                // handleSetIsInfotooltipPopupOpen,
+                handleRegisterFormChange,
+                handleSetIsProcessing,
+                // handleSetProfileValues,
               }}
             />
           </Route>
+
           <Route path="/signin">
             <Login
-              // isLoggedIn={isLoggedIn}
-              embeddedMessageText={embeddedMessageText}
+              serverErrorMessageText={embeddedMessageText}
               onLogin={onLogin}
-              registerAuthProfileForm={{
-                registerAuthProfileFormValues,
+              isProcessing={isProcessing}
+              loginForm={{
+                loginValues,
                 formErrors,
                 formIsValid,
-                resetForm,
+                resetLoginForm,
               }}
               neededHandlers={{
-                handleRegisterAuthProfileFormChange,
-                // handleSetCurrentUser,
-                // handleSetIsLoggedIn,
-                // handleSetInfotooltipMessage,
-                // handleSetIsInfotooltipPopupOpen,
+                handleLoginFormChange,
+                handleSetIsProcessing,
+                // handleSetProfileValues,
               }}
             />
           </Route>
+
           <Route path="*">
             <NotFound />
          </Route>
+
         </Switch>
 
         <PopupRollup
@@ -408,7 +497,7 @@ function App() {
 
       </div>
 
-    </CurrentUserContext.Provider>
+    </CurrentDataContext.Provider>
 
   );
 }

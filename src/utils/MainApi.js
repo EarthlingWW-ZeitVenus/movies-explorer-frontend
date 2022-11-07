@@ -1,3 +1,7 @@
+import { apiConstants } from './constants';
+
+const { MAIN_URL } = apiConstants;
+
 // адрес, который должен быть - https://movie-explorer.api.nomoredomains.rocks
 // временный адрес, пока облако не оплачу - http://192.168.0.154:3000
 // fake-server.local.org - переделанный hosts, чтоб кукисы принимались
@@ -10,7 +14,7 @@ const thenResponse = (res) => {
 
 // Авторизация пользователя
 // eslint-disable-next-line no-undef
-const login = (email, password) => fetch('http://movie-explorer.api.nomoredomains.rocks/signin', {
+const login = (email, password) => fetch(`${MAIN_URL}/signin`, {
   method: 'POST',
   credentials: 'include',
   headers: {
@@ -25,7 +29,7 @@ const login = (email, password) => fetch('http://movie-explorer.api.nomoredomain
 
 // Регистрация пользователя
 // eslint-disable-next-line no-undef
-const register = (name, email, password) => fetch('http://movie-explorer.api.nomoredomains.rocks/signup', {
+const register = (name, email, password) => fetch(`${MAIN_URL}/signup`, {
   method: 'POST',
   credentials: 'include',
   headers: {
@@ -38,7 +42,7 @@ const register = (name, email, password) => fetch('http://movie-explorer.api.nom
 
 // Выход пользователя
 // eslint-disable-next-line no-undef
-const logout = () => fetch('http://movie-explorer.api.nomoredomains.rocks/users/signout', {
+const logout = () => fetch(`${MAIN_URL}/users/signout`, {
   method: 'DELETE',
   credentials: 'include',
 })
@@ -46,7 +50,7 @@ const logout = () => fetch('http://movie-explorer.api.nomoredomains.rocks/users/
 
 // Получить информацию о текущем пользователе
 // eslint-disable-next-line no-undef
-const getUser = () => fetch('http://movie-explorer.api.nomoredomains.rocks/users/me', {
+const getUser = () => fetch(`${MAIN_URL}/users/me`, {
   credentials: 'include',
   headers: {
     accept: 'application/json',
@@ -56,7 +60,7 @@ const getUser = () => fetch('http://movie-explorer.api.nomoredomains.rocks/users
 
 // Редактировать информацию о текущем пользователе
 // eslint-disable-next-line no-undef
-const editUser = (email, name) => fetch('http://movie-explorer.api.nomoredomains.rocks/users/me', {
+const editUser = (email, name) => fetch(`${MAIN_URL}/users/me`, {
   method: 'PATCH',
   credentials: 'include',
   headers: {
@@ -69,7 +73,7 @@ const editUser = (email, name) => fetch('http://movie-explorer.api.nomoredomains
 
 // Получить массив с информацией о фильмах с сервера
 // eslint-disable-next-line no-undef
-const getMovies = () => fetch('http://movie-explorer.api.nomoredomains.rocks/movies', {
+const getMovies = () => fetch(`${MAIN_URL}/movies`, {
   credentials: 'include',
   headers: {
     accept: 'application/json',
@@ -87,11 +91,11 @@ const addMovie = (
   imageUrl,
   trailer,
   thumbnail,
-  movieId,
+  id,
   nameRU,
   nameEN,
   // eslint-disable-next-line no-undef
-) => fetch('http://movie-explorer.api.nomoredomains.rocks/movies', {
+) => fetch(`${MAIN_URL}/movies`, {
   method: 'POST',
   credentials: 'include',
   headers: {
@@ -107,7 +111,7 @@ const addMovie = (
     imageUrl,
     trailer,
     thumbnail,
-    movieId,
+    id,
     nameRU,
     nameEN,
   }),
@@ -116,7 +120,7 @@ const addMovie = (
 
 // Удалить информацию о фильме с сервера
 // eslint-disable-next-line no-undef
-const deleteMovie = (dbMovieId) => fetch(`http://movie-explorer.api.nomoredomains.rocks/movies/${dbMovieId}`, {
+const deleteMovie = (dbMovieId) => fetch(`${MAIN_URL}/movies/${dbMovieId}`, {
   method: 'DELETE',
   credentials: 'include',
 })

@@ -1,17 +1,33 @@
-// import React from 'react';
-// import CurrentDataContext from '../../contexts/CurrentDataContext';
+import React from 'react';
+import CurrentDataContext from '../../contexts/CurrentDataContext';
 import './Movies.css';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+// import { filterShortFilm } from '../../utils/utils';
+// import { numberConstants } from '../../utils/constants';
 
 function Movies({
-  moviesArray,
+  catchResponse,
+  // moviesArray,
+  onBurgerMenu,
+  colorThemeDark,
   commonProcessStates,
   searchForm,
   neededHandlers,
+  // shortFilm,
 }) {
-  const { handleChangeSaveMovie, ...otherNeededHandlers } = neededHandlers;
+  // const [moviesArrayToDisplay, setMoviesArrayToDisplay] = React.useState([]);
+  // const [isShortFilmChecked, setIsShortFilmChecked] = React.useState(false);
+
+  const { moviesArrayToDisplay } = React.useContext(CurrentDataContext);
+  console.log('moviesArrayToDisplay in Movies.js:');
+  console.log(moviesArrayToDisplay);
+  const { handleOwnMovie, ...otherNeededHandlers } = neededHandlers;
+  // const { searchFormValues: { shortFilm } } = searchForm;
+  // const { SHORT_FILM_MAX_DURATION } = numberConstants;
   // debugger;
   // const { isNothingFound, isProcessing } = React.useContext(CurrentDataContext);
   // const allSimpleStates = React.useContext(CurrentDataContext);
@@ -22,6 +38,14 @@ function Movies({
   console.log('isNothingFound внутри компонента Movies:');
   console.log(isNothingFound);
 
+  // function handleSetMoviesArrayToDisplay(mArray) {
+  //   setMoviesArrayToDisplay(mArray);
+  // }
+
+  // function handleSetsetIsShortFilmChecked(isChecked) {
+  //   setIsShortFilmChecked(isChecked);
+  // }
+
   function whichElementToDisplay() {
     if (isProcessing) {
       return (<Preloader/>);
@@ -30,26 +54,54 @@ function Movies({
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
     return (<MoviesCardList
-      moviesArray={moviesArray}
-      onChangeSaveMovie={handleChangeSaveMovie}
+      moviesArray={moviesArrayToDisplay}
+      onOwnMovie={handleOwnMovie}
       isSavedMoviesCase={false}/>);
   }
 
-  // const [isProcessing, setIsProcessing] = React.useState(false);
-  // console.log(`currentMoviesCards - ${currentMoviesCards}`);
+  // Хук фильтрации массива фильмов по переключателю "короткометражки" при начальном рендере
+  // React.useEffect(() => {
+  //   console.log('запрос внутри хука эффекта фильтрации по переключателю');
+  //   debugger;
+  //   setIsShortFilmChecked(shortFilm);
+  //   // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
+  //   let finalMoviesArray = moviesArray;
+  //   if (shortFilm) {
+  //     debugger;
+  //     finalMoviesArray = filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION);
+  //   }
+  //   setMoviesArrayToDisplay(finalMoviesArray);
+  //   debugger;
+  // }, []);
 
-  // const handleFilteringMoviesCards = (isFiltering) => {
-  //   setIsProcessing(isFiltering);
-  // };
+  // Хук фильтрации массива фильмов по переключателю "короткометражки" при изменении "сhecked"
+  // React.useEffect(() => {
+  // console.log('запрос внутри хука эффекта фильтрации по переключателю');
   // debugger;
+  // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
+  // let finalMoviesArray = moviesArray;
+  // if (isShortFilmChecked) {
+  // debugger;
+  // finalMoviesArray = filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION);
+  // }
+  // setMoviesArrayToDisplay(finalMoviesArray);
+  // debugger;
+  // }, [isShortFilmChecked]);
+
   return (
-    <main className="content page_format_side-padding">
-      <SearchForm
-        searchForm={searchForm}
-        neededHandlers={otherNeededHandlers}
-        isSavedMoviesCase={false}/>
-      {whichElementToDisplay()}
-    </main>
+    <>
+      <Header onBurgerMenu={onBurgerMenu} colorThemeDark={colorThemeDark}/>
+      <main className="content page_format_side-padding">
+        <SearchForm
+          catchResponse={catchResponse}
+          searchForm={searchForm}
+          neededHandlers={{ ...otherNeededHandlers }}
+          isSavedMoviesCase={false}
+          isProcessing={isProcessing} />
+        {whichElementToDisplay()}
+      </main>
+      <Footer />
+    </>
   );
 }
 

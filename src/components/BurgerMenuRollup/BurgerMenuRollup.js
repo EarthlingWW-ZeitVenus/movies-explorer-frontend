@@ -1,15 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import './BurgerMenuRollup.css';
 import closeButton from '../../images/close-button.svg';
-// import useAllSimpleStates from '../../utils/use-simple-states';
 
 function BurgerMenuRollup({ isOpen, onClose }) {
-  // const { values, closeAllOpened } = useAllSimpleStates();
-  // const { isBurgerMenu } = values;
-  // console.log('Произошел рендер компонента-функции BurgerMenuRollup');
-  // console.log('Внутрь BurgerMenuRollup передан такой объект values:');
-  // console.log(values);
-  // console.log(`Внутри values значение поля isBurgerMenu такое - ${isBurgerMenu}`);
   return (
     <div className={`burger-menu-rollup ${isOpen && 'burger-menu-rollup_active'}`}>
       <button

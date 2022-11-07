@@ -2,14 +2,14 @@ import './Login.css';
 import logo from '../../images/logo.svg';
 
 function Login({
-  registerAuthProfileForm,
+  loginForm,
   neededHandlers,
   serverErrorMessageText,
   onLogin,
 }) {
   console.log('обращение к компоненту Login');
   const {
-    registerAuthProfileFormValues: {
+    loginValues: {
       loginEmail,
       loginPassword,
     },
@@ -18,8 +18,8 @@ function Login({
       loginPasswordError,
     },
     formIsValid,
-  } = registerAuthProfileForm;
-  const { handleRegisterAuthProfileFormChange /* resetForm */ } = neededHandlers;
+  } = loginForm;
+  const { handleLoginFormChange /* resetForm */ } = neededHandlers;
 
   function handleSubmit(evt) {
     evt.preventDefault();
@@ -44,7 +44,7 @@ function Login({
                 placeholder="Ваша электронная почта"
                 autoComplete="off"
                 type="email"
-                onChange={handleRegisterAuthProfileFormChange}
+                onChange={handleLoginFormChange}
                 value={loginEmail}
                 required
               />
@@ -57,7 +57,7 @@ function Login({
                 autoComplete="off"
                 type="password"
                 minLength={4}
-                onChange={handleRegisterAuthProfileFormChange}
+                onChange={handleLoginFormChange}
                 value={loginPassword}
                 required
               />

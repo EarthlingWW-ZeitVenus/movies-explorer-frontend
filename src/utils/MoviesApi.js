@@ -1,3 +1,7 @@
+import { apiConstants } from './constants';
+
+const { MOVIES_URL } = apiConstants;
+
 // Обработка логики then
 const thenResponse = (res) => {
   if (res.ok) return res.json();
@@ -8,7 +12,7 @@ const thenResponse = (res) => {
 function getMoviesCards() {
   debugger;
   // eslint-disable-next-line no-undef
-  return fetch('https://api.nomoreparties.co/beatfilm-movies', {
+  return fetch(String(MOVIES_URL), {
   // credentials: 'include',
     headers: {
       accept: 'application/json',

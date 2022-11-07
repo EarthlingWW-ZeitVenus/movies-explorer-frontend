@@ -7,7 +7,6 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
   let cardsInRow = 2;
   let cardsInList = 8;
   let cardsLoadedByButton = 2;
-  // let cardWidth = 360;
   let marginsField = '45px 0 110px';
   let gridTemplateColumnsField = 'repeat(3, fit-content(360px))';
   let maxClicksOnButton;
@@ -22,25 +21,17 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
       cardsInList = 5;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
       gridTemplateColumnsField = '1fr';
-      // cardsLoadedByButton = 2;
       break;
     case (windowWidth > 480) && (windowWidth < 768):
-      // cardsInRow = 2;
       cardsInList = 6;
-      // cardWidth = 342;
       marginsField = '75px 0 110px';
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
       gridTemplateColumnsField = 'repeat(2, fit-content(342px))';
-      // cardsLoadedByButton = 2;
       break;
     case (windowWidth >= 768) && (windowWidth < 1280):
       marginsField = '65px 0 125px';
-      // cardWidth = 360;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
       gridTemplateColumnsField = 'repeat(2, fit-content(342px))';
-      // cardsInRow = 2;
-      // cardsInList = 8;
-      // cardsLoadedByButton = 2;
       break;
     case (windowWidth >= 1280):
       cardsInRow = 3;
@@ -58,10 +49,8 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
   }
 
   return {
-    // cardsInRow,
     cardsInList,
     cardsLoadedByButton,
-    // cardWidth,
     marginsField,
     gridTemplateColumnsField,
     maxClicksOnButton,

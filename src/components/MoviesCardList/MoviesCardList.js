@@ -1,21 +1,15 @@
 import React from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
-// import movieImage from '../../images/movie-image.jpg';
 import getMoviesListParameters from '../../utils/get-movies-list-parameters';
 
-function MoviesCardList({ moviesArray, onChangeSaveMovie, isSavedMoviesCase }) {
+function MoviesCardList({ moviesArray, onOwnMovie, isSavedMoviesCase }) {
   console.log('Обращение к компоненту MoviesCardList');
   // eslint-disable-next-line no-undef
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [numberOfClicks, setNumberOfClicks] = React.useState(0);
-  // debugger;
-  // const { windowWidth, numberOfFindButtonClicks: numberOfClicks } = statesData;
-  // const { handleMoreButtonClick } = handlers;
   console.log('moviesArray in MoviesCardList:');
   console.log(moviesArray);
-  // const cardsInRow = !isSavedMoviesCase
-  //   && getMoviesListParameters(windowWidth, moviesArray.length).cardsInRow;
   const cardsInList = !isSavedMoviesCase
     && getMoviesListParameters(windowWidth, moviesArray.length).cardsInList;
   const cardsLoadedByButton = !isSavedMoviesCase
@@ -24,18 +18,8 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie, isSavedMoviesCase }) {
     marginsField,
     gridTemplateColumnsField,
   } = getMoviesListParameters(windowWidth, moviesArray.length);
-  // const gridTemplateColumnsField = !isSavedMoviesCase
-  //   && getMoviesListParameters(windowWidth, moviesArray.length).gridTemplateColumnsField;
   const maxClicksOnButton = !isSavedMoviesCase
     && getMoviesListParameters(windowWidth, moviesArray.length).maxClicksOnButton;
-  // const {
-    // cardsInRow,
-    // cardsInList,
-    // cardsLoadedByButton,
-    // marginsField,
-    // gridTemplateColumnsField,
-    // maxClicksOnButton,
-  // } = getMoviesListParameters(windowWidth, moviesArray.length);
   console.log(`Состояние стейта windowWidth - ${windowWidth}`);
   console.log(`Состояние стейта numberOfClicks - ${numberOfClicks}`);
   // console.log(`cardsInRow - ${cardsInRow}`);
@@ -44,13 +28,6 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie, isSavedMoviesCase }) {
   console.log(`marginsField - ${marginsField}`);
   console.log(`gridTemplateColumnsField - ${gridTemplateColumnsField}`);
   console.log(`maxClicksOnButton - ${maxClicksOnButton}`);
-
-  // const numberOfFilteredCards = moviesCardsArray.length;
-  // const maxClicksOnMoreButton = Math.ceil(
-  //   (moviesCardsArray.length - cardsInList) / cardsInRow,
-  // );
-
-  // console.log(`maxClicksOnMoreButton - ${maxClicksOnMoreButton}`);
 
   const moviesCardsToDisplay = isSavedMoviesCase ? moviesArray : moviesArray
     .filter(
@@ -121,15 +98,7 @@ function MoviesCardList({ moviesArray, onChangeSaveMovie, isSavedMoviesCase }) {
         {moviesCardsToDisplay.map((movieCardItem) => <MoviesCard
             key={movieCardItem.id || movieCardItem.movieId}
             movieInfoObject={movieCardItem}
-            // title={movieCardItem.nameRU}
-            // duration={movieCardItem.duration}
-            // image={movieCardItem.imageUrl || movieCardItem.image.url}
-            // imagePath={movieCardItem.image && movieCardItem.image.url}
-            // image={movieCardItem.image
-            //   && movieCardItem.image.url ? movieCardItem.image.url : movieCardItem.imageUrl}
-            // trailer={movieCardItem.trailerLink?movieCardItem.trailerLink:movieCardItem.trailer}
-            // trailer={movieCardItem.trailerLink || movieCardItem.trailer}
-            onChangeSaveMovie={onChangeSaveMovie}
+            onOwnMovie={onOwnMovie}
             isSavedMoviesCase={isSavedMoviesCase}
           />)
         }

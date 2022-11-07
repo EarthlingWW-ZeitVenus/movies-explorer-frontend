@@ -3,52 +3,82 @@ import React, { useCallback } from 'react';
 import { isEqual } from 'lodash';
 
 // хук управления всеми формами и их валидацией
-function useForms(localSavedFormState, localSavedCurrentUser) {
+function useForms(localSavedFormState) {
   // debugger;
   console.log('Обращение к кастомному хуку useForms');
-  console.log('localSavedCurrentUser in use-forms:');
-  console.log(localSavedCurrentUser);
-  console.log(`localSavedCurrentUser.name - ${localSavedCurrentUser.name}`);
-  console.log(`localSavedCurrentUser.email - ${localSavedCurrentUser.email}`);
-  const { name: profName, email: profEmail } = localSavedCurrentUser;
-  console.log(profName);
-  console.log(profEmail);
   const [searchFormValues, setSearchFormValues] = React.useState(localSavedFormState);
-  // console.log('localSavedFormState in use-forms:');
-  // console.log(localSavedFormState);
-  // console.log('searchFormValues in use-forms:');
-  // console.log(searchFormValues);
-  const [
-    registerAuthProfileFormValues, setRegisterAuthProfileFormValues,
-  ] = React.useState({
+  console.log('localSavedFormState in use-forms:');
+  console.log(localSavedFormState);
+  console.log('searchFormValues in use-forms:');
+  console.log(searchFormValues);
+  const [registerValues, setRegisterValues] = React.useState({
     registerName: '',
     registerEmail: '',
     registerPassword: '',
-    loginEmail: '',
-    loginPassword: '',
-    profileEmail: String(profName),
-    profileName: String(profEmail),
   });
+  const [loginValues, setLoginValues] = React.useState({ loginEmail: '', loginPassword: '' });
+  const [initialProfileValues, setInitialProfileValues] = React.useState({ profileName: '', profileEmail: '' });
+  const [profileValues, setProfileValues] = React.useState({ profileName: '', profileEmail: '' });
   const [formErrors, setFormErrors] = React.useState({});
   const [formIsValid, setFormIsValid] = React.useState(false);
-  // const [lastSubmitFormState, setLastSubmitFormState] = React.useState({});
 
-  console.log('registerAuthProfileFormValues in use-forms:');
-  console.log(registerAuthProfileFormValues);
-
-  // debugger;
   const isSearchFormStatesEqual = isEqual(localSavedFormState, searchFormValues);
+  const isProfileValuesEqual = isEqual(initialProfileValues, profileValues);
 
-  const handleRegisterAuthProfileFormChange = (event) => {
+  const handleSetProfileValues = (profName, profEmail) => {
+    setProfileValues({ profileName: profName, profileEmail: profEmail });
+  };
+
+  const handleSetInitialProfileValues = (profName, profEmail) => {
+    setInitialProfileValues({ profileName: profName, profileEmail: profEmail });
+  };
+
+  const handleRegisterFormChange = (event) => {
     const { target } = event;
     const { name } = target;
     const valueData = target.value;
-    console.log('***Все нижеперечисленное происходит внутри handleRegisterAuthProfileFormChange хука useForms***');
-    console.log('registerAuthFormValues in hook useForms before any setValues');
-    console.log(registerAuthProfileFormValues);
-    setRegisterAuthProfileFormValues({ ...registerAuthProfileFormValues, [name]: valueData });
-    console.log('registerAuthFormValues in hook useForms after "setFormValues({ ...values, [name]: valueData })"');
-    console.log(registerAuthProfileFormValues);
+    console.log('***Все нижеперечисленное происходит внутри handleRegisterFormChange хука useForms***');
+    console.log('registerValues in hook useForms before any setValues');
+    console.log(registerValues);
+    setRegisterValues({ ...registerValues, [name]: valueData });
+    console.log('registerValues in hook useForms after "setRegisterValues({ ...registerValues, [name]: valueData })"');
+    console.log(registerValues);
+    setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
+    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    console.log(formErrors);
+    setFormIsValid(target.closest('form').checkValidity());
+    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    console.log(formIsValid);
+  };
+
+  const handleLoginFormChange = (event) => {
+    const { target } = event;
+    const { name } = target;
+    const valueData = target.value;
+    console.log('***Все нижеперечисленное происходит внутри handleLoginFormChange хука useForms***');
+    console.log('loginValues in hook useForms before any setValues');
+    console.log(loginValues);
+    setLoginValues({ ...loginValues, [name]: valueData });
+    console.log('loginValues in hook useForms after "setLoginValues({ ...loginValues, [name]: valueData })"');
+    console.log(loginValues);
+    setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
+    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    console.log(formErrors);
+    setFormIsValid(target.closest('form').checkValidity());
+    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    console.log(formIsValid);
+  };
+
+  const handleProfileFormChange = (event) => {
+    const { target } = event;
+    const { name } = target;
+    const valueData = target.value;
+    console.log('***Все нижеперечисленное происходит внутри handleProfileFormChange хука useForms***');
+    console.log('profileValues in hook useForms before any setValues');
+    console.log(profileValues);
+    setProfileValues({ ...profileValues, [name]: valueData });
+    console.log('profileValues in hook useForms after "setProfileValues({ ...profileValues, [name]: valueData })"');
+    console.log(profileValues);
     setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
     console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
     console.log(formErrors);
@@ -75,45 +105,60 @@ function useForms(localSavedFormState, localSavedCurrentUser) {
     console.log(formIsValid);
   };
 
-  // const handleLastSubmitFormState = (event) => {
-  //   const { target } = event;
-  //   const { name } = target;
-  //   const valueData = target.type === 'checkbox' ? target.checked : target.value;
-  //   setLastSubmitFormState({ ...lastSubmitFormState, [name]: valueData });
-  // };
-
-  const resetForm = useCallback(
+  const resetRegisterForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
-      setRegisterAuthProfileFormValues(newValues);
+      setRegisterValues(newValues);
       setFormErrors(newErrors);
       setFormIsValid(newIsValid);
     },
-    [setRegisterAuthProfileFormValues, setFormErrors, setFormIsValid],
+    [setRegisterValues, setFormErrors, setFormIsValid],
   );
 
-  // React.useEffect(() => {
-  // console.log('Произошел запрос внутри хука эффекта формы, для инициализации
-  // начальными данными из локального хранилища');
-  //   debugger;
-  //   if (!isFormStatesEqual) {
-  //     setFormValues(localSavedFormState);
-  //   }
-  // }, [isFormStatesEqual]);
+  const resetLoginForm = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setLoginValues(newValues);
+      setFormErrors(newErrors);
+      setFormIsValid(newIsValid);
+    },
+    [setLoginValues, setFormErrors, setFormIsValid],
+  );
+
+  const resetProfileForm = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setProfileValues(newValues);
+      setFormErrors(newErrors);
+      setFormIsValid(newIsValid);
+    },
+    [setProfileValues, setFormErrors, setFormIsValid],
+  );
 
   console.log('Ниже текущие состояние стейта searchFormValues внутри хука useForms:');
   console.log(searchFormValues);
-  console.log('Ниже текущие состояние стейта registerAuthProfileFormValues внутри хука useForms:');
-  console.log(registerAuthProfileFormValues);
+  console.log('registerValues внутри хука useForms:');
+  console.log(registerValues);
+  console.log('loginValues внутри хука useForms:');
+  console.log(loginValues);
+  console.log('profileValues внутри хука useForms:');
+  console.log(profileValues);
 
   return {
     searchFormValues,
-    registerAuthProfileFormValues,
+    registerValues,
+    loginValues,
+    profileValues,
     formErrors,
     formIsValid,
     isSearchFormStatesEqual,
-    handleRegisterAuthProfileFormChange,
+    isProfileValuesEqual,
+    handleSetInitialProfileValues,
+    handleSetProfileValues,
+    handleRegisterFormChange,
+    handleLoginFormChange,
+    handleProfileFormChange,
     handleSearchFormChange,
-    resetForm,
+    resetRegisterForm,
+    resetLoginForm,
+    resetProfileForm,
   };
 }
 

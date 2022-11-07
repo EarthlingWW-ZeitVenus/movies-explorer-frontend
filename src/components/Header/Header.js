@@ -8,7 +8,7 @@ function Header({ colorThemeDark, onBurgerMenu }) {
     <header className={`header page_format_side-padding ${colorThemeDark && 'page_theme_dark'}`}>
       <div className="header__container">
         <img className="header__logo" src={headerLogo} alt="Логотип заголовка страницы" />
-        <Navigation onBurgerMenu={onBurgerMenu}/>
+        <Navigation colorThemeDark={colorThemeDark} onBurgerMenu={onBurgerMenu}/>
       </div>
     </header>
   );

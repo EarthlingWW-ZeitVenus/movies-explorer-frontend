@@ -54,6 +54,12 @@
   cursor: pointer;
 }
 
+.search-form__submit_disabled {
+  background: #EBEBEB;
+  transition: unset;
+  cursor: unset;
+}
+
 .search-form__text {
   font-style: normal;
   font-weight: normal;
