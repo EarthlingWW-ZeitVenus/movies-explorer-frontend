@@ -298,18 +298,22 @@ function App() {
   // Хук авто-авторизации пользователя
   React.useEffect(() => {
     console.log(getUser);
-    // debugger;
+    console.log('Запрос внутри хука авто-авторизации пользователя');
+    debugger;
     getUser()
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        // debugger;
+        debugger;
         setCurrentUser(res.data);
         setIsLoggedIn(true);
         history.push('/movies');
         // debugger;
       })
-      .catch((err) => catchResponse(err));
+      .catch((err) => {
+        console.log(err);
+        debugger;
+      });
   }, [history]);
 
   // Хук установки значений текущего пользователя для данных профиля

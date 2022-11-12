@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "deploy": "npm run build && mv -v ./build/* ../ && rmdir -v build"
   },
   "eslintConfig": {
     "extends": [
