@@ -1,5 +1,5 @@
 const apiConstants = {
-  MAIN_URL: 'http://movie-explorer.api.nomoredomains.rocks',
+  MAIN_URL: 'https://movie-explorer.api.nomoredomains.rocks',
   MOVIES_URL: 'https://api.nomoreparties.co/beatfilm-movies',
 };
 
