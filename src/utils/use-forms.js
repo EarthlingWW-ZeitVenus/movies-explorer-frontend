@@ -6,11 +6,18 @@ import { isEqual } from 'lodash';
 function useForms(localSavedFormState) {
   // debugger;
   console.log('Обращение к кастомному хуку useForms');
-  const [searchFormValues, setSearchFormValues] = React.useState(localSavedFormState);
-  console.log('localSavedFormState in use-forms:');
-  console.log(localSavedFormState);
-  console.log('searchFormValues in use-forms:');
-  console.log(searchFormValues);
+  const [
+    searchFormValuesForMovies,
+    setSearchFormValuesForMovies,
+  ] = React.useState(localSavedFormState);
+  const [
+    searchFormValuesForSavedMovies,
+    setSearchFormValuesForSavedMovies,
+  ] = React.useState({});
+  // console.log('localSavedFormState in use-forms:');
+  // console.log(localSavedFormState);
+  // console.log('searchFormValuesForMovies in use-forms:');
+  // console.log(searchFormValuesForMovies);
   const [registerValues, setRegisterValues] = React.useState({
     registerName: '',
     registerEmail: '',
@@ -21,52 +28,67 @@ function useForms(localSavedFormState) {
   const [profileValues, setProfileValues] = React.useState({ profileName: '', profileEmail: '' });
   const [formErrors, setFormErrors] = React.useState({});
   const [formIsValid, setFormIsValid] = React.useState(false);
+  const [initialSavedMoviesValues, setInitialSavedMoviesValues] = React.useState({});
 
-  const isSearchFormStatesEqual = isEqual(localSavedFormState, searchFormValues);
+  const isSearchFormStatesForMoviesEqual = isEqual(localSavedFormState, searchFormValuesForMovies);
+  // eslint-disable-next-line max-len
+  const isSearchFormStatesForSavedMoviesEqual = isEqual(initialSavedMoviesValues, searchFormValuesForSavedMovies);
   const isProfileValuesEqual = isEqual(initialProfileValues, profileValues);
 
-  const handleSetProfileValues = (profName, profEmail) => {
-    setProfileValues({ profileName: profName, profileEmail: profEmail });
+  const handleSetProfileValues = (profileName, profileEmail) => {
+    setProfileValues({ profileName, profileEmail });
   };
 
-  const handleSetInitialProfileValues = (profName, profEmail) => {
-    setInitialProfileValues({ profileName: profName, profileEmail: profEmail });
+  const handleSetInitialProfileValues = (profileName, profileEmail) => {
+    setInitialProfileValues({ profileName, profileEmail });
+  };
+
+  const handleSetInitialSavedMoviesValues = () => {
+    setInitialSavedMoviesValues(searchFormValuesForSavedMovies);
   };
 
   const handleRegisterFormChange = (event) => {
     const { target } = event;
     const { name } = target;
     const valueData = target.value;
-    console.log('***Все нижеперечисленное происходит внутри handleRegisterFormChange хука useForms***');
-    console.log('registerValues in hook useForms before any setValues');
-    console.log(registerValues);
+    // eslint-disable-next-line max-len
+    // console.log('***Все нижеперечисленное происходит внутри handleRegisterFormChange хука useForms***');
+    // console.log('registerValues in hook useForms before any setValues');
+    // console.log(registerValues);
     setRegisterValues({ ...registerValues, [name]: valueData });
-    console.log('registerValues in hook useForms after "setRegisterValues({ ...registerValues, [name]: valueData })"');
-    console.log(registerValues);
+    // eslint-disable-next-line max-len
+    // console.log('registerValues in hook useForms after "setRegisterValues({ ...registerValues, [name]: valueData })"');
+    // console.log(registerValues);
     setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
-    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
-    console.log(formErrors);
+    // eslint-disable-next-line max-len
+    // console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    // console.log(formErrors);
     setFormIsValid(target.closest('form').checkValidity());
-    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
-    console.log(formIsValid);
+    // eslint-disable-next-line max-len
+    // console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    // console.log(formIsValid);
   };
 
   const handleLoginFormChange = (event) => {
     const { target } = event;
     const { name } = target;
     const valueData = target.value;
-    console.log('***Все нижеперечисленное происходит внутри handleLoginFormChange хука useForms***');
-    console.log('loginValues in hook useForms before any setValues');
-    console.log(loginValues);
+    // eslint-disable-next-line max-len
+    // console.log('***Все нижеперечисленное происходит внутри handleLoginFormChange хука useForms***');
+    // console.log('loginValues in hook useForms before any setValues');
+    // console.log(loginValues);
     setLoginValues({ ...loginValues, [name]: valueData });
-    console.log('loginValues in hook useForms after "setLoginValues({ ...loginValues, [name]: valueData })"');
-    console.log(loginValues);
+    // eslint-disable-next-line max-len
+    // console.log('loginValues in hook useForms after "setLoginValues({ ...loginValues, [name]: valueData })"');
+    // console.log(loginValues);
     setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
-    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
-    console.log(formErrors);
+    // eslint-disable-next-line max-len
+    // console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    // console.log(formErrors);
     setFormIsValid(target.closest('form').checkValidity());
-    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
-    console.log(formIsValid);
+    // eslint-disable-next-line max-len
+    // console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    // console.log(formIsValid);
   };
 
   const handleProfileFormChange = (event) => {
@@ -87,22 +109,30 @@ function useForms(localSavedFormState) {
     console.log(formIsValid);
   };
 
-  const handleSearchFormChange = (event) => {
+  const handleSearchFormChange = (event, isSavedMoviesCase) => {
+    // debugger;
     const { target } = event;
     const { name } = target;
     const valueData = target.type === 'checkbox' ? target.checked : target.value;
-    console.log('***Все нижеперечисленное происходит внутри handleFormChange хука useForms***');
-    console.log('searchFormValues in hook useForms before any setValues');
-    console.log(searchFormValues);
-    setSearchFormValues({ ...searchFormValues, [name]: valueData });
-    console.log('searchFormValues in hook useForms after "setFormValues({ ...values, [name]: valueData })"');
-    console.log(searchFormValues);
+    // console.log('***Все нижеперечисленное происходит внутри handleFormChange хука useForms***');
+    // console.log('searchFormValuesForMovies in hook useForms before any setValues');
+    // console.log(searchFormValuesForMovies);
+    if (isSavedMoviesCase) {
+      setSearchFormValuesForSavedMovies({ ...searchFormValuesForSavedMovies, [name]: valueData });
+    } else {
+      setSearchFormValuesForMovies({ ...searchFormValuesForMovies, [name]: valueData });
+    }
+    // eslint-disable-next-line max-len
+    // console.log('searchFormValuesForMovies in hook useForms after "setFormValuesForMovies({ ...values, [name]: valueData })"');
+    // console.log(searchFormValuesForMovies);
     setFormErrors({ ...formErrors, [`${name}Error`]: target.validationMessage });
-    console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
-    console.log(formErrors);
+    // eslint-disable-next-line max-len
+    // console.log('formErrors in hook useForms after "setFormErrors({ ...errors, [name]: target.validationMessage })"');
+    // console.log(formErrors);
     setFormIsValid(target.closest('form').checkValidity());
-    console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
-    console.log(formIsValid);
+    // eslint-disable-next-line max-len
+    // console.log('formIsValid in hook useForms after "setFormIsValid(target.closest("form").checkValidity())"');
+    // console.log(formIsValid);
   };
 
   const resetRegisterForm = useCallback(
@@ -132,25 +162,46 @@ function useForms(localSavedFormState) {
     [setProfileValues, setFormErrors, setFormIsValid],
   );
 
-  console.log('Ниже текущие состояние стейта searchFormValues внутри хука useForms:');
-  console.log(searchFormValues);
-  console.log('registerValues внутри хука useForms:');
-  console.log(registerValues);
-  console.log('loginValues внутри хука useForms:');
-  console.log(loginValues);
-  console.log('profileValues внутри хука useForms:');
-  console.log(profileValues);
+  const resetSearchFormForMovies = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setSearchFormValuesForMovies(newValues);
+      setFormErrors(newErrors);
+      setFormIsValid(newIsValid);
+    },
+    [setSearchFormValuesForMovies, setFormErrors, setFormIsValid],
+  );
+
+  const resetSearchFormForSavedMovies = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setSearchFormValuesForSavedMovies(newValues);
+      setFormErrors(newErrors);
+      setFormIsValid(newIsValid);
+    },
+    [setSearchFormValuesForSavedMovies, setFormErrors, setFormIsValid],
+  );
+
+  // console.log('Ниже текущие состояние стейта searchFormValuesForMovies внутри хука useForms:');
+  // console.log(searchFormValuesForMovies);
+  // console.log('registerValues внутри хука useForms:');
+  // console.log(registerValues);
+  // console.log('loginValues внутри хука useForms:');
+  // console.log(loginValues);
+  // console.log('profileValues внутри хука useForms:');
+  // console.log(profileValues);
 
   return {
-    searchFormValues,
+    searchFormValuesForMovies,
+    searchFormValuesForSavedMovies,
     registerValues,
     loginValues,
     profileValues,
     formErrors,
     formIsValid,
-    isSearchFormStatesEqual,
+    isSearchFormStatesForMoviesEqual,
+    isSearchFormStatesForSavedMoviesEqual,
     isProfileValuesEqual,
     handleSetInitialProfileValues,
+    handleSetInitialSavedMoviesValues,
     handleSetProfileValues,
     handleRegisterFormChange,
     handleLoginFormChange,
@@ -159,6 +210,8 @@ function useForms(localSavedFormState) {
     resetRegisterForm,
     resetLoginForm,
     resetProfileForm,
+    resetSearchFormForMovies,
+    resetSearchFormForSavedMovies,
   };
 }
 

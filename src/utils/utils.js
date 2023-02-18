@@ -7,6 +7,7 @@ function durationToHoursAndMinutes(duration) {
 function filterShortFilm(moviesArray, shortFilmMaxDuration) {
   console.log('moviesArray in filterShortFilm:');
   console.log(moviesArray);
+  debugger;
   const filteredMoviesArray = moviesArray.filter(
     (movieCard) => (Number(movieCard.duration) <= shortFilmMaxDuration),
   );
@@ -14,6 +15,7 @@ function filterShortFilm(moviesArray, shortFilmMaxDuration) {
 }
 
 function filterNameFilm(moviesArray, filmName) {
+  // debugger;
   const filteredMoviesArray = moviesArray.filter(
     (movieCard) => (
       (String(movieCard.nameEN)).toLowerCase().includes((String(filmName)).toLowerCase())

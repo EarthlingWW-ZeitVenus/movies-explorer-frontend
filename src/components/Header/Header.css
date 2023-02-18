@@ -9,6 +9,14 @@
   width: 38px;
 }
 
+.header__logo-link {
+  text-decoration: none;
+  transition: opacity .3s linear;
+}
+
+.header__logo-link:hover {
+  opacity: .6;
+}
 
 /* стили для смартфона */
 @media screen and (max-width: 320px) {

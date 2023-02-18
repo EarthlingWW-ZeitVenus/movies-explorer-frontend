@@ -1,16 +1,14 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { localSorageConstants } from './constants';
-// import { filterShortFilm } from './utils';
 
-function useLocalStorage(isLoggedIn) {
+function useLocalStorage() {
   // debugger;
   console.log('Произошло обращение к кастомному хуку useLocalStorage');
   const { KEY_FOR_MOVIES_ARRAY, KEY_FOR_FORM, KEY_FOR_OWNED_MOVIES_ARRAY } = localSorageConstants;
-  // const { SHORT_FILM_MAX_DURATION } = numberConstants;
 
   const getLocalValue = (key) => {
-    console.log(`Обращение к инициализации стейта внутри getInitialValue, с ключом - ${key}`);
+    // console.log(`Обращение к инициализации стейта внутри getInitialValue, с ключом - ${key}`);
     // debugger;
     // window.localStorage.clear();
     let initialValue;
@@ -24,32 +22,41 @@ function useLocalStorage(isLoggedIn) {
     return keyValue ? JSON.parse(keyValue) : initialValue;
   };
 
-  const [moviesArray, setMoviesArray] = React.useState([]);
+  const [cachedMoviesArray, setCachedMoviesArray] = React.useState([]);
+  const [moviesArray, setMoviesArray] = React.useState(getLocalValue(KEY_FOR_MOVIES_ARRAY));
+  const [cachedOwnedMoviesArray, setCachedOwnedMoviesArray] = React.useState([]);
   const [ownedMoviesArray, setOwnedMoviesArray] = React.useState([]);
-  // const [filteredMoviesArray, setFilteredMoviesArray] = React.useState([]);
-  // const [filteredOwnedMoviesArray, setFilteredOwnedMoviesArray] = React.useState([]);
   const [formState, setFormState] = React.useState(getLocalValue(KEY_FOR_FORM));
 
-  console.log('moviesArrai in use-local-storage:');
-  console.log(moviesArray);
-  console.log('ownedMoviesArray in use-local-storage:');
+  // console.log('cachedMoviesArray in use-local-storage:');
+  // console.log(cachedMoviesArray);
+  // console.log('moviesArray in use-local-storage:');
+  // console.log(moviesArray);
+  // console.log('cachedOwnedMoviesArray in use-local-storage:');
+  // console.log(cachedOwnedMoviesArray);
+  // console.log('ownedMoviesArray in use-local-storage:');
+  // console.log(ownedMoviesArray);
 
   const handleSaveArray = (moviesArrayData) => {
     window.localStorage.setItem(KEY_FOR_MOVIES_ARRAY, JSON.stringify(moviesArrayData));
     setMoviesArray(moviesArrayData);
   };
 
-  // const handleSaveFilteredMoviesArray = (filteredMoviesArrayData) => {
-  //   setFilteredMoviesArray(filteredMoviesArrayData);
-  // };
+  const handleSaveCachedArray = (moviesArrayData) => {
+    setCachedMoviesArray(moviesArrayData);
+  };
 
-  // const handleSaveFilteredOwnedMoviesArray = (filteredOwnedMoviesArrayData) => {
-  //   setFilteredOwnedMoviesArray(filteredOwnedMoviesArrayData);
-  // };
+  const handleRemoveArray = () => {
+    window.localStorage.removeItem(KEY_FOR_MOVIES_ARRAY);
+    setMoviesArray([]);
+  };
 
   const handleSaveOwnedMovies = (ownedMoviesArrayData) => {
-  // window.localStorage.setItem(KEY_FOR_OWNED_MOVIES_ARRAY, JSON.stringify(ownedMoviesArrayData));
     setOwnedMoviesArray(ownedMoviesArrayData);
+  };
+
+  const handleSaveCachedOwnedMovies = (ownedMoviesArrayData) => {
+    setCachedOwnedMoviesArray(ownedMoviesArrayData);
   };
 
   const handleSaveForm = (formStateData) => {
@@ -59,34 +66,32 @@ function useLocalStorage(isLoggedIn) {
     setFormState({ filmName, shortFilm });
   };
 
-  React.useEffect(() => {
-    // debugger;
-    console.log('запрос внутри хука эффекта локального хранилища');
-    if (isLoggedIn) {
-      // debugger;
-      setMoviesArray(getLocalValue(KEY_FOR_MOVIES_ARRAY));
-      // setOwnedMoviesArray(getLocalValue(KEY_FOR_OWNED_MOVIES_ARRAY));
-      // setFilteredMoviesArray(filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION));
-      // setFilteredOwnedMoviesArray(filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION));
-      // setFormState(getLocalValue(keyForForm));
-      // setCurrentUser(getLocalValue(keyForCurrentUser));
-    }
-  }, [isLoggedIn]);
+  const handleRemoveForm = () => {
+    window.localStorage.removeItem(KEY_FOR_FORM);
+    setFormState({});
+  };
 
-  console.log('Всё содержимое хранилища localStorage:');
-  console.log(JSON.stringify(window.localStorage, null, 2));
+  const handleRemoveCachedMoviesArray = () => {
+    setCachedMoviesArray([]);
+  };
+
+  // console.log('Всё содержимое хранилища localStorage:');
+  // console.log(JSON.stringify(window.localStorage, null, 2));
 
   return {
     moviesArray,
+    cachedMoviesArray,
     ownedMoviesArray,
-    // filteredMoviesArray,
-    // filteredOwnedMoviesArray,
+    cachedOwnedMoviesArray,
     formState,
     handleSaveArray,
+    handleSaveCachedArray,
     handleSaveForm,
     handleSaveOwnedMovies,
-    // handleSaveFilteredMoviesArray,
-    // handleSaveFilteredOwnedMoviesArray,
+    handleSaveCachedOwnedMovies,
+    handleRemoveArray,
+    handleRemoveForm,
+    handleRemoveCachedMoviesArray,
   };
 }
 

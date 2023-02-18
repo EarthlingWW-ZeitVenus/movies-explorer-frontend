@@ -1,7 +1,12 @@
 import './Login.css';
+import { Link } from 'react-router-dom';
 import logo from '../../images/logo.svg';
+import { regExpConstants } from '../../utils/constants';
+
+const { EMAIL_PATTERN } = regExpConstants;
 
 function Login({
+  isProcessing,
   loginForm,
   neededHandlers,
   serverErrorMessageText,
@@ -33,7 +38,7 @@ function Login({
 
   return (
     <section className="login page_format_side-padding">
-      <img className="login__logo" src={logo} alt="Логотип" />
+      <Link className="login__logo-link" to="/"><img className="login__logo" src={logo} alt="Логотип" /></Link>
       <h2 className="login__title page_format_all-title">Рады видеть!</h2>
       <form className="login__form" onSubmit={handleSubmit} noValidate>
         <fieldset className="login__form-fieldset">
@@ -46,6 +51,8 @@ function Login({
                 type="email"
                 onChange={handleLoginFormChange}
                 value={loginEmail}
+                pattern={EMAIL_PATTERN}
+                disabled={isProcessing}
                 required
               />
           {errorTag(loginEmailError)}
@@ -59,13 +66,14 @@ function Login({
                 minLength={4}
                 onChange={handleLoginFormChange}
                 value={loginPassword}
+                disabled={isProcessing}
                 required
               />
           {errorTag(loginPasswordError)}
         </fieldset>
         {errorTag(serverErrorMessageText)}
         <button
-          className={`login__form-button ${!formIsValid && 'login__form-button_disabled'}`}
+          className={`login__form-button ${(!formIsValid || isProcessing) && 'login__form-button_disabled'}`}
           type="submit"
           disabled={!formIsValid}
         >

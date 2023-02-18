@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React from 'react';
 import './SearchForm.css';
 import CurrentDataContext from '../../contexts/CurrentDataContext';
@@ -42,8 +43,10 @@ function SearchForm({ handlers }) {
   function catchResponse(err) {
     debugger;
     if (err.status) {
+      // eslint-disable-next-line no-undef
       alert(`Сервер ответил ошибкой со статусом ${err.status}`);
     } else {
+      // eslint-disable-next-line no-undef
       alert(`Ваш запрос не ушел на сервер или сервер не ответил, ошибка ${err}`);
     }
   }

@@ -4,6 +4,15 @@
   max-width: 396px;
 }
 
+.register__logo-link {
+  text-decoration: none;
+  transition: opacity .3s linear;
+}
+
+.register__logo-link:hover {
+  opacity: .6;
+}
+
 .register__title {
   font-style: normal;
   font-weight: 500;

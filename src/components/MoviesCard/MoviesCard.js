@@ -25,10 +25,8 @@ function MoviesCard({
   console.log(thumbnail);
 
   const handleButtonClick = () => {
-    debugger;
-    onOwnMovie(
-      movieInfoObject,
-    );
+    // debugger;
+    onOwnMovie(movieInfoObject);
   };
 
   function whichElementToDisplay() {

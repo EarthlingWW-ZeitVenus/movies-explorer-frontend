@@ -3,6 +3,15 @@
     margin: 70px auto 0px;
   }
 
+  .login__logo-link {
+    text-decoration: none;
+    transition: opacity .3s linear;
+  }
+
+  .login__logo-link:hover {
+    opacity: .6;
+  }
+
   .login__title {
     font-style: normal;
     font-weight: 500;

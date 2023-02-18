@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import CurrentDataContext from '../../contexts/CurrentDataContext';
-// import CurrentUserContext from '../../contexts/CurrentUserContext';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 import './App.css';
 import Main from '../Main/Main';
 import Header from '../Header/Header';
@@ -32,14 +32,24 @@ import { filterShortFilm } from '../../utils/utils';
 
 function App() {
   console.log('обращение к компоненту App');
-  const { SUCCESS_PROFILE_CHANGE, SUCCESS_LOGIN, SUCCESS_REGISTER } = textConstants;
-  const { SHORT_FILM_MAX_DURATION } = numberConstants;
+  // console.log('window.location.pathname in App');
+
+  // Выводит путь запроса от корневого места сайта
+  // eslint-disable-next-line no-undef
+  // console.log(window.location.pathname);
+
+  // Выводит содержимое локального хранилища
   // eslint-disable-next-line no-undef
   // console.log(JSON.stringify(window.localStorage, null, 2));
+
+  // Зачищает локальное хранилище
   // eslint-disable-next-line no-undef
   // window.localStorage.clear();
-  // eslint-disable-next-line no-undef
-  // console.log(JSON.stringify(window.localStorage, null, 2));
+
+  const { SUCCESS_PROFILE_CHANGE, SUCCESS_LOGIN, SUCCESS_REGISTER } = textConstants;
+  const { SHORT_FILM_MAX_DURATION } = numberConstants;
+  // eslint-disable-next-line no-undef, no-unused-vars
+  const [requestedPathname, setRequestedPathname] = React.useState(window.location.pathname);
   const [isBurgerMenuRollupOpen, setIsBurgerMenuRollupOpen] = React.useState(false);
   const [isNothingFound, setIsNothingFound] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -48,32 +58,37 @@ function App() {
   const [embeddedMessageText, setEmbeddedMessageText] = React.useState('');
   const [currentUser, setCurrentUser] = React.useState({});
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [isProfileChanged, setIsProfileChanged] = React.useState(false);
 
   const history = useHistory();
 
   const {
     moviesArray,
+    cachedMoviesArray,
     ownedMoviesArray,
+    cachedOwnedMoviesArray,
     formState,
-    // filteredMoviesArray,
-    // filteredOwnedMoviesArray,
     handleSaveArray,
+    handleSaveCachedArray,
     handleSaveForm,
     handleSaveOwnedMovies,
-    // handleSaveFilteredMoviesArray,
-    // handleSaveFilteredOwnedMoviesArray,
-  } = useLocalStorage(isLoggedIn);
+    handleSaveCachedOwnedMovies,
+    handleRemoveArray,
+    handleRemoveForm,
+    handleRemoveCachedMoviesArray,
+  } = useLocalStorage();
   const {
-    searchFormValues,
+    searchFormValuesForMovies,
+    searchFormValuesForSavedMovies,
     registerValues,
     loginValues,
     profileValues,
     formErrors,
     formIsValid,
-    isSearchFormStatesEqual,
+    isSearchFormStatesForMoviesEqual,
+    isSearchFormStatesForSavedMoviesEqual,
     isProfileValuesEqual,
     handleSetInitialProfileValues,
+    handleSetInitialSavedMoviesValues,
     handleSetProfileValues,
     handleRegisterFormChange,
     handleLoginFormChange,
@@ -82,31 +97,32 @@ function App() {
     resetRegisterForm,
     resetLoginForm,
     resetProfileForm,
-    // resetForm,
+    resetSearchFormForMovies,
+    resetSearchFormForSavedMovies,
   } = useForms(formState);
 
-  const shortFilm = searchFormValues.shortFilm || false;
+  const shortFilm = searchFormValuesForMovies.shortFilm || false;
 
   const [isShortFilmChecked, setIsShortFilmChecked] = React.useState(shortFilm);
 
-  console.log('moviesArray in App:');
-  console.log(moviesArray);
-  // console.log('filteredMoviesArray in App:');
-  // console.log(filteredMoviesArray);
-  console.log('formState in App:');
-  console.log(formState);
-  console.log('currentUser in App:');
-  console.log(currentUser);
-  console.log('ownedMoviesArray in App:');
-  console.log(ownedMoviesArray);
+  // console.log('moviesArray in App:');
+  // console.log(moviesArray);
+  // console.log('formState in App:');
+  // console.log(formState);
+  // console.log('currentUser in App:');
+  // console.log(currentUser);
+  // console.log('ownedMoviesArray in App:');
+  // console.log(ownedMoviesArray);
   // console.log('shortFilm in App:');
   // console.log(shortFilm);
 
+  // Логика подготовки массивов для отображения, в зависимости от переключателя "короткометражки"
   const moviesArrayToDisplay = isShortFilmChecked
     ? filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION) : moviesArray;
   const ownedMoviesArrayToDisplay = isShortFilmChecked
     ? filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION) : ownedMoviesArray;
-  // const { shortFilm } = searchFormValues;
+  const cachedOwnedMoviesArrayToDisplay = isShortFilmChecked
+    ? filterShortFilm(cachedOwnedMoviesArray, SHORT_FILM_MAX_DURATION) : cachedOwnedMoviesArray;
 
   // Хэндлеры
   const handleBurgerMenuClick = () => {
@@ -124,9 +140,6 @@ function App() {
   const handleSetIsShortFilmChecked = (isChecked) => {
     setIsShortFilmChecked(isChecked);
   };
-  // const handleSetIsLoggedIn = (isUserLoggedIn) => {
-  //   setIsLoggedIn(isUserLoggedIn);
-  // };
 
   // Функции
   // Обработка ошибок
@@ -154,9 +167,9 @@ function App() {
     if ('owner' in movieInfoObject) {
       try {
         // debugger;
-        console.log(movieInfoObject);
+        // console.log(movieInfoObject);
         const response = await deleteMovie(movieInfoObject._id);
-        console.log(response);
+        // console.log(response);
         const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
         const newMoviesArray = moviesArray.map((mai) => (
           mai.id === movieInfoObject.id ? movieInfoObjectWithoutOwner : mai));
@@ -175,13 +188,13 @@ function App() {
     } else {
       try {
         // debugger;
-        console.log(movieInfoObject);
+        // console.log(movieInfoObject);
         const {
           country, director, duration, year, description, nameRU, nameEN, id,
         } = movieInfoObject;
         const thumbnail = movieInfoObject.image
           ? `https://api.nomoreparties.co${movieInfoObject.image.url}` : movieInfoObject.thumbnail;
-        console.log(thumbnail);
+        // console.log(thumbnail);
         const trailer = movieInfoObject.trailerLink || movieInfoObject.trailer;
         const imageUrl = thumbnail;
         const response = await addMovie(
@@ -197,15 +210,15 @@ function App() {
           nameRU,
           nameEN,
         );
-        console.log(response);
-        console.log(response.data);
+        // console.log(response);
+        // console.log(response.data);
         const newMoviesArray = moviesArray.map((mai) => (
           mai.id === movieInfoObject.id ? response.data : mai));
         handleSaveArray(newMoviesArray);
         handleSaveOwnedMovies([...ownedMoviesArray, response.data]);
       } catch (error) {
-        debugger;
-        console.log(error);
+        // debugger;
+        // console.log(error);
         catchResponse(error);
       }
     }
@@ -215,19 +228,19 @@ function App() {
     setEmbeddedMessageText('');
     register(registerName, registerEmail, registerPassword)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setCurrentUser(res.data);
-        // handleSetProfileValues(res.data.name, res.data.email);
-        // handleSetInitialProfileValues(res.data.name, res.data.email);
         setIsLoggedIn(true);
+        handleSetProfileValues(res.data.name, res.data.email);
+        handleSetInitialProfileValues(res.data.name, res.data.email);
         history.push('/movies');
-        debugger;
+        // debugger;
         setInfotooltipData({ message: String(SUCCESS_REGISTER), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
-        console.log(err);
-        console.log(err.body);
+        // console.log(err);
+        // console.log(err.body);
         if (!err.ok) {
           err.json().then((jsonErr) => {
             setEmbeddedMessageText(jsonErr.message);
@@ -240,34 +253,51 @@ function App() {
     setEmbeddedMessageText('');
     login(loginEmail, loginPassword)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
+        // console.log(res);
+        // console.log(res.data);
         setCurrentUser(res.data);
-        // handleSetProfileValues(res.data.name, res.data.email);
-        // handleSetInitialProfileValues(res.data.name, res.data.email);
+        handleSetProfileValues(res.data.name, res.data.email);
+        handleSetInitialProfileValues(res.data.name, res.data.email);
         setIsLoggedIn(true);
         history.push('/movies');
-        debugger;
+        // debugger;
         setInfotooltipData({ message: String(SUCCESS_LOGIN), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
-        console.log(err);
-        console.log(err.body);
+        // console.log(err);
+        // console.log(err.body);
         // console.log(err.json());
         err.json().then((jsonErr) => {
-          console.log(jsonErr);
+          // console.log(jsonErr);
           setEmbeddedMessageText(jsonErr.message);
         });
       });
   }
   // Выход пользователя
-  function onSignOut() {
+  function onLogout() {
     logout()
       .then((res) => {
-        debugger;
-        console.log(res);
+        // debugger;
+        // console.log(res);
         setIsLoggedIn(false);
+        handleRemoveArray();
+        // console.log('Всё содержимое хранилища localStorage после handleRemoveArray():');
+        // eslint-disable-next-line no-undef
+        // console.log(JSON.stringify(window.localStorage, null, 2));
+        // debugger;
+        handleRemoveForm();
+        handleRemoveCachedMoviesArray();
+        resetSearchFormForMovies();
+        resetSearchFormForSavedMovies();
+        resetRegisterForm();
+        resetLoginForm();
+        resetProfileForm();
+        setCurrentUser({});
+        // console.log('Всё содержимое хранилища localStorage после handleRemoveForm():');
+        // eslint-disable-next-line no-undef
+        // console.log(JSON.stringify(window.localStorage, null, 2));
+        // debugger;
         history.push('/');
         setInfotooltipData({ message: String(res.message), isError: false });
         setIsInfotooltipPopupOpen(true);
@@ -277,17 +307,18 @@ function App() {
   function onProfileChange(email, name) {
     editUser(email, name)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        debugger;
+        // console.log(res);
+        // console.log(res.data);
+        // debugger;
         setCurrentUser(res.data);
-        setIsProfileChanged(true);
-        // handleSetInitialProfileValues(res.data.name, res.data.email);
+        handleSetProfileValues(res.data.name, res.data.email);
+        handleSetInitialProfileValues(res.data.name, res.data.email);
+        // setIsProfileChanged(true);
         setInfotooltipData({ message: String(SUCCESS_PROFILE_CHANGE), isError: false });
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         setInfotooltipData(
           { message: `При изменении профиля произошла ошибка - ${err}`, isError: true },
         );
@@ -295,59 +326,61 @@ function App() {
       });
   }
 
+  // function checkToken() {
+  //   getUser()
+  //     .then((res) => {
+  //       console.log(res);
+  //       console.log(res.data);
+  //       // debugger;
+  //       setCurrentUser(res.data);
+  //       setIsLoggedIn(true);
+  //       return true;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       // debugger;
+  //       return false;
+  //     });
+  // }
+
   // Хук авто-авторизации пользователя
   React.useEffect(() => {
-    console.log(getUser);
-    console.log('Запрос внутри хука авто-авторизации пользователя');
-    debugger;
+    // console.log(getUser);
+    // console.log('Запрос внутри хука авто-авторизации пользователя');
+    // eslint-disable-next-line no-undef
+    // console.log(window.location.pathname);
+    // debugger;
     getUser()
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        debugger;
+        // console.log(res);
+        // console.log(res.data);
+        // debugger;
         setCurrentUser(res.data);
+        handleSetProfileValues(res.data.name, res.data.email);
+        handleSetInitialProfileValues(res.data.name, res.data.email);
         setIsLoggedIn(true);
-        history.push('/movies');
+        history.push(requestedPathname);
+        // history.push('/movies');
         // debugger;
       })
       .catch((err) => {
         console.log(err);
-        debugger;
+        // debugger;
       });
   }, [history]);
-
-  // Хук установки значений текущего пользователя для данных профиля
-  React.useEffect(() => {
-    // debugger;
-    console.log('запрос внутри хука эффекта установки значений текущего пользователя');
-    if (isLoggedIn || isProfileChanged) {
-      // debugger;
-      handleSetProfileValues(currentUser.name, currentUser.email);
-      handleSetInitialProfileValues(currentUser.name, currentUser.email);
-      // debugger;
-    }
-  }, [isLoggedIn, isProfileChanged]);
-
-  // Хук фильтрации массива фильмов по переключателю "короткометражки" при изменении "сhecked"
-  // React.useEffect(() => {
-  //   console.log('запрос внутри хука эффекта фильтрации по переключателю');
-  //   debugger;
-  // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
-  //   let finalMoviesArray = ownedMoviesArray;
-  //   if (isShortFilmChecked) {
-  //     debugger;
-  //     finalMoviesArray = filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION);
-  //   }
-  //   handleSetMoviesArrayToDisplay(finalMoviesArray);
-  //   debugger;
-  // }, [isShortFilmChecked]);
 
   return (
     <CurrentDataContext.Provider value={{
       isLoggedIn,
       moviesArrayToDisplay,
+      ownedMoviesArray,
       ownedMoviesArrayToDisplay,
+      cachedMoviesArray,
+      // cachedOwnedMoviesArray,
+      cachedOwnedMoviesArrayToDisplay,
     }}>
+
+      <CurrentUserContext.Provider value={currentUser}>
 
       <div className="page page_format_all-font">
 
@@ -363,6 +396,7 @@ function App() {
             path="/movies"
             component={Movies}
             isLoggedIn={isLoggedIn}
+            // checkToken={checkToken}
             // shortFilm={shortFilm}
             catchResponse={catchResponse}
             // moviesArray={moviesArray}
@@ -373,8 +407,8 @@ function App() {
               isNothingFound,
             }}
             searchForm={{
-              searchFormValues,
-              isSearchFormStatesEqual,
+              searchFormValuesForMovies,
+              isSearchFormStatesForMoviesEqual,
             }}
             neededHandlers={{
               handleSetIsProcessing,
@@ -385,6 +419,7 @@ function App() {
               handleOwnMovie,
               // handleSaveFilteredMoviesArray,
               handleSetIsShortFilmChecked,
+              handleSaveCachedArray,
             }}
           />
 
@@ -392,6 +427,7 @@ function App() {
             path="/saved-movies"
             component={SavedMovies}
             isLoggedIn={isLoggedIn}
+            // checkToken={checkToken}
             // shortFilm={shortFilm}
             catchResponse={catchResponse}
             // ownedMoviesArray={ownedMoviesArray}
@@ -402,8 +438,8 @@ function App() {
               isNothingFound,
             }}
             searchForm={{
-              searchFormValues,
-              isSearchFormStatesEqual,
+              searchFormValuesForSavedMovies,
+              isSearchFormStatesForSavedMoviesEqual,
             }}
             neededHandlers={{
               handleSetIsProcessing,
@@ -413,8 +449,9 @@ function App() {
               handleSearchFormChange,
               handleOwnMovie,
               handleSaveOwnedMovies,
-              // handleSaveFilteredOwnedMoviesArray,
+              handleSaveCachedOwnedMovies,
               handleSetIsShortFilmChecked,
+              handleSetInitialSavedMoviesValues,
             }}
           />
 
@@ -422,9 +459,10 @@ function App() {
             path="/profile"
             component={Profile}
             isLoggedIn={isLoggedIn}
+            // checkToken={checkToken}
             isProcessing={isProcessing}
             onBurgerMenu={handleBurgerMenuClick}
-            onSignOut={onSignOut}
+            onLogout={onLogout}
             onProfileChange={onProfileChange}
             neededHandlers={{
               handleProfileFormChange,
@@ -500,6 +538,8 @@ function App() {
         />
 
       </div>
+
+      </CurrentUserContext.Provider>
 
     </CurrentDataContext.Provider>
 

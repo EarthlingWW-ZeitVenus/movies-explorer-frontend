@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import './ShortFilmCheckbox.css';
 
 const ShortFilmCheckbox = ({ shortFilm, handleShortFilmFilter, isProcessing }) => {

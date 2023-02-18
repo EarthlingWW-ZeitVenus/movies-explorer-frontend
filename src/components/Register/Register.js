@@ -1,10 +1,9 @@
-// import React from 'react';
-// import useForms from '../../utils/use-forms';
 import './Register.css';
+import { Link } from 'react-router-dom';
 import logo from '../../images/logo.svg';
 import { regExpConstants } from '../../utils/constants';
 
-const { NAME_PATTERN } = regExpConstants;
+const { NAME_PATTERN, EMAIL_PATTERN } = regExpConstants;
 
 function Register({
   registerForm,
@@ -13,7 +12,6 @@ function Register({
   onRegister,
   isProcessing,
 }) {
-  // const [serverErrorMessageText, setServerErrorMessageText] = React.useState('');
   const {
     registerValues: {
       registerName,
@@ -47,7 +45,7 @@ function Register({
 
   return (
     <section className="register page_format_side-padding">
-      <img className="register__logo" src={logo} alt="Логотип" />
+      <Link className="register__logo-link" to="/"><img className="register__logo" src={logo} alt="Логотип" /></Link>
       <h2 className="register__title page_format_all-title">Добро пожаловать!</h2>
       <form className="register__form" onSubmit={handleSubmit} noValidate>
         <fieldset className="register__form-fieldset">
@@ -74,6 +72,7 @@ function Register({
             type="email"
             onChange={handleRegisterFormChange}
             value={registerEmail}
+            pattern={String(EMAIL_PATTERN)}
             disabled={isProcessing}
             required
           />

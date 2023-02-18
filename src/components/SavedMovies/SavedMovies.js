@@ -7,38 +7,25 @@ import Preloader from '../Preloader/Preloader';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import { getMovies } from '../../utils/MainApi';
-// import { filterShortFilm } from '../../utils/utils';
-// import { numberConstants } from '../../utils/constants';
 
 function SavedMovies({
   catchResponse,
-  // ownedMoviesArray,
   onBurgerMenu,
   colorThemeDark,
   commonProcessStates,
   searchForm,
   neededHandlers,
 }) {
-  console.log('обращение к компоненту SavedMovies');
-
-  // const [moviesArrayToDisplay, setMoviesArrayToDisplay] = React.useState([]);
-  // const [isShortFilmChecked, setIsShortFilmChecked] = React.useState(false);
+  // console.log('обращение к компоненту SavedMovies');
 
   const { ownedMoviesArrayToDisplay } = React.useContext(CurrentDataContext);
   const { isProcessing, isNothingFound } = commonProcessStates;
-  const { handleOwnMovie, handleSaveOwnedMovies, ...otherNeededHandlers } = neededHandlers;
-  // const { searchFormValues: { shortFilm } } = searchForm;
-  // const { SHORT_FILM_MAX_DURATION } = numberConstants;
-
-  // console.log(`значение shortFilm внутри SavedMovies - ${shortFilm}`);
-
-  // function handleSetMoviesArrayToDisplay(mArray) {
-  //   setMoviesArrayToDisplay(mArray);
-  // }
-
-  // function handleSetsetIsShortFilmChecked(isChecked) {
-  //   setIsShortFilmChecked(isChecked);
-  // }
+  const {
+    handleOwnMovie,
+    handleSaveOwnedMovies,
+    handleSaveCachedOwnedMovies,
+    ...otherNeededHandlers
+  } = neededHandlers;
 
   function whichElementToDisplay() {
     if (isProcessing) {
@@ -49,7 +36,6 @@ function SavedMovies({
     }
     return (<MoviesCardList
       isSavedMoviesCase={true}
-      // moviesArray={ownedMoviesArray}
       moviesArray={ownedMoviesArrayToDisplay}
       onOwnMovie={handleOwnMovie}/>);
   }
@@ -58,38 +44,12 @@ function SavedMovies({
     // debugger;
     console.log('запрос за сохраненными фильмами внутри SavedMovies.js');
     getMovies()
-      .then((res) => handleSaveOwnedMovies(res.data))
+      .then((res) => {
+        handleSaveCachedOwnedMovies(res.data);
+        handleSaveOwnedMovies(res.data);
+      })
       .catch((err) => catchResponse(err));
   }, []);
-
-  // Хук фильтрации массива фильмов по переключателю "короткометражки" при начальном рендере
-  // React.useEffect(() => {
-  //   console.log('запрос внутри хука эффекта фильтрации по переключателю');
-  //   debugger;
-  //   setIsShortFilmChecked(shortFilm);
-  //   // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
-  //   let finalMoviesArray = ownedMoviesArray;
-  //   if (shortFilm) {
-  //     debugger;
-  //     finalMoviesArray = filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION);
-  //   }
-  //   handleSetMoviesArrayToDisplay(finalMoviesArray);
-  //   debugger;
-  // }, []);
-
-  // Хук фильтрации массива фильмов по переключателю "короткометражки" при изменении "сhecked"
-  // React.useEffect(() => {
-  //   console.log('запрос внутри хука эффекта фильтрации по переключателю');
-  //   debugger;
-  // let finalMoviesArray = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
-  //   let finalMoviesArray = ownedMoviesArray;
-  //   if (isShortFilmChecked) {
-  //     debugger;
-  //     finalMoviesArray = filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION);
-  //   }
-  //   handleSetMoviesArrayToDisplay(finalMoviesArray);
-  //   debugger;
-  // }, [isShortFilmChecked]);
 
   return (
     <>
@@ -97,7 +57,6 @@ function SavedMovies({
       <main className="content page_format_side-padding">
         <SearchForm
           catchResponse={catchResponse}
-          // ownedMoviesArray={ownedMoviesArray}
           isSavedMoviesCase={true}
           isProcessing={isProcessing}
           searchForm={searchForm}

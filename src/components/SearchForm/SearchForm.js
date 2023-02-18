@@ -1,16 +1,12 @@
-/* eslint-disable no-alert */
 import React from 'react';
 import CurrentDataContext from '../../contexts/CurrentDataContext';
 import './SearchForm.css';
-// import CurrentDataContext from '../../contexts/CurrentDataContext';
 import ShortFilmCheckbox from '../ShortFilmCheckbox/ShortFilmCheckbox';
 import getMoviesCards from '../../utils/MoviesApi';
 import { filterNameFilm } from '../../utils/utils';
-// import { numberConstants } from '../../utils/constants';
 
 function SearchForm({
   catchResponse,
-  // ownedMoviesArray,
   isSavedMoviesCase,
   isProcessing,
   searchForm,
@@ -20,42 +16,41 @@ function SearchForm({
 
   const [errorText, setErrorText] = React.useState('');
 
-  const { ownedMoviesArrayToDisplay } = React.useContext(CurrentDataContext);
-  const { searchFormValues, isSearchFormStatesEqual } = searchForm;
+  const {
+    ownedMoviesArrayToDisplay,
+    cachedMoviesArray,
+    cachedOwnedMoviesArrayToDisplay,
+  } = React.useContext(CurrentDataContext);
+  const searchFormValues = isSavedMoviesCase
+    ? searchForm.searchFormValuesForSavedMovies : searchForm.searchFormValuesForMovies;
+  const isSearchFormStatesEqual = isSavedMoviesCase
+    ? searchForm.isSearchFormStatesForSavedMoviesEqual
+    : searchForm.isSearchFormStatesForMoviesEqual;
+  // console.log(searchFormValues);
   const { filmName = '', shortFilm = false } = searchFormValues;
-  // const { SHORT_FILM_MAX_DURATION } = numberConstants;
-  console.log(`значение isSearchFormStatesEqual - ${isSearchFormStatesEqual}`);
-  // const { localSavedFormState } = React.useContext(CurrentDataContext);
+  // console.log(`значение isSearchFormStatesEqual - ${isSearchFormStatesEqual}`);
   const {
     handleSetIsProcessing,
     handleSetIsNothingFound,
-    // handleSaveArray,
-    // handleSaveOwnedMovies,
     handleSaveForm,
     handleSearchFormChange,
-    // handleSetMoviesArrayToDisplay,
     handleSetIsShortFilmChecked,
+    handleSetInitialSavedMoviesValues,
+    handleSaveCachedArray,
   } = neededHandlers;
   const handleNeededSaveArray = isSavedMoviesCase
     ? neededHandlers.handleSaveOwnedMovies : neededHandlers.handleSaveArray;
-  console.log(handleNeededSaveArray);
-  // const handleFilteredNeededSaveArray = isSavedMoviesCase
-  //   ? neededHandlers.handleSaveFilteredOwnedMoviesArray
-  //   : neededHandlers.handleSaveFilteredMoviesArray;
-  // const isShortFilm = shortFilm || false;
+  // console.log(handleNeededSaveArray);
 
-  console.log('Ниже текущие состояние стейта filmName из хука useForms внутри SearchForm:');
-  console.log(filmName);
+  // console.log('Ниже текущие состояние стейта filmName из хука useForms внутри SearchForm:');
+  // console.log(filmName);
 
-  console.log('Ниже текущие состояние стейта shortFilm из хука useForms внутри SearchForm:');
-  console.log(shortFilm);
-
-  // console.log('Ниже текущие состояние константы isShortFilm внутри SearchForm:');
-  // console.log(isShortFilm);
+  // console.log('Ниже текущие состояние стейта shortFilm из хука useForms внутри SearchForm:');
+  // console.log(shortFilm);
 
   function handleChangeString(event) {
     setErrorText('');
-    handleSearchFormChange(event);
+    handleSearchFormChange(event, isSavedMoviesCase);
   }
 
   // Общий сабмит для фильмов и сохраненных фильмов
@@ -63,138 +58,83 @@ function SearchForm({
     event.preventDefault();
     // debugger;
     handleSetIsNothingFound(false);
-    if (String(filmName).length === 0) {
-      setErrorText('Нужно ввести ключевое слово');
+    if (isSearchFormStatesEqual) {
+      setErrorText('Такой запрос только что был выполнен, введите другую комбинацию символов');
       return;
     }
-    if (!isSearchFormStatesEqual) {
-      // debugger;
+    let resultedMoviesArray;
+    /* ************************************** */
+    // Логика фильтрации для сохраненных фильмов
+    if (isSavedMoviesCase) {
+      if (String(filmName).length === 0) {
+        handleNeededSaveArray(cachedOwnedMoviesArrayToDisplay);
+        return;
+      }
       handleSetIsProcessing(true);
-      handleSetIsNothingFound(false);
-      let resultedMoviesArray;
-      // Логика фильтрации для сохраненных фильмов
-      if (isSavedMoviesCase) {
-        // debugger;
-        resultedMoviesArray = filterNameFilm(ownedMoviesArrayToDisplay, filmName);
-        if (!resultedMoviesArray.length) {
-          // debugger;
-          handleNeededSaveArray([]);
-          // handleFilteredNeededSaveArray([]);
-          handleSetIsNothingFound(true);
-        } else {
-          handleNeededSaveArray(resultedMoviesArray);
-          // debugger;
-        }
-        // if (shortFilm) {
-        //   resultedMoviesArray = filterShortFilm(resultedMoviesArray, SHORT_FILM_MAX_DURATION);
-        // }
-        // handleFilteredNeededSaveArray(resultedMoviesArray);
-        handleSaveForm({ filmName, shortFilm });
+      resultedMoviesArray = filterNameFilm(ownedMoviesArrayToDisplay, filmName);
+      if (!resultedMoviesArray.length) {
+        handleNeededSaveArray([]);
         handleSetIsProcessing(false);
+        handleSetIsNothingFound(true);
+        handleSetInitialSavedMoviesValues();
+        return;
+      }
+      handleNeededSaveArray(resultedMoviesArray);
+      // Устанавливает стейт текущего состояния формы, для последующего сравнения с новым
+      handleSetInitialSavedMoviesValues();
+      handleSetIsProcessing(false);
+      /* ************************** */
       // Логика фильтрации для фильмов
-      } else {
-        // debugger;
+    } else {
+      if (String(filmName).length === 0) {
+        setErrorText('Нужно ввести ключевое слово');
+        return;
+      }
+      handleSetIsProcessing(true);
+      if (!cachedMoviesArray.length) {
         getMoviesCards()
           .then((moviesCardsData) => {
+            handleSaveCachedArray(moviesCardsData);
+            // экспериментальный код
+            // let moviesCardsDataWithOwner;
+            // ownedMoviesArray.forEach((omai) => {
+            //   moviesCardsDataWithOwner = moviesCardsData.map((mcdi) => (
+            //     mcdi.id === omai.id ? omai : mcdi));
+            // });
+            // console.log(moviesCardsDataWithOwner);
             // debugger;
             resultedMoviesArray = filterNameFilm(moviesCardsData, filmName);
             if (!resultedMoviesArray.length) {
-              // debugger;
               handleNeededSaveArray([]);
-              // handleFilteredNeededSaveArray([]);
+              handleSetIsProcessing(false);
               handleSetIsNothingFound(true);
-            } else {
-              // debugger;
-              handleNeededSaveArray(resultedMoviesArray);
+              return;
             }
-            // if (shortFilm) {
-            // resultedMoviesArray = filterShortFilm(resultedMoviesArray, SHORT_FILM_MAX_DURATION);
-            // }
-            // handleFilteredNeededSaveArray(resultedMoviesArray);
+            handleNeededSaveArray(resultedMoviesArray);
             handleSaveForm({ filmName, shortFilm });
           })
           .catch((err) => catchResponse(err))
           .finally(() => handleSetIsProcessing(false));
+        return;
       }
-      // let moviesArrayToProcess = isSavedMoviesCase ? ownedMoviesArray : moviesArray;
-      // moviesArrayToProcess = filterNameFilm(moviesArrayToProcess, filmName);
-      // let filteredMoviesCardsData;
-      // handleSetMoviesArrayToDisplay(moviesArrayToProcess);
-      // debugger;
-      // filteredMoviesCardsData = filteredMoviesCardsData.filter(
-      //   (movieCard) => (
-      //     (String(movieCard.nameEN)).toLowerCase().includes((String(filmName)).toLowerCase())
-      //   ) || (
-      //     (String(movieCard.nameRU)).toLowerCase().includes((String(filmName)).toLowerCase())),
-      // );
-      // if (!moviesArrayToProcess.length) {
-      //   debugger;
-      //   handleSetIsNothingFound(true);
-      //   handleSetMoviesArrayToDisplay([]);
-      // } else {
-      //   debugger;
-      //   handleSetMoviesArrayToDisplay(moviesArrayToProcess);
-      // }
-      // handleSetIsProcessing(false);
+      resultedMoviesArray = filterNameFilm(cachedMoviesArray, filmName);
+      if (!resultedMoviesArray.length) {
+        handleNeededSaveArray([]);
+        handleSetIsProcessing(false);
+        handleSetIsNothingFound(true);
+        return;
+      }
+      handleNeededSaveArray(resultedMoviesArray);
+      handleSaveForm({ filmName, shortFilm });
+      handleSetIsProcessing(false);
     }
   }
 
-  // function handleSubmitForMovies(event) {
-  //   event.preventDefault();
-  //   debugger;
-  //   console.log(filmName);
-  //   console.log(String(filmName));
-  //   console.log(String(filmName).length);
-  //   if (String(filmName).length === 0) {
-  //     setErrorText('Нужно ввести ключевое слово');
-  //     return;
-  //   }
-  // console.log(event.target);
-  // console.log(event.target.name);
-  // console.log(event.target.shortFilm);
-  // console.log(event.target.shortFilm.checked);
-  // handleSetIsNothingFound(false);
-  // debugger;
-  // if (!isSearchFormStatesEqual) {
-  // debugger;
-  // handleSetIsProcessing(true);
-  // getMoviesCards()
-  //   .then((moviesCardsData) => {
-  //     let filteredMoviesCardsData;
-  //     if (isShortFilm) {
-  //       filteredMoviesCardsData = moviesCardsData.filter(
-  //         (movieCard) => (Number(movieCard.duration) <= 40),
-  //       );
-  //     } else {
-  //       filteredMoviesCardsData = moviesCardsData;
-  //     }
-  // debugger;
-  // filteredMoviesCardsData = filteredMoviesCardsData.filter(
-  //   (movieCard) => (
-  //     (String(movieCard.nameEN)).toLowerCase().includes((String(filmName)).toLowerCase())
-  //   ) || (
-  //     (String(movieCard.nameRU)).toLowerCase().includes((String(filmName)).toLowerCase())),
-  // );
-  // debugger;
-  // if (!filteredMoviesCardsData.length) {
-  // debugger;
-  // handleSetIsNothingFound(true);
-  // handleSaveArray([]);
-  // } else {
-  // debugger;
-  //           handleSaveArray(filteredMoviesCardsData);
-  //         }
-  //         handleSaveForm({ filmName, isShortFilm });
-  //       })
-  //       .catch((err) => catchResponse(err))
-  //       .finally(() => handleSetIsProcessing(false));
-  //   }
-  // }
-
   function handleShortFilmFilter(event) {
+    debugger;
     const { target: { checked } } = event;
     handleSetIsShortFilmChecked(checked);
-    handleSearchFormChange(event);
+    handleSearchFormChange(event, isSavedMoviesCase);
   }
 
   return (

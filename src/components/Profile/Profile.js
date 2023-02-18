@@ -1,15 +1,19 @@
-// import React from 'react';
+import React from 'react';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 import './Profile.css';
 import Header from '../Header/Header';
 import { regExpConstants } from '../../utils/constants';
-// import CurrentUserContext from '../../contexts/CurrentUserContext';
-const { NAME_PATTERN } = regExpConstants;
+
+const { NAME_PATTERN, EMAIL_PATTERN } = regExpConstants;
 
 function Profile({
-  onSignOut, neededHandlers, profileForm, onProfileChange, onBurgerMenu, isProcessing,
+  onLogout, neededHandlers, profileForm, onProfileChange, onBurgerMenu, isProcessing,
 }) {
   console.log('обращение к компоненту Profile');
+  const currentUser = React.useContext(CurrentUserContext);
+  const currentUserName = currentUser.name || '';
   const {
+    profileValues,
     profileValues: {
       profileName,
       profileEmail,
@@ -22,17 +26,14 @@ function Profile({
     isProfileValuesEqual,
   } = profileForm;
   const { handleProfileFormChange, handleSetIsProcessing /* resetForm */ } = neededHandlers;
-  // const currentUser = React.useContext(CurrentUserContext);
-  // const allContext = React.useContext(CurrentDataContext);
-  console.log('Данные текущего пользователя currentUser внутри Profile:');
+  console.log(profileValues);
+  // console.log('Данные текущего пользователя currentUser внутри Profile:');
   // console.log(currentUser);
   console.log('profileForm:');
   console.log(profileForm);
-  console.log(`profileName - ${profileName}`);
-  console.log(`profileEmail - ${profileEmail}`);
+  // console.log(`profileName - ${profileName}`);
+  // console.log(`profileEmail - ${profileEmail}`);
   console.log(`isProfileValuesEqual - ${isProfileValuesEqual}`);
-  // console.log('Весь контекст:');
-  // console.log(allContext);
 
   function handleSubmit(evt) {
     handleSetIsProcessing(true);
@@ -52,7 +53,7 @@ function Profile({
       <main className="content page_format_side-padding">
         <section className="profile">
           <h2 className="profile__title page_format_all-title">
-            {`Привет, ${profileName}!`}
+            {`Привет, ${currentUserName}!`}
           </h2>
           <form className="profile__form" onSubmit={handleSubmit} noValidate>
             <fieldset className="profile__form-fieldset">
@@ -65,7 +66,6 @@ function Profile({
                   autoComplete="off"
                   type="text"
                   value={profileName}
-                  // defaultValue={currentUser.name}
                   pattern={NAME_PATTERN}
                   onChange={handleProfileFormChange}
                   disabled={isProcessing}
@@ -82,6 +82,7 @@ function Profile({
                   autoComplete="off"
                   type="email"
                   value={profileEmail}
+                  pattern={EMAIL_PATTERN}
                   onChange={handleProfileFormChange}
                   disabled={isProcessing}
                   required />
@@ -100,7 +101,7 @@ function Profile({
               <button
                 className="profile__form-button"
                 type="button"
-                onClick={onSignOut}>
+                onClick={onLogout}>
                 Выйти из аккаунта
               </button>
             </div>

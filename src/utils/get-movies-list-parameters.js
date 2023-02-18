@@ -1,14 +1,39 @@
+import { numberConstants } from './constants';
 // import React from 'react';
 // ToDo: можно попробовать поизголяться с этой конструкцией -
 // window.matchMedia("(min-width: 768px)").matches
 // https://stackoverflow.com/questions/54491645/media-query-syntax-for-reactjs
 
 function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
-  let cardsInRow = 2;
-  let cardsInList = 8;
-  let cardsLoadedByButton = 2;
-  let marginsField = '45px 0 110px';
-  let gridTemplateColumnsField = 'repeat(3, fit-content(360px))';
+  const {
+    CARDS_IN_ROW_FOR_SMALL_DEVICES_1,
+    CARDS_IN_ROW_FOR_MEDIUM_DEVICES,
+    CARDS_IN_ROW_FOR_EXTRA_LARGE_DEVICES,
+    CARDS_IN_LIST_FOR_SMALL_DEVICES_1,
+    CARDS_IN_LIST_FOR_SMALL_DEVICES_2,
+    CARDS_IN_LIST_FOR_MEDIUM_DEVICES,
+    CARDS_IN_LIST_FOR_LARGE_DEVICES,
+    CARDS_IN_LIST_FOR_EXTRA_LARGE_DEVICES,
+    CARDS_LOADED_BY_BUTTON_FOR_SMALL_DEVICES_1,
+    CARDS_LOADED_BY_BUTTON_FOR_SMALL_DEVICES_2,
+    CARDS_LOADED_BY_BUTTON_FOR_EXTRA_LARGE_DEVICES,
+    MARGINS_FIELDS_FOR_SMALL_DEVICES_1,
+    MARGINS_FIELDS_FOR_MEDIUM_DEVICES,
+    MARGINS_FIELDS_FOR_LARGE_DEVICES,
+    GRID_TEMPLATE_COLUMNS_FOR_SMALL_DEVICES_1,
+    GRID_TEMPLATE_COLUMNS_FOR_MEDIUM_DEVICES,
+    GRID_TEMPLATE_COLUMNS_FOR_EXTRA_LARGE_DEVICES,
+    SCREEN_RESOLUTION_FOR_SMALL_DEVICES_1,
+    SCREEN_RESOLUTION_FOR_SMALL_DEVICES_2,
+    SCREEN_RESOLUTION_FOR_MEDIUM_DEVICES,
+    SCREEN_RESOLUTION_FOR_LARGE_DEVICES,
+  } = numberConstants;
+
+  let cardsInRow = CARDS_IN_ROW_FOR_MEDIUM_DEVICES;
+  let cardsInList = CARDS_IN_LIST_FOR_LARGE_DEVICES;
+  let cardsLoadedByButton = CARDS_LOADED_BY_BUTTON_FOR_SMALL_DEVICES_1;
+  let marginsField = MARGINS_FIELDS_FOR_SMALL_DEVICES_1;
+  let gridTemplateColumnsField = GRID_TEMPLATE_COLUMNS_FOR_EXTRA_LARGE_DEVICES;
   let maxClicksOnButton;
 
   const countMaxClicksOnButton = (cardsInListNumber, cardsInRowNumber) => (
@@ -16,36 +41,39 @@ function getMoviesListParameters(windowWidth, filteredMoviesNumber) {
   );
 
   switch (true) {
-    case (windowWidth >= 320) && (windowWidth <= 480):
-      cardsInRow = 1;
-      cardsInList = 5;
+    case (windowWidth >= SCREEN_RESOLUTION_FOR_SMALL_DEVICES_1)
+    && (windowWidth <= SCREEN_RESOLUTION_FOR_SMALL_DEVICES_2): // small 1
+      cardsInRow = CARDS_IN_ROW_FOR_SMALL_DEVICES_1;
+      cardsInList = CARDS_IN_LIST_FOR_SMALL_DEVICES_1;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
-      gridTemplateColumnsField = '1fr';
+      gridTemplateColumnsField = GRID_TEMPLATE_COLUMNS_FOR_SMALL_DEVICES_1;
       break;
-    case (windowWidth > 480) && (windowWidth < 768):
-      cardsInList = 6;
-      marginsField = '75px 0 110px';
+    case (windowWidth > SCREEN_RESOLUTION_FOR_SMALL_DEVICES_2)
+    && (windowWidth < SCREEN_RESOLUTION_FOR_MEDIUM_DEVICES): // medium
+      cardsInList = CARDS_IN_LIST_FOR_MEDIUM_DEVICES;
+      marginsField = MARGINS_FIELDS_FOR_MEDIUM_DEVICES;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
-      gridTemplateColumnsField = 'repeat(2, fit-content(342px))';
+      gridTemplateColumnsField = GRID_TEMPLATE_COLUMNS_FOR_MEDIUM_DEVICES;
       break;
-    case (windowWidth >= 768) && (windowWidth < 1280):
-      marginsField = '65px 0 125px';
+    case (windowWidth >= SCREEN_RESOLUTION_FOR_MEDIUM_DEVICES)
+    && (windowWidth < SCREEN_RESOLUTION_FOR_LARGE_DEVICES): // large
+      marginsField = MARGINS_FIELDS_FOR_LARGE_DEVICES;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
-      gridTemplateColumnsField = 'repeat(2, fit-content(342px))';
+      gridTemplateColumnsField = GRID_TEMPLATE_COLUMNS_FOR_MEDIUM_DEVICES;
       break;
-    case (windowWidth >= 1280):
-      cardsInRow = 3;
-      cardsInList = 12;
-      cardsLoadedByButton = 3;
+    case (windowWidth >= SCREEN_RESOLUTION_FOR_LARGE_DEVICES): // extra large
+      cardsInRow = CARDS_IN_ROW_FOR_EXTRA_LARGE_DEVICES;
+      cardsInList = CARDS_IN_LIST_FOR_EXTRA_LARGE_DEVICES;
+      cardsLoadedByButton = CARDS_LOADED_BY_BUTTON_FOR_EXTRA_LARGE_DEVICES;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
       break;
-    default:
-      cardsInRow = 1;
-      cardsInList = 7;
-      cardsLoadedByButton = 7;
-      marginsField = '45px 0 110px';
+    default: // small 2
+      cardsInRow = CARDS_IN_ROW_FOR_SMALL_DEVICES_1;
+      cardsInList = CARDS_IN_LIST_FOR_SMALL_DEVICES_2;
+      cardsLoadedByButton = CARDS_LOADED_BY_BUTTON_FOR_SMALL_DEVICES_2;
+      marginsField = MARGINS_FIELDS_FOR_SMALL_DEVICES_1;
       maxClicksOnButton = countMaxClicksOnButton(cardsInList, cardsInRow);
-      gridTemplateColumnsField = '1fr';
+      gridTemplateColumnsField = GRID_TEMPLATE_COLUMNS_FOR_SMALL_DEVICES_1;
   }
 
   return {
