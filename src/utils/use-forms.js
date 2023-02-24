@@ -14,8 +14,8 @@ function useForms(localSavedFormState) {
     searchFormValuesForSavedMovies,
     setSearchFormValuesForSavedMovies,
   ] = React.useState({});
-  // console.log('localSavedFormState in use-forms:');
-  // console.log(localSavedFormState);
+  console.log('localSavedFormState in use-forms:');
+  console.log(localSavedFormState);
   // console.log('searchFormValuesForMovies in use-forms:');
   // console.log(searchFormValuesForMovies);
   const [registerValues, setRegisterValues] = React.useState({
@@ -28,9 +28,10 @@ function useForms(localSavedFormState) {
   const [profileValues, setProfileValues] = React.useState({ profileName: '', profileEmail: '' });
   const [formErrors, setFormErrors] = React.useState({});
   const [formIsValid, setFormIsValid] = React.useState(false);
+  const [initialMoviesValues, setInitialMoviesValues] = React.useState(localSavedFormState);
   const [initialSavedMoviesValues, setInitialSavedMoviesValues] = React.useState({});
 
-  const isSearchFormStatesForMoviesEqual = isEqual(localSavedFormState, searchFormValuesForMovies);
+  const isSearchFormStatesForMoviesEqual = isEqual(initialMoviesValues, searchFormValuesForMovies);
   // eslint-disable-next-line max-len
   const isSearchFormStatesForSavedMoviesEqual = isEqual(initialSavedMoviesValues, searchFormValuesForSavedMovies);
   const isProfileValuesEqual = isEqual(initialProfileValues, profileValues);
@@ -41,6 +42,10 @@ function useForms(localSavedFormState) {
 
   const handleSetInitialProfileValues = (profileName, profileEmail) => {
     setInitialProfileValues({ profileName, profileEmail });
+  };
+
+  const handleSetInitialMoviesValues = () => {
+    setInitialMoviesValues(searchFormValuesForMovies);
   };
 
   const handleSetInitialSavedMoviesValues = () => {
@@ -180,6 +185,18 @@ function useForms(localSavedFormState) {
     [setSearchFormValuesForSavedMovies, setFormErrors, setFormIsValid],
   );
 
+  const resetInitialMoviesValues = () => {
+    setInitialMoviesValues({});
+  };
+
+  const resetInitialSavedMoviesValues = () => {
+    setInitialSavedMoviesValues({});
+  };
+
+  const resetInitialProfileValues = () => {
+    setInitialProfileValues({});
+  };
+
   // console.log('Ниже текущие состояние стейта searchFormValuesForMovies внутри хука useForms:');
   // console.log(searchFormValuesForMovies);
   // console.log('registerValues внутри хука useForms:');
@@ -201,6 +218,7 @@ function useForms(localSavedFormState) {
     isSearchFormStatesForSavedMoviesEqual,
     isProfileValuesEqual,
     handleSetInitialProfileValues,
+    handleSetInitialMoviesValues,
     handleSetInitialSavedMoviesValues,
     handleSetProfileValues,
     handleRegisterFormChange,
@@ -212,6 +230,9 @@ function useForms(localSavedFormState) {
     resetProfileForm,
     resetSearchFormForMovies,
     resetSearchFormForSavedMovies,
+    resetInitialMoviesValues,
+    resetInitialSavedMoviesValues,
+    resetInitialProfileValues,
   };
 }
 

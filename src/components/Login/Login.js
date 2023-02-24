@@ -75,7 +75,7 @@ function Login({
         <button
           className={`login__form-button ${(!formIsValid || isProcessing) && 'login__form-button_disabled'}`}
           type="submit"
-          disabled={!formIsValid}
+          disabled={!formIsValid || isProcessing}
         >
           Войти
         </button>

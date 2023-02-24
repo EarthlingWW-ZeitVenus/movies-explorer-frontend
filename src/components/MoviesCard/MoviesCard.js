@@ -8,7 +8,10 @@ function MoviesCard({
   movieInfoObject,
   onOwnMovie,
   isSavedMoviesCase,
+  keyToConsoleLog,
 }) {
+  console.log('что сейчас находится в параметре key внутри MoviesCard:');
+  console.log(keyToConsoleLog);
   console.log('movieInfoObject in MoviesCard');
   console.log(movieInfoObject);
   const isOwned = 'owner' in movieInfoObject;

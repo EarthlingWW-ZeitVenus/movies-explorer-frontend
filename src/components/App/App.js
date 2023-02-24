@@ -26,9 +26,15 @@ import {
   deleteMovie,
   editUser,
   getUser,
+  // getMovies,
 } from '../../utils/MainApi';
 import { textConstants, numberConstants } from '../../utils/constants';
-import { filterShortFilm } from '../../utils/utils';
+import {
+  filterShortFilm,
+  // filterCurrentUserArray,
+  // containsIdInObectsArrayAndReturnIndex,
+  // synchronizeArrays,
+} from '../../utils/utils';
 
 function App() {
   console.log('обращение к компоненту App');
@@ -58,23 +64,30 @@ function App() {
   const [embeddedMessageText, setEmbeddedMessageText] = React.useState('');
   const [currentUser, setCurrentUser] = React.useState({});
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  // const [isArrayJustLoaded, setIsArrayJustLoaded] = React.useState(false);
+  // const [currentUserOwnedArray, setCurrentUserOwnedArray] = React.useState([]);
+  // const [isMayHaveConflictKeys, setIsMayHaveConflictKeys] = React.useState(false);
+  // const [isHaveConflictKeys, setIsHaveConflictKeys] = React.useState(false);
+  // const [numberToConflictCard, setNumberToConflictCard] = React.useState(1);
+  // const [conflictId, setConflictId] = React.useState(0);
 
   const history = useHistory();
 
   const {
-    moviesArray,
-    cachedMoviesArray,
-    ownedMoviesArray,
-    cachedOwnedMoviesArray,
+    array,
+    cachedArray,
+    ownedArray,
+    cachedOwnedArray,
     formState,
-    handleSaveArray,
+    handleSetArray,
     handleSaveCachedArray,
     handleSaveForm,
-    handleSaveOwnedMovies,
-    handleSaveCachedOwnedMovies,
-    handleRemoveArray,
+    handleSetOwnedArray,
+    handleSetCachedOwnedArray,
+    handleResetArray,
     handleRemoveForm,
-    handleRemoveCachedMoviesArray,
+    handleRemoveCachedArray,
+    handleResetCachedOwnedArray,
   } = useLocalStorage();
   const {
     searchFormValuesForMovies,
@@ -88,6 +101,7 @@ function App() {
     isSearchFormStatesForSavedMoviesEqual,
     isProfileValuesEqual,
     handleSetInitialProfileValues,
+    handleSetInitialMoviesValues,
     handleSetInitialSavedMoviesValues,
     handleSetProfileValues,
     handleRegisterFormChange,
@@ -99,30 +113,76 @@ function App() {
     resetProfileForm,
     resetSearchFormForMovies,
     resetSearchFormForSavedMovies,
+    resetInitialMoviesValues,
+    resetInitialSavedMoviesValues,
+    resetInitialProfileValues,
   } = useForms(formState);
 
-  const shortFilm = searchFormValuesForMovies.shortFilm || false;
+  const shortFilmForMovies = searchFormValuesForMovies.shortFilm || false;
+  // const shortFilmForSavedMovies = searchFormValuesForSavedMovies.shortFilm || false;
 
-  const [isShortFilmChecked, setIsShortFilmChecked] = React.useState(shortFilm);
+  const [
+    isShortFilmForMoviesChecked,
+    setIsShortFilmForMoviesChecked,
+  ] = React.useState(shortFilmForMovies);
+  const [
+    isShortFilmForSavedMoviesChecked,
+    setIsShortFilmForSavedMoviesChecked,
+  ] = React.useState(false);
 
-  // console.log('moviesArray in App:');
-  // console.log(moviesArray);
+  // console.log('isMayHaveConflictKeys in App:');
+  // console.log(isMayHaveConflictKeys);
+  // console.log('isHaveConflictKeys in App:');
+  // console.log(isHaveConflictKeys);
+  // eslint-disable-next-line prefer-const
+  // const array1 = [
+  //   { name: 'kitchen', id: 24 },
+  //   { name: 'chair', id: 16 },
+  //   { name: 'amchair', id: 12 },
+  //   { name: 'sofa', id: 10 },
+  //   { name: 'kitchen2', id: 33 },
+  //   { name: 'chair2', id: 16 },
+  //   { name: 'amchair2', id: 17 },
+  //   { name: 'sofa2', id: 4 },
+  // ];
+  // eslint-disable-next-line prefer-const
+  // const array2 = [
+  //   { name: 'goose', id: 7 },
+  //   { name: 'cat', id: 13 },
+  //   { name: 'dog', id: 10 },
+  //   { name: 'mouse', id: 9 },
+  //   { name: 'goose2', id: 17 },
+  //   { name: 'cat2', id: 11 },
+  //   { name: 'dog2', id: 2 },
+  //   { name: 'mouse2', id: 4 },
+  //   { name: 'goose3', id: 14 },
+  //   { name: 'cat3', id: 19 },
+  //   { name: 'dog3', id: 12 },
+  //   { name: 'mouse3', id: 8 },
+  // ];
+  console.log('array in App:');
+  console.log(array);
+  console.log('ownedArray in App:');
+  console.log(ownedArray);
+  // console.log('synchronizeArrays in App:');
+  // console.log(synchronizeArrays(array1, array2));
+
   // console.log('formState in App:');
   // console.log(formState);
-  // console.log('currentUser in App:');
-  // console.log(currentUser);
+  console.log('currentUser in App:');
+  console.log(currentUser);
   // console.log('ownedMoviesArray in App:');
   // console.log(ownedMoviesArray);
   // console.log('shortFilm in App:');
   // console.log(shortFilm);
 
   // Логика подготовки массивов для отображения, в зависимости от переключателя "короткометражки"
-  const moviesArrayToDisplay = isShortFilmChecked
-    ? filterShortFilm(moviesArray, SHORT_FILM_MAX_DURATION) : moviesArray;
-  const ownedMoviesArrayToDisplay = isShortFilmChecked
-    ? filterShortFilm(ownedMoviesArray, SHORT_FILM_MAX_DURATION) : ownedMoviesArray;
-  const cachedOwnedMoviesArrayToDisplay = isShortFilmChecked
-    ? filterShortFilm(cachedOwnedMoviesArray, SHORT_FILM_MAX_DURATION) : cachedOwnedMoviesArray;
+  const arrayToDisplay = isShortFilmForMoviesChecked
+    ? filterShortFilm(array, SHORT_FILM_MAX_DURATION) : array;
+  const ownedArrayToDisplay = isShortFilmForSavedMoviesChecked
+    ? filterShortFilm(ownedArray, SHORT_FILM_MAX_DURATION) : ownedArray;
+  const cachedOwnedArrayToDisplay = isShortFilmForSavedMoviesChecked
+    ? filterShortFilm(cachedOwnedArray, SHORT_FILM_MAX_DURATION) : cachedOwnedArray;
 
   // Хэндлеры
   const handleBurgerMenuClick = () => {
@@ -137,9 +197,19 @@ function App() {
   const handleSetCurrentUser = (currentUserData) => {
     setCurrentUser(currentUserData);
   };
-  const handleSetIsShortFilmChecked = (isChecked) => {
-    setIsShortFilmChecked(isChecked);
+  const handleSetIsShortFilmChecked = (isChecked, isSavedMoviesCase) => {
+    if (isSavedMoviesCase) {
+      setIsShortFilmForSavedMoviesChecked(isChecked);
+    } else {
+      setIsShortFilmForMoviesChecked(isChecked);
+    }
   };
+  // const handleSetIsArrayJustLoaded = (isJustLoaded) => {
+  //   setIsArrayJustLoaded(isJustLoaded);
+  // };
+  // const handleSetIsMayHaveConflictKeys = (isMayHave) => {
+  //   setIsMayHaveConflictKeys(isMayHave);
+  // };
 
   // Функции
   // Обработка ошибок
@@ -164,6 +234,9 @@ function App() {
   };
   // Добавление/удаление фильма в/из сохраненные
   async function handleOwnMovie(movieInfoObject) {
+    debugger;
+    /* **************************** */
+    // Логика удаление фильма/лайка
     if ('owner' in movieInfoObject) {
       try {
         // debugger;
@@ -171,12 +244,18 @@ function App() {
         const response = await deleteMovie(movieInfoObject._id);
         // console.log(response);
         const { owner, ...movieInfoObjectWithoutOwner } = movieInfoObject;
-        const newMoviesArray = moviesArray.map((mai) => (
+        const newArray = array.map((mai) => (
           mai.id === movieInfoObject.id ? movieInfoObjectWithoutOwner : mai));
-        handleSaveArray(newMoviesArray);
-        const newOwnedMoviesArray = ownedMoviesArray.filter((omai) => (
+        handleSetArray(newArray);
+        const newCachedArray = cachedArray.map((cmai) => (
+          cmai.id === movieInfoObject.id ? movieInfoObjectWithoutOwner : cmai));
+        handleSaveCachedArray(newCachedArray);
+        const newOwnedArray = ownedArray.filter((omai) => (
           omai._id !== movieInfoObject._id));
-        handleSaveOwnedMovies(newOwnedMoviesArray);
+        handleSetOwnedArray(newOwnedArray);
+        const newCachedOwnedArray = cachedOwnedArray.filter((comai) => (
+          comai._id !== movieInfoObject._id));
+        handleSetCachedOwnedArray(newCachedOwnedArray);
         setInfotooltipData({
           message: `Операция выполнена - ${response.message}`,
           isError: false,
@@ -185,10 +264,56 @@ function App() {
       } catch (error) {
         catchResponse(error);
       }
+    /* **************************** */
+    // Логика добавления фильма/лайка
     } else {
       try {
+        debugger;
+        console.log(movieInfoObject);
+
+        // Код в случае содержания конфликтных id (ключей)
+        // let isContainConflict = false;
+        // let indexOfConflictObject;
         // debugger;
-        // console.log(movieInfoObject);
+        // if (isMayHaveConflictKeys && cachedOwnedMoviesArray.length !== 0) {
+        //   const conflictResponse = containsIdInObectsArrayAndReturnIndex(
+        //     cachedOwnedMoviesArray,
+        //     movieInfoObject.id,
+        //   );
+        //   isContainConflict = conflictResponse.isContainConflictId;
+        //   indexOfConflictObject = isContainConflict && conflictResponse.indexOfConflictObject;
+        //   console.log(cachedOwnedMoviesArray[indexOfConflictObject]);
+        //   console.log(cachedOwnedMoviesArray[indexOfConflictObject].owner);
+        //   console.log(cachedOwnedMoviesArray[indexOfConflictObject].owner.email);
+        //   debugger;
+        //   if (isContainConflict) {
+        //     setConflictId(movieInfoObject.id);
+        // Случай, когда пользователь тот-же
+        // if (currentUser.email === cachedOwnedMoviesArray[indexOfConflictObject].owner.email) {
+        //   const newCachedMoviesArray = cachedMoviesArray.map((cmai) => (
+        //     cmai.id === cachedOwnedMoviesArray[indexOfConflictObject].id
+        //       ? cachedOwnedMoviesArray[indexOfConflictObject] : cmai
+        //   ));
+        //   handleSaveCachedArray(newCachedMoviesArray);
+        //   const newMoviesArray = moviesArray.map((mai) => (
+        //     mai.id === cachedOwnedMoviesArray[indexOfConflictObject].id
+        //       ? cachedOwnedMoviesArray[indexOfConflictObject] : mai
+        //   ));
+        //   handleSaveArray(newMoviesArray);
+        //   return;
+        // }
+        // Случай, когда пользователь другой
+        // setIsHaveConflictKeys(true);
+        // return;
+        // setNumberToConflictCard(
+        //   getNumberOfSameIdObjects(cachedOwnedMoviesArray, movieInfoObject.id) + 1,
+        // );
+        // return;
+        // }
+        // setIsHaveConflictKeys(false);
+        // setIsMayHaveConflictKeys(false);
+        // }
+
         const {
           country, director, duration, year, description, nameRU, nameEN, id,
         } = movieInfoObject;
@@ -212,10 +337,16 @@ function App() {
         );
         // console.log(response);
         // console.log(response.data);
-        const newMoviesArray = moviesArray.map((mai) => (
+        const newCachedArray = cachedArray.map((cmai) => (
+          cmai.id === movieInfoObject.id ? response.data : cmai));
+        handleSaveCachedArray(newCachedArray);
+        const newArray = array.map((mai) => (
           mai.id === movieInfoObject.id ? response.data : mai));
-        handleSaveArray(newMoviesArray);
-        handleSaveOwnedMovies([...ownedMoviesArray, response.data]);
+        handleSetArray(newArray);
+        handleSetOwnedArray([...ownedArray, response.data]);
+        handleSetCachedOwnedArray([...cachedOwnedArray, response.data]);
+        // setIsHaveConflictKeys(false);
+        // setIsMayHaveConflictKeys(false);
       } catch (error) {
         // debugger;
         // console.log(error);
@@ -226,6 +357,7 @@ function App() {
   // Регистрация пользователя
   function onRegister(registerName, registerEmail, registerPassword) {
     setEmbeddedMessageText('');
+    handleSetIsProcessing(true);
     register(registerName, registerEmail, registerPassword)
       .then((res) => {
         // console.log(res.data);
@@ -246,11 +378,13 @@ function App() {
             setEmbeddedMessageText(jsonErr.message);
           });
         }
-      });
+      })
+      .finally(() => handleSetIsProcessing(false));
   }
   // Вход пользователя
   function onLogin(loginEmail, loginPassword) {
     setEmbeddedMessageText('');
+    handleSetIsProcessing(true);
     login(loginEmail, loginPassword)
       .then((res) => {
         // console.log(res);
@@ -272,39 +406,56 @@ function App() {
           // console.log(jsonErr);
           setEmbeddedMessageText(jsonErr.message);
         });
-      });
+      })
+      .finally(() => handleSetIsProcessing(false));
   }
   // Выход пользователя
   function onLogout() {
+    handleSetIsProcessing(true);
     logout()
       .then((res) => {
         // debugger;
         // console.log(res);
         setIsLoggedIn(false);
-        handleRemoveArray();
+        // handleRemoveArray();
         // console.log('Всё содержимое хранилища localStorage после handleRemoveArray():');
         // eslint-disable-next-line no-undef
         // console.log(JSON.stringify(window.localStorage, null, 2));
         // debugger;
         handleRemoveForm();
-        handleRemoveCachedMoviesArray();
+        handleResetArray();
+        handleRemoveCachedArray();
+        handleResetCachedOwnedArray();
         resetSearchFormForMovies();
         resetSearchFormForSavedMovies();
         resetRegisterForm();
         resetLoginForm();
         resetProfileForm();
+        resetInitialMoviesValues();
+        resetInitialSavedMoviesValues();
+        resetInitialProfileValues();
         setCurrentUser({});
         // console.log('Всё содержимое хранилища localStorage после handleRemoveForm():');
         // eslint-disable-next-line no-undef
         // console.log(JSON.stringify(window.localStorage, null, 2));
         // debugger;
         history.push('/');
+        // debugger;
         setInfotooltipData({ message: String(res.message), isError: false });
         setIsInfotooltipPopupOpen(true);
-      });
+      })
+      .catch((err) => {
+        // console.log(err);
+        setInfotooltipData(
+          { message: `При выходе из профиля произошла ошибка - ${err}`, isError: true },
+        );
+        setIsInfotooltipPopupOpen(true);
+      })
+      .finally(() => handleSetIsProcessing(false));
   }
   // Изменеие данных профиля пользователя
   function onProfileChange(email, name) {
+    handleSetIsProcessing(true);
     editUser(email, name)
       .then((res) => {
         // console.log(res);
@@ -323,7 +474,8 @@ function App() {
           { message: `При изменении профиля произошла ошибка - ${err}`, isError: true },
         );
         setIsInfotooltipPopupOpen(true);
-      });
+      })
+      .finally(() => handleSetIsProcessing(false));
   }
 
   // function checkToken() {
@@ -345,11 +497,12 @@ function App() {
 
   // Хук авто-авторизации пользователя
   React.useEffect(() => {
+    // setIsMayHaveConflictKeys(true);
     // console.log(getUser);
     // console.log('Запрос внутри хука авто-авторизации пользователя');
     // eslint-disable-next-line no-undef
     // console.log(window.location.pathname);
-    // debugger;
+    debugger;
     getUser()
       .then((res) => {
         // console.log(res);
@@ -369,15 +522,33 @@ function App() {
       });
   }, [history]);
 
+  // React.useEffect(() => {
+  //   debugger;
+  //   if (isArrayJustLoaded) {
+  //     getMovies()
+  //       .then((res) => {
+  //         if (res.data.length) {
+  //           handleSetCachedOwnedArray(filterCurrentUserArray(currentUser.email, res.data));
+  //           handleSetOwnedArray(filterCurrentUserArray(currentUser.email, res.data));
+  //           handleSaveCachedArray(synchronizeArrays(cachedArray, res.data));
+  //           handleSetArray(synchronizeArrays(array, res.data));
+  //         }
+  // handleSaveCachedOwnedMovies(res.data);
+  // handleSaveOwnedMovies(res.data);
+  //       })
+  //       .catch((err) => catchResponse(err));
+  //   }
+  // }, [isArrayJustLoaded]);
+
   return (
     <CurrentDataContext.Provider value={{
       isLoggedIn,
-      moviesArrayToDisplay,
-      ownedMoviesArray,
-      ownedMoviesArrayToDisplay,
-      cachedMoviesArray,
-      // cachedOwnedMoviesArray,
-      cachedOwnedMoviesArrayToDisplay,
+      arrayToDisplay,
+      ownedArray,
+      ownedArrayToDisplay,
+      cachedArray,
+      cachedOwnedArray,
+      cachedOwnedArrayToDisplay,
     }}>
 
       <CurrentUserContext.Provider value={currentUser}>
@@ -399,6 +570,11 @@ function App() {
             // checkToken={checkToken}
             // shortFilm={shortFilm}
             catchResponse={catchResponse}
+            // forConflictCard={{
+            //   isHaveConflictKeys,
+            //   conflictId,
+            //   // numberToConflictCard,
+            // }}
             // moviesArray={moviesArray}
             onBurgerMenu={handleBurgerMenuClick}
             colorThemeDark={false}
@@ -413,13 +589,17 @@ function App() {
             neededHandlers={{
               handleSetIsProcessing,
               handleSetIsNothingFound,
-              handleSaveArray,
+              handleSetArray,
               handleSaveForm,
               handleSearchFormChange,
               handleOwnMovie,
               // handleSaveFilteredMoviesArray,
               handleSetIsShortFilmChecked,
               handleSaveCachedArray,
+              // handleSetIsArrayJustLoaded,
+              handleSetInitialMoviesValues,
+              handleSetInitialSavedMoviesValues,
+              // handleSetIsMayHaveConflictKeys,
             }}
           />
 
@@ -430,6 +610,11 @@ function App() {
             // checkToken={checkToken}
             // shortFilm={shortFilm}
             catchResponse={catchResponse}
+            // forConflictCard={{
+            //   isHaveConflictKeys,
+            //   // conflictId,
+            //   // numberToConflictCard,
+            // }}
             // ownedMoviesArray={ownedMoviesArray}
             onBurgerMenu={handleBurgerMenuClick}
             colorThemeDark={false}
@@ -440,18 +625,21 @@ function App() {
             searchForm={{
               searchFormValuesForSavedMovies,
               isSearchFormStatesForSavedMoviesEqual,
+              resetSearchFormForSavedMovies,
             }}
             neededHandlers={{
               handleSetIsProcessing,
               handleSetIsNothingFound,
-              handleSaveArray,
+              handleSetArray,
               handleSaveForm,
               handleSearchFormChange,
               handleOwnMovie,
-              handleSaveOwnedMovies,
-              handleSaveCachedOwnedMovies,
+              handleSetOwnedArray,
+              handleSetCachedOwnedArray,
               handleSetIsShortFilmChecked,
+              handleSetInitialMoviesValues,
               handleSetInitialSavedMoviesValues,
+              // handleSetIsArrayJustLoaded,
             }}
           />
 

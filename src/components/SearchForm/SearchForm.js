@@ -1,9 +1,10 @@
 import React from 'react';
 import CurrentDataContext from '../../contexts/CurrentDataContext';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 import './SearchForm.css';
 import ShortFilmCheckbox from '../ShortFilmCheckbox/ShortFilmCheckbox';
 import getMoviesCards from '../../utils/MoviesApi';
-import { filterNameFilm } from '../../utils/utils';
+import { filterNameFilm, synchronizeArrays, filterCurrentUserArray } from '../../utils/utils';
 
 function SearchForm({
   catchResponse,
@@ -16,18 +17,23 @@ function SearchForm({
 
   const [errorText, setErrorText] = React.useState('');
 
+  const { email } = React.useContext(CurrentUserContext);
   const {
-    ownedMoviesArrayToDisplay,
-    cachedMoviesArray,
-    cachedOwnedMoviesArrayToDisplay,
+    ownedArrayToDisplay,
+    cachedArray,
+    cachedOwnedArray,
+    cachedOwnedArrayToDisplay,
   } = React.useContext(CurrentDataContext);
   const searchFormValues = isSavedMoviesCase
     ? searchForm.searchFormValuesForSavedMovies : searchForm.searchFormValuesForMovies;
   const isSearchFormStatesEqual = isSavedMoviesCase
     ? searchForm.isSearchFormStatesForSavedMoviesEqual
     : searchForm.isSearchFormStatesForMoviesEqual;
-  // console.log(searchFormValues);
+  console.log('searchFormValues');
+  console.log(searchFormValues);
   const { filmName = '', shortFilm = false } = searchFormValues;
+  console.log(`filmName - ${filmName}`);
+  console.log(`shortFilm - ${shortFilm}`);
   // console.log(`значение isSearchFormStatesEqual - ${isSearchFormStatesEqual}`);
   const {
     handleSetIsProcessing,
@@ -35,11 +41,14 @@ function SearchForm({
     handleSaveForm,
     handleSearchFormChange,
     handleSetIsShortFilmChecked,
+    handleSetInitialMoviesValues,
     handleSetInitialSavedMoviesValues,
     handleSaveCachedArray,
+    // handleSetIsArrayJustLoaded,
+    // handleSetIsMayHaveConflictKeys,
   } = neededHandlers;
   const handleNeededSaveArray = isSavedMoviesCase
-    ? neededHandlers.handleSaveOwnedMovies : neededHandlers.handleSaveArray;
+    ? neededHandlers.handleSetOwnedArray : neededHandlers.handleSetArray;
   // console.log(handleNeededSaveArray);
 
   // console.log('Ниже текущие состояние стейта filmName из хука useForms внутри SearchForm:');
@@ -56,27 +65,33 @@ function SearchForm({
   // Общий сабмит для фильмов и сохраненных фильмов
   function handleSubmitForMovies(event) {
     event.preventDefault();
-    // debugger;
+    debugger;
     handleSetIsNothingFound(false);
     if (isSearchFormStatesEqual) {
-      setErrorText('Такой запрос только что был выполнен, введите другую комбинацию символов');
+      // setErrorText('Такой запрос только что был выполнен, введите другую комбинацию символов');
       return;
     }
     let resultedMoviesArray;
     /* ************************************** */
     // Логика фильтрации для сохраненных фильмов
     if (isSavedMoviesCase) {
+      debugger;
       if (String(filmName).length === 0) {
-        handleNeededSaveArray(cachedOwnedMoviesArrayToDisplay);
+        handleNeededSaveArray(cachedOwnedArrayToDisplay);
         return;
       }
       handleSetIsProcessing(true);
-      resultedMoviesArray = filterNameFilm(ownedMoviesArrayToDisplay, filmName);
+      debugger;
+      console.log('Значение массива сохраненных фильмов на входе:');
+      console.log(ownedArrayToDisplay);
+      resultedMoviesArray = filterNameFilm(ownedArrayToDisplay, filmName);
+      console.log('Значение массива сохраненных фильмов на выходе:');
+      console.log(resultedMoviesArray);
       if (!resultedMoviesArray.length) {
         handleNeededSaveArray([]);
-        handleSetIsProcessing(false);
         handleSetIsNothingFound(true);
         handleSetInitialSavedMoviesValues();
+        handleSetIsProcessing(false);
         return;
       }
       handleNeededSaveArray(resultedMoviesArray);
@@ -86,46 +101,78 @@ function SearchForm({
       /* ************************** */
       // Логика фильтрации для фильмов
     } else {
+      debugger;
       if (String(filmName).length === 0) {
         setErrorText('Нужно ввести ключевое слово');
         return;
       }
       handleSetIsProcessing(true);
-      if (!cachedMoviesArray.length) {
+      if (!cachedArray.length) {
+        // Запрос за данными с сервера
         getMoviesCards()
           .then((moviesCardsData) => {
-            handleSaveCachedArray(moviesCardsData);
-            // экспериментальный код
-            // let moviesCardsDataWithOwner;
-            // ownedMoviesArray.forEach((omai) => {
-            //   moviesCardsDataWithOwner = moviesCardsData.map((mcdi) => (
-            //     mcdi.id === omai.id ? omai : mcdi));
-            // });
-            // console.log(moviesCardsDataWithOwner);
             // debugger;
             resultedMoviesArray = filterNameFilm(moviesCardsData, filmName);
             if (!resultedMoviesArray.length) {
               handleNeededSaveArray([]);
+              handleSaveForm({ filmName, shortFilm });
+              handleSetInitialMoviesValues();
               handleSetIsProcessing(false);
               handleSetIsNothingFound(true);
               return;
             }
-            handleNeededSaveArray(resultedMoviesArray);
+            if (cachedOwnedArray.length) {
+              console.log('moviesCardsData:');
+              console.log(moviesCardsData);
+              console.log('filterCurrentUserArray(email, cachedOwnedArray):');
+              console.log(filterCurrentUserArray(email, cachedOwnedArray));
+              console.log('synchro result:');
+              // eslint-disable-next-line max-len
+              console.log(synchronizeArrays(moviesCardsData, filterCurrentUserArray(email, cachedOwnedArray)));
+              console.log('*************************************************');
+              console.log('resultedMoviesArray:');
+              console.log(resultedMoviesArray);
+              console.log('filterCurrentUserArray(email, cachedOwnedArray):');
+              console.log(filterCurrentUserArray(email, cachedOwnedArray));
+              console.log('synchro result2:');
+              // eslint-disable-next-line max-len
+              console.log(synchronizeArrays(resultedMoviesArray, filterCurrentUserArray(email, cachedOwnedArray)));
+              // debugger;
+              handleSaveCachedArray(
+                synchronizeArrays(moviesCardsData, filterCurrentUserArray(email, cachedOwnedArray)),
+              );
+              handleNeededSaveArray(
+                synchronizeArrays(
+                  resultedMoviesArray,
+                  filterCurrentUserArray(email, cachedOwnedArray),
+                ),
+              );
+            } else {
+              handleSaveCachedArray(moviesCardsData);
+              handleNeededSaveArray(resultedMoviesArray);
+            }
             handleSaveForm({ filmName, shortFilm });
+            handleSetInitialMoviesValues();
+            // handleSetIsArrayJustLoaded(true);
           })
           .catch((err) => catchResponse(err))
           .finally(() => handleSetIsProcessing(false));
         return;
       }
-      resultedMoviesArray = filterNameFilm(cachedMoviesArray, filmName);
+      // Запрос закэшированных данных
+      debugger;
+      resultedMoviesArray = filterNameFilm(cachedArray, filmName);
       if (!resultedMoviesArray.length) {
         handleNeededSaveArray([]);
+        handleSaveForm({ filmName, shortFilm });
+        handleSetInitialMoviesValues();
         handleSetIsProcessing(false);
         handleSetIsNothingFound(true);
         return;
       }
       handleNeededSaveArray(resultedMoviesArray);
       handleSaveForm({ filmName, shortFilm });
+      handleSetInitialMoviesValues();
       handleSetIsProcessing(false);
     }
   }
@@ -133,7 +180,7 @@ function SearchForm({
   function handleShortFilmFilter(event) {
     debugger;
     const { target: { checked } } = event;
-    handleSetIsShortFilmChecked(checked);
+    handleSetIsShortFilmChecked(checked, isSavedMoviesCase);
     handleSearchFormChange(event, isSavedMoviesCase);
   }
 

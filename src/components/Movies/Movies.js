@@ -14,12 +14,13 @@ function Movies({
   commonProcessStates,
   searchForm,
   neededHandlers,
+  // forConflictCard,
 }) {
-  const { moviesArrayToDisplay } = React.useContext(CurrentDataContext);
-  // console.log('moviesArrayToDisplay in Movies.js:');
-  // console.log(moviesArrayToDisplay);
-  const { handleOwnMovie, ...otherNeededHandlers } = neededHandlers;
-  // console.log('обращение к компоненту Movies');
+  console.log('обращение к компоненту Movies');
+  const { arrayToDisplay } = React.useContext(CurrentDataContext);
+  console.log('arrayToDisplay in Movies.js:');
+  console.log(arrayToDisplay);
+  const { handleOwnMovie, handleSetIsNothingFound, ...otherNeededHandlers } = neededHandlers;
   const { isProcessing, isNothingFound } = commonProcessStates;
   // console.log('isProcessing внутри компонента Movies:');
   // console.log(isProcessing);
@@ -34,10 +35,21 @@ function Movies({
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
     return (<MoviesCardList
-      moviesArray={moviesArrayToDisplay}
+      // forConflictCard={forConflictCard}
+      moviesArray={arrayToDisplay}
       onOwnMovie={handleOwnMovie}
       isSavedMoviesCase={false}/>);
   }
+
+  // Хук исправляющий ситуацию, когда после перехода из другого компонента
+  // (где было ничего не найдено) в текущем компоненте отображается "ничего не найдено"
+  React.useEffect(() => {
+    console.log('сработал хук эффекта внутри movies');
+    // debugger;
+    if (isNothingFound && Boolean(arrayToDisplay.length)) {
+      handleSetIsNothingFound(false);
+    }
+  }, [isNothingFound]);
 
   return (
     <>
@@ -46,7 +58,7 @@ function Movies({
         <SearchForm
           catchResponse={catchResponse}
           searchForm={searchForm}
-          neededHandlers={{ ...otherNeededHandlers }}
+          neededHandlers={{ ...otherNeededHandlers, handleSetIsNothingFound }}
           isSavedMoviesCase={false}
           isProcessing={isProcessing} />
         {whichElementToDisplay()}

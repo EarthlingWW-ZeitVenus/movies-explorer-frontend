@@ -101,7 +101,8 @@ function Profile({
               <button
                 className="profile__form-button"
                 type="button"
-                onClick={onLogout}>
+                onClick={onLogout}
+                disabled={isProcessing}>
                 Выйти из аккаунта
               </button>
             </div>
