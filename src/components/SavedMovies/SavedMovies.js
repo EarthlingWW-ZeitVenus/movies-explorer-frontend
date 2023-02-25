@@ -34,7 +34,7 @@ function SavedMovies({
     handleSetIsShortFilmChecked,
     ...otherNeededHandlers
   } = neededHandlers;
-  const { email } = currentUser;
+  // const { email } = currentUser;
 
   const { resetSearchFormForSavedMovies } = searchForm;
 
@@ -53,7 +53,7 @@ function SavedMovies({
   }
 
   React.useEffect(() => {
-    // debugger;
+    debugger;
     console.log('запрос за сохраненными фильмами внутри SavedMovies.js');
     resetSearchFormForSavedMovies();
     handleSetIsShortFilmChecked(false, true);
@@ -63,13 +63,13 @@ function SavedMovies({
           // В кэшированном отобранном массиве содержатся карточки всех
           // пользователей, а уже дальше я накладываю функции-фильтры на него.
           handleSetCachedOwnedArray(res.data);
-          handleSetOwnedArray(filterCurrentUserArray(email, res.data));
+          handleSetOwnedArray(filterCurrentUserArray(currentUser, res.data));
           // handleSaveCachedOwnedMovies(res.data);
           // handleSaveOwnedMovies(res.data);
         })
         .catch((err) => catchResponse(err));
     } else {
-      handleSetOwnedArray(filterCurrentUserArray(email, cachedOwnedArray));
+      handleSetOwnedArray(filterCurrentUserArray(currentUser, cachedOwnedArray));
     }
   }, []);
 

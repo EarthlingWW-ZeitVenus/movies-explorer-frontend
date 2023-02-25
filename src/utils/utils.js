@@ -52,8 +52,9 @@ function synchronizeArrays(objectsArray1, objectsArray2) {
   return newArray;
 }
 
-function filterCurrentUserArray(userEmail, arrayToFilter) {
-  return arrayToFilter.filter((atfi) => atfi.owner.email === userEmail);
+function filterCurrentUserArray(currentUser, arrayToFilter) {
+  return arrayToFilter.filter((atfi) => ((atfi.owner.email === currentUser.email)
+  || (atfi.owner) === currentUser._id));
 }
 
 export {

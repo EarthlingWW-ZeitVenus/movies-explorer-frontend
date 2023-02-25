@@ -17,7 +17,7 @@ function SearchForm({
 
   const [errorText, setErrorText] = React.useState('');
 
-  const { email } = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
   const {
     ownedArrayToDisplay,
     cachedArray,
@@ -124,27 +124,30 @@ function SearchForm({
             if (cachedOwnedArray.length) {
               console.log('moviesCardsData:');
               console.log(moviesCardsData);
-              console.log('filterCurrentUserArray(email, cachedOwnedArray):');
-              console.log(filterCurrentUserArray(email, cachedOwnedArray));
+              console.log('filterCurrentUserArray(currentUser, cachedOwnedArray):');
+              console.log(filterCurrentUserArray(currentUser, cachedOwnedArray));
               console.log('synchro result:');
               // eslint-disable-next-line max-len
-              console.log(synchronizeArrays(moviesCardsData, filterCurrentUserArray(email, cachedOwnedArray)));
+              console.log(synchronizeArrays(moviesCardsData, filterCurrentUserArray(currentUser, cachedOwnedArray)));
               console.log('*************************************************');
               console.log('resultedMoviesArray:');
               console.log(resultedMoviesArray);
-              console.log('filterCurrentUserArray(email, cachedOwnedArray):');
-              console.log(filterCurrentUserArray(email, cachedOwnedArray));
+              console.log('filterCurrentUserArray(currentUser, cachedOwnedArray):');
+              console.log(filterCurrentUserArray(currentUser, cachedOwnedArray));
               console.log('synchro result2:');
               // eslint-disable-next-line max-len
-              console.log(synchronizeArrays(resultedMoviesArray, filterCurrentUserArray(email, cachedOwnedArray)));
+              console.log(synchronizeArrays(resultedMoviesArray, filterCurrentUserArray(currentUser, cachedOwnedArray)));
               // debugger;
               handleSaveCachedArray(
-                synchronizeArrays(moviesCardsData, filterCurrentUserArray(email, cachedOwnedArray)),
+                synchronizeArrays(
+                  moviesCardsData,
+                  filterCurrentUserArray(currentUser, cachedOwnedArray),
+                ),
               );
               handleNeededSaveArray(
                 synchronizeArrays(
                   resultedMoviesArray,
-                  filterCurrentUserArray(email, cachedOwnedArray),
+                  filterCurrentUserArray(currentUser, cachedOwnedArray),
                 ),
               );
             } else {

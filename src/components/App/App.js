@@ -239,7 +239,7 @@ function App() {
     // Логика удаление фильма/лайка
     if ('owner' in movieInfoObject) {
       try {
-        // debugger;
+        debugger;
         // console.log(movieInfoObject);
         const response = await deleteMovie(movieInfoObject._id);
         // console.log(response);
@@ -336,14 +336,27 @@ function App() {
           nameEN,
         );
         // console.log(response);
-        // console.log(response.data);
+        console.log('response.data');
+        console.log(response.data);
         const newCachedArray = cachedArray.map((cmai) => (
           cmai.id === movieInfoObject.id ? response.data : cmai));
+        console.log('cachedArray');
+        console.log(cachedArray);
+        console.log('newCachedArray');
+        console.log(newCachedArray);
         handleSaveCachedArray(newCachedArray);
         const newArray = array.map((mai) => (
           mai.id === movieInfoObject.id ? response.data : mai));
+        console.log('array');
+        console.log(array);
+        console.log('newArray');
+        console.log(newArray);
         handleSetArray(newArray);
         handleSetOwnedArray([...ownedArray, response.data]);
+        console.log('ownedArray');
+        console.log(ownedArray);
+        console.log('cachedOwnedArray');
+        console.log(cachedOwnedArray);
         handleSetCachedOwnedArray([...cachedOwnedArray, response.data]);
         // setIsHaveConflictKeys(false);
         // setIsMayHaveConflictKeys(false);
@@ -403,7 +416,7 @@ function App() {
         // console.log(err.body);
         // console.log(err.json());
         err.json().then((jsonErr) => {
-          // console.log(jsonErr);
+          console.log(jsonErr);
           setEmbeddedMessageText(jsonErr.message);
         });
       })
