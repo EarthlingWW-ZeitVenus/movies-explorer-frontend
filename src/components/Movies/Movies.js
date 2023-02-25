@@ -44,12 +44,16 @@ function Movies({
   // Хук исправляющий ситуацию, когда после перехода из другого компонента
   // (где было ничего не найдено) в текущем компоненте отображается "ничего не найдено"
   React.useEffect(() => {
+    debugger;
     console.log('сработал хук эффекта внутри movies');
-    // debugger;
-    if (isNothingFound && Boolean(arrayToDisplay.length)) {
+    if (isNothingFound) {
       handleSetIsNothingFound(false);
     }
-  }, [isNothingFound]);
+    // console.log(Boolean(arrayToDisplay.length));
+    // if (isNothingFound && Boolean(arrayToDisplay.length)) {
+    //   handleSetIsNothingFound(false);
+    // }
+  }, []);
 
   return (
     <>

@@ -32,6 +32,7 @@ function SavedMovies({
     handleSetOwnedArray,
     handleSetCachedOwnedArray,
     handleSetIsShortFilmChecked,
+    handleSetIsNothingFound,
     ...otherNeededHandlers
   } = neededHandlers;
   // const { email } = currentUser;
@@ -57,6 +58,9 @@ function SavedMovies({
     console.log('запрос за сохраненными фильмами внутри SavedMovies.js');
     resetSearchFormForSavedMovies();
     handleSetIsShortFilmChecked(false, true);
+    if (isNothingFound) {
+      handleSetIsNothingFound(false);
+    }
     if (!cachedOwnedArray.length) {
       getMovies()
         .then((res) => {
@@ -83,7 +87,12 @@ function SavedMovies({
           isProcessing={isProcessing}
           searchForm={searchForm}
           neededHandlers={
-            { ...otherNeededHandlers, handleSetOwnedArray, handleSetIsShortFilmChecked }} />
+            {
+              ...otherNeededHandlers,
+              handleSetOwnedArray,
+              handleSetIsShortFilmChecked,
+              handleSetIsNothingFound,
+            }} />
         {whichElementToDisplay()}
       </main>
       <Footer />

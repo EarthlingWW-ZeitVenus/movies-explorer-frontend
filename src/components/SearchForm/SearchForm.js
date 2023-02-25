@@ -77,7 +77,7 @@ function SearchForm({
     if (isSavedMoviesCase) {
       debugger;
       if (String(filmName).length === 0) {
-        handleNeededSaveArray(cachedOwnedArrayToDisplay);
+        handleNeededSaveArray(filterCurrentUserArray(currentUser, cachedOwnedArrayToDisplay));
         return;
       }
       handleSetIsProcessing(true);
@@ -111,6 +111,16 @@ function SearchForm({
         // Запрос за данными с сервера
         getMoviesCards()
           .then((moviesCardsData) => {
+            if (cachedOwnedArray.length) {
+              handleSaveCachedArray(
+                synchronizeArrays(
+                  moviesCardsData,
+                  filterCurrentUserArray(currentUser, cachedOwnedArray),
+                ),
+              );
+            } else {
+              handleSaveCachedArray(moviesCardsData);
+            }
             // debugger;
             resultedMoviesArray = filterNameFilm(moviesCardsData, filmName);
             if (!resultedMoviesArray.length) {
@@ -138,12 +148,6 @@ function SearchForm({
               // eslint-disable-next-line max-len
               console.log(synchronizeArrays(resultedMoviesArray, filterCurrentUserArray(currentUser, cachedOwnedArray)));
               // debugger;
-              handleSaveCachedArray(
-                synchronizeArrays(
-                  moviesCardsData,
-                  filterCurrentUserArray(currentUser, cachedOwnedArray),
-                ),
-              );
               handleNeededSaveArray(
                 synchronizeArrays(
                   resultedMoviesArray,
@@ -151,7 +155,6 @@ function SearchForm({
                 ),
               );
             } else {
-              handleSaveCachedArray(moviesCardsData);
               handleNeededSaveArray(resultedMoviesArray);
             }
             handleSaveForm({ filmName, shortFilm });
