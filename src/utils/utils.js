@@ -25,15 +25,6 @@ function filterNameFilm(moviesArray, filmName) {
   return filteredMoviesArray;
 }
 
-function containsIdInObectsArrayAndReturnIndex(objectsArray, objectId) {
-  for (let i = 0; i < objectsArray.length; i += 1) {
-    if (objectsArray[i].id === objectId) {
-      return { isContainConflictId: true, indexOfConflictObject: i };
-    }
-  }
-  return false;
-}
-
 function synchronizeArrays(objectsArray1, objectsArray2) {
   // debugger;
   // eslint-disable-next-line prefer-const
@@ -61,8 +52,6 @@ export {
   durationToHoursAndMinutes,
   filterShortFilm,
   filterNameFilm,
-  containsIdInObectsArrayAndReturnIndex,
   synchronizeArrays,
   filterCurrentUserArray,
-  // getNumberOfSameIdObjects,
 };

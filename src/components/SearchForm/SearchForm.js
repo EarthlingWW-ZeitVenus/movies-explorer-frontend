@@ -44,12 +44,9 @@ function SearchForm({
     handleSetInitialMoviesValues,
     handleSetInitialSavedMoviesValues,
     handleSaveCachedArray,
-    // handleSetIsArrayJustLoaded,
-    // handleSetIsMayHaveConflictKeys,
   } = neededHandlers;
   const handleNeededSaveArray = isSavedMoviesCase
     ? neededHandlers.handleSetOwnedArray : neededHandlers.handleSetArray;
-  // console.log(handleNeededSaveArray);
 
   // console.log('Ниже текущие состояние стейта filmName из хука useForms внутри SearchForm:');
   // console.log(filmName);
@@ -68,7 +65,7 @@ function SearchForm({
     debugger;
     handleSetIsNothingFound(false);
     if (isSearchFormStatesEqual) {
-      // setErrorText('Такой запрос только что был выполнен, введите другую комбинацию символов');
+      setErrorText('Такой запрос только что был выполнен, введите другую комбинацию символов');
       return;
     }
     let resultedMoviesArray;
@@ -132,22 +129,6 @@ function SearchForm({
               return;
             }
             if (cachedOwnedArray.length) {
-              console.log('moviesCardsData:');
-              console.log(moviesCardsData);
-              console.log('filterCurrentUserArray(currentUser, cachedOwnedArray):');
-              console.log(filterCurrentUserArray(currentUser, cachedOwnedArray));
-              console.log('synchro result:');
-              // eslint-disable-next-line max-len
-              console.log(synchronizeArrays(moviesCardsData, filterCurrentUserArray(currentUser, cachedOwnedArray)));
-              console.log('*************************************************');
-              console.log('resultedMoviesArray:');
-              console.log(resultedMoviesArray);
-              console.log('filterCurrentUserArray(currentUser, cachedOwnedArray):');
-              console.log(filterCurrentUserArray(currentUser, cachedOwnedArray));
-              console.log('synchro result2:');
-              // eslint-disable-next-line max-len
-              console.log(synchronizeArrays(resultedMoviesArray, filterCurrentUserArray(currentUser, cachedOwnedArray)));
-              // debugger;
               handleNeededSaveArray(
                 synchronizeArrays(
                   resultedMoviesArray,
@@ -159,7 +140,6 @@ function SearchForm({
             }
             handleSaveForm({ filmName, shortFilm });
             handleSetInitialMoviesValues();
-            // handleSetIsArrayJustLoaded(true);
           })
           .catch((err) => catchResponse(err))
           .finally(() => handleSetIsProcessing(false));

@@ -7,20 +7,15 @@ function MoviesCardList({
   moviesArray,
   onOwnMovie,
   isSavedMoviesCase,
-  // forConflictCard,
 }) {
-  // console.log('Обращение к компоненту MoviesCardList');
+  console.log('Обращение к компоненту MoviesCardList');
   // eslint-disable-next-line no-undef
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [numberOfClicks, setNumberOfClicks] = React.useState(0);
-  // const [uniqueRenderNumber, setUniqueRenderNumber] = React.useState(1);
 
   console.log('moviesArray in MoviesCardList:');
   console.log(moviesArray);
-  console.log('forConflictCard in MoviesCardList:');
-  // console.log(forConflictCard);
 
-  // const { isHaveConflictKeys, conflictId } = forConflictCard;
   const cardsInList = !isSavedMoviesCase
     && getMoviesListParameters(windowWidth, moviesArray.length).cardsInList;
   const cardsLoadedByButton = !isSavedMoviesCase
@@ -103,21 +98,11 @@ function MoviesCardList({
     };
   }, [handleChangeWindowWidth]);
 
-  // React.useEffect(() => {
-  //   setUniqueRenderNumber((state) => state + 1);
-  // }, []);
-
   return (
     <section className="movies-card-list">
       <ul style={cssMoviesCardListRowsAndColumns}>
         {moviesCardsToDisplay.map((movieCardItem) => <MoviesCard
-            // key={ (isSavedMoviesCase && isHaveConflictKeys
-              // && (conflictId === (movieCardItem.id || movieCardItem.movieId)))
-              // eslint-disable-next-line max-len
-              // ? (`${movieCardItem.id || movieCardItem.movieId}-${Math.round((Math.random()) * 1000)}`)
-              // : (movieCardItem.id || movieCardItem.movieId) }
             key={ movieCardItem.id || movieCardItem.movieId }
-            // keyToConsoleLog={ isHaveConflictKeys }
             movieInfoObject={movieCardItem}
             onOwnMovie={onOwnMovie}
             isSavedMoviesCase={isSavedMoviesCase}

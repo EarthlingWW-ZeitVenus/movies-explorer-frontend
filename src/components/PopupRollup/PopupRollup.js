@@ -21,9 +21,6 @@ function PopupRollup({
     };
     const handleOverlayClose = (evt) => {
       console.log('Сработал метод handleOverlayClose');
-      // console.log(evt);
-      // console.log(evt.target);
-      // console.log(evt.currentTarget);
       // debugger;
       if (evt.target === evt.currentTarget) {
         onClose();
@@ -32,6 +29,9 @@ function PopupRollup({
     // eslint-disable-next-line no-undef
     document.addEventListener('keydown', handleEscapeClose);
     popupRef.current.addEventListener('click', handleOverlayClose);
+    // Не уверен, что тут нужен return, демонтирования компонента PopupRollup
+    // в течение одного сеанса не происходит, а перерендер каждый раз генерирует
+    // новый компонент слушатели которого никак не связаны с компонентом предыдущего рендера
     // eslint-disable-next-line consistent-return
     return () => {
       // eslint-disable-next-line no-undef

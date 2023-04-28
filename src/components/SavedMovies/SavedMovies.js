@@ -17,7 +17,6 @@ function SavedMovies({
   commonProcessStates,
   searchForm,
   neededHandlers,
-  // forConflictCard,
 }) {
   console.log('обращение к компоненту SavedMovies');
 
@@ -35,7 +34,6 @@ function SavedMovies({
     handleSetIsNothingFound,
     ...otherNeededHandlers
   } = neededHandlers;
-  // const { email } = currentUser;
 
   const { resetSearchFormForSavedMovies } = searchForm;
 
@@ -48,7 +46,6 @@ function SavedMovies({
     }
     return (<MoviesCardList
       isSavedMoviesCase={true}
-      // forConflictCard={forConflictCard}
       moviesArray={ownedArrayToDisplay}
       onOwnMovie={handleOwnMovie}/>);
   }
@@ -68,8 +65,6 @@ function SavedMovies({
           // пользователей, а уже дальше я накладываю функции-фильтры на него.
           handleSetCachedOwnedArray(res.data);
           handleSetOwnedArray(filterCurrentUserArray(currentUser, res.data));
-          // handleSaveCachedOwnedMovies(res.data);
-          // handleSaveOwnedMovies(res.data);
         })
         .catch((err) => catchResponse(err));
     } else {

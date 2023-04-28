@@ -14,7 +14,6 @@ function Movies({
   commonProcessStates,
   searchForm,
   neededHandlers,
-  // forConflictCard,
 }) {
   console.log('обращение к компоненту Movies');
   const { arrayToDisplay } = React.useContext(CurrentDataContext);
@@ -35,7 +34,6 @@ function Movies({
       return (<p className="content__error-text">Ничего не найдено</p>);
     }
     return (<MoviesCardList
-      // forConflictCard={forConflictCard}
       moviesArray={arrayToDisplay}
       onOwnMovie={handleOwnMovie}
       isSavedMoviesCase={false}/>);
@@ -49,10 +47,6 @@ function Movies({
     if (isNothingFound) {
       handleSetIsNothingFound(false);
     }
-    // console.log(Boolean(arrayToDisplay.length));
-    // if (isNothingFound && Boolean(arrayToDisplay.length)) {
-    //   handleSetIsNothingFound(false);
-    // }
   }, []);
 
   return (

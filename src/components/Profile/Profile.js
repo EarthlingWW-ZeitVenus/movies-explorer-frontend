@@ -11,9 +11,8 @@ function Profile({
 }) {
   console.log('обращение к компоненту Profile');
   const currentUser = React.useContext(CurrentUserContext);
-  const currentUserName = currentUser.name || '';
+  const currentUserName = currentUser.name || 'незнакомец';
   const {
-    profileValues,
     profileValues: {
       profileName,
       profileEmail,
@@ -26,7 +25,6 @@ function Profile({
     isProfileValuesEqual,
   } = profileForm;
   const { handleProfileFormChange, handleSetIsProcessing /* resetForm */ } = neededHandlers;
-  console.log(profileValues);
   // console.log('Данные текущего пользователя currentUser внутри Profile:');
   // console.log(currentUser);
   console.log('profileForm:');

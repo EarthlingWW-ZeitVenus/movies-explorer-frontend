@@ -1,4 +1,3 @@
-// import React from 'react';
 import './MoviesCard.css';
 import savedButtonIcon from '../../images/saved-button-icon.svg';
 import deleteButtonIcon from '../../images/delete-button-icon.svg';
@@ -8,10 +7,7 @@ function MoviesCard({
   movieInfoObject,
   onOwnMovie,
   isSavedMoviesCase,
-  keyToConsoleLog,
 }) {
-  console.log('что сейчас находится в параметре key внутри MoviesCard:');
-  console.log(keyToConsoleLog);
   console.log('movieInfoObject in MoviesCard');
   console.log(movieInfoObject);
   const isOwned = 'owner' in movieInfoObject;

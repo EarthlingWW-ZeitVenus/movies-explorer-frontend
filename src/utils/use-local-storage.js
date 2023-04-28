@@ -8,7 +8,6 @@ function useLocalStorage() {
   const {
     KEY_FOR_CURRENT_ARRAY,
     KEY_FOR_FORM,
-    // KEY_FOR_OWNED_MOVIES_ARRAY,
     KEY_FOR_SAVED_ARRAY_DATA,
   } = localSorageConstants;
 
@@ -37,15 +36,6 @@ function useLocalStorage() {
   const [cachedOwnedArray, setCachedOwnedArray] = React.useState([]);
 
   const [formState, setFormState] = React.useState(getLocalValue(KEY_FOR_FORM));
-
-  // console.log('cachedMoviesArray in use-local-storage:');
-  // console.log(cachedMoviesArray);
-  // console.log('moviesArray in use-local-storage:');
-  // console.log(moviesArray);
-  // console.log('cachedOwnedMoviesArray in use-local-storage:');
-  // console.log(cachedOwnedMoviesArray);
-  // console.log('ownedMoviesArray in use-local-storage:');
-  // console.log(ownedMoviesArray);
 
   const handleSetArray = (moviesArrayData) => {
     window.localStorage.setItem(KEY_FOR_CURRENT_ARRAY, JSON.stringify(moviesArrayData));

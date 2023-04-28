@@ -1,5 +1,4 @@
 import { numberConstants } from './constants';
-// import React from 'react';
 // ToDo: можно попробовать поизголяться с этой конструкцией -
 // window.matchMedia("(min-width: 768px)").matches
 // https://stackoverflow.com/questions/54491645/media-query-syntax-for-reactjs
