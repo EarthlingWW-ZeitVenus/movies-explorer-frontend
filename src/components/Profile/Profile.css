@@ -9,18 +9,22 @@
 
 .profile__form-fieldset {
   max-width: 410px;
-  margin: 0 auto;
+  margin: 0 auto calc( 220px - 2 * 16px + 10px - 22px);
   padding: 0;
   border: none;
 }
 
 .profile__form-container {
-  padding: 16px 0;
+  padding: 16px 0 0;
   display: flex;
   align-items: center;
 }
 
-.profile__form-container_bottom-line {
+/* .profile__form-container_bottom-line {
+  border-bottom: 1px solid #E8E8E8;
+} */
+
+.profile__dividing-line {
   border-bottom: 1px solid #E8E8E8;
 }
 
@@ -47,8 +51,14 @@
   border-bottom: 1px solid #3456F3;
 }
 
-.profile__form-buttons-container {
-  margin-top: calc( 220px - 2 * 16px + 10px );
+.profile__form-input-error {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12.1px;
+  min-height: 16px;
+  color: #FF3055;
+  margin: 0;
 }
 
 .profile__form-button {
@@ -66,12 +76,19 @@
 
 .profile__form-button_disabled {
   color: black;
+  transition: unset;
 }
 
 .profile__form-button:hover {
   opacity: .6;
   cursor: pointer;
 }
+
+.profile__form-button_disabled:hover {
+  cursor: unset;
+  opacity: unset;
+}
+
 
 
 /* стили для планшета */

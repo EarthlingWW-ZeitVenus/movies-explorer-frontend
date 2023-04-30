@@ -1,45 +1,105 @@
 import './Register.css';
+import { Link } from 'react-router-dom';
 import logo from '../../images/logo.svg';
+import { regExpConstants } from '../../utils/constants';
 
-function Register() {
+const { NAME_PATTERN, EMAIL_PATTERN } = regExpConstants;
+
+function Register({
+  registerForm,
+  neededHandlers,
+  embeddedMessageText,
+  onRegister,
+  isProcessing,
+}) {
+  const {
+    registerValues: {
+      registerName,
+      registerEmail,
+      registerPassword,
+    },
+    formErrors: {
+      registerNameError,
+      registerEmailError,
+      registerPasswordError,
+    },
+    formIsValid,
+  } = registerForm;
+  const { handleRegisterFormChange, handleSetIsProcessing } = neededHandlers;
+  console.log('обращение к компоненту Register');
+  console.log(`registerNameError in Register - ${registerNameError}`);
+  console.log(`registerEmailError in Register - ${registerEmailError}`);
+  console.log(`registerPasswordError in Register - ${registerPasswordError}`);
+
+  function handleSubmit(evt) {
+    handleSetIsProcessing(true);
+    evt.preventDefault();
+    onRegister(registerName, registerEmail, registerPassword);
+    handleSetIsProcessing(false);
+  }
+
+  const errorTag = (errorText) => (
+    <p className = "register__form-input-error">
+      {errorText}
+    </p>);
+
   return (
     <section className="register page_format_side-padding">
-      <img className="register__logo" src={logo} alt="Логотип" />
+      <Link className="register__logo-link" to="/"><img className="register__logo" src={logo} alt="Логотип" /></Link>
       <h2 className="register__title page_format_all-title">Добро пожаловать!</h2>
-      <form className="register__form">
+      <form className="register__form" onSubmit={handleSubmit} noValidate>
         <fieldset className="register__form-fieldset">
-          <label className="register__form-label" htmlFor="register-name">Имя</label>
+          <label className="register__form-label" htmlFor="registerName">Имя</label>
           <input
             className="register__form-input"
-                name="register-name"
-                placeholder="Ваше имя"
-                autoComplete="off"
-                type="text"
-                required
-              />
-          <span className="register__form-input-error"></span>
-          <label className="register__form-label" htmlFor="register-email">E-mail</label>
+            name="registerName"
+            placeholder="Ваше имя"
+            autoComplete="off"
+            type="text"
+            onChange={handleRegisterFormChange}
+            value={registerName}
+            pattern={String(NAME_PATTERN)}
+            disabled={isProcessing}
+            required
+          />
+          {errorTag(registerNameError)}
+          <label className="register__form-label" htmlFor="registerEmail">E-mail</label>
           <input
             className="register__form-input"
-                name="register-email"
-                placeholder="Ваша электронная почта"
-                autoComplete="off"
-                type="email"
-                required
-              />
-          <span className="register__form-input-error"></span>
-          <label className="register__form-label" htmlFor="register-password">Пароль</label>
+            name="registerEmail"
+            placeholder="Ваша электронная почта"
+            autoComplete="off"
+            type="email"
+            onChange={handleRegisterFormChange}
+            value={registerEmail}
+            pattern={String(EMAIL_PATTERN)}
+            disabled={isProcessing}
+            required
+          />
+          {errorTag(registerEmailError)}
+          <label className="register__form-label" htmlFor="registerPassword">Пароль</label>
           <input
             className="register__form-input"
-                name="register-password"
-                placeholder="Ваш пароль"
-                autoComplete="off"
-                type="password"
-                required
-              />
-          <span className="register__form-input-error"></span>
+            name="registerPassword"
+            placeholder="Ваш пароль"
+            autoComplete="off"
+            type="password"
+            minLength={4}
+            onChange={handleRegisterFormChange}
+            value={registerPassword}
+            disabled={isProcessing}
+            required
+          />
+          {errorTag(registerPasswordError)}
         </fieldset>
-        <button className="register__form-button" type="submit">Зарегистрироваться</button>
+        {errorTag(embeddedMessageText)}
+        <button
+          className={`register__form-button ${(!formIsValid || isProcessing) && 'register__form-button_disabled'}`}
+          type="submit"
+          disabled={!formIsValid || isProcessing}
+        >
+          Зарегистрироваться
+        </button>
         <div className="register__form-login-container">
           <span className="register__form-span">Уже зарегистрированы?</span>
           <a className="register__form-link" href="/signin">Войти</a>

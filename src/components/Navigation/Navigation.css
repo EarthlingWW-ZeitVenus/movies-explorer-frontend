@@ -80,7 +80,7 @@
   opacity: .6;
 }
 
-.navigation-internal__link_active {
+.navigation__link_active {
   font-weight: 500;
 }
 
@@ -105,9 +105,18 @@
   opacity: .6;
 }
 
-.navigation-internal__button_active {
-  font-weight: 500;
+.navigation-internal__button_light {
+  background: transparent;
+  border: 2px solid white;
 }
+
+.navigation-internal__profile-icon {
+  margin-right: 5px;
+}
+
+/* .navigation-internal__button_active {
+  font-weight: 500;
+} */
 
 .navigation-burger-menu {
   display: none;
@@ -122,6 +131,9 @@
   opacity: .6;
 }
 
+.navigation-burger-menu_light {
+  background: url(../../images/burger-icon-light.svg) no-repeat center;
+}
 
 /* стили для планшета */
 @media screen and (max-width: 768px) {

@@ -1,34 +1,73 @@
-import { Switch, Route } from 'react-router-dom';
+import React from 'react';
+import {
+  Link,
+  NavLink,
+} from 'react-router-dom';
+import CurrentDataContext from '../../contexts/CurrentDataContext';
 import './Navigation.css';
+import profileIcon from '../../images/profile-icon-light.svg';
 
-function Navigation({ onBurgerMenu }) {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <ul className="navigation-landing">
-          <li className="navigation-landing__item">
-            <a className="navigation-landing__button" href="/signup">Регистрация</a>
-          </li>
-          <li className="navigation-landing__item navigation-landing__item_signin">
-            <a className="navigation-landing__button" href="/signin">Войти</a>
-          </li>
-        </ul>
-      </Route>
-      <Route path="*">
-        <div className="navigation-burger-menu" onClick={onBurgerMenu}></div>
+function Navigation({ colorThemeDark, onBurgerMenu }) {
+  const { isLoggedIn } = React.useContext(CurrentDataContext);
+
+  function whichElementToDisplay() {
+    if (isLoggedIn) {
+      return (
+        <>
+        <div
+          className={`navigation-burger-menu ${colorThemeDark && 'navigation-burger-menu_light'}`}
+          onClick={onBurgerMenu}>
+        </div>
         <div className="navigation-internal">
           <ul className="navigation-internal__links-container">
             <li className="navigation-internal__item">
-              <a className="navigation-internal__link navigation-internal__link_active" href="/movies">Фильмы</a>
+              <NavLink
+                className="navigation-internal__link"
+                activeClassName="navigation__link_active"
+                to="/movies">
+                Фильмы
+              </NavLink>
             </li>
             <li className="navigation-internal__item">
-              <a className="navigation-internal__link" href="/saved-movies">Сохранённые фильмы</a>
+              <NavLink
+                className="navigation-internal__link"
+                activeClassName="navigation__link_active"
+                to="/saved-movies">
+                Сохранённые фильмы
+              </NavLink>
             </li>
           </ul>
-          <a className="navigation-internal__button navigation-internal__button_active" href="/profile">Аккаунт</a>
+          <NavLink
+            className={`navigation-internal__button ${colorThemeDark && 'navigation-internal__button_light'}`}
+            activeClassName="navigation__link_active"
+            to="/profile">
+            {colorThemeDark
+              && <img
+                   className="navigation-internal__profile-icon"
+                   src={profileIcon}
+                   alt="Иконка редактирования профиля" />}
+            Аккаунт
+          </NavLink>
         </div>
-      </Route>
-    </Switch>
+        </>
+      );
+    }
+    return (
+      <ul className="navigation-landing">
+        <li className="navigation-landing__item">
+          <Link className="navigation-landing__button" to="/signup">Регистрация</Link>
+        </li>
+        <li className="navigation-landing__item navigation-landing__item_signin">
+          <Link className="navigation-landing__button" to="/signin">Войти</Link>
+        </li>
+      </ul>
+    );
+  }
+
+  return (
+    <nav className="navigation">
+      {whichElementToDisplay()}
+    </nav>
   );
 }
 

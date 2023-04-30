@@ -6,6 +6,7 @@ import AboutMe from '../AboutMe/AboutMe';
 import Portfolio from '../Portfolio/Portfolio';
 
 function Main() {
+  console.log('обращение к компоненту Main');
   return (
     <main className="content">
       <Promo colorThemeDark={true}/>
