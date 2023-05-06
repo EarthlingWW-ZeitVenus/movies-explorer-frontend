@@ -35,7 +35,6 @@ HTML, CSS, Git, JS, React, Express.js, MongoDB
 * Samsung Internet 6.2 ver.
 
 [Cсылка на сайт (фронтенд часть)](https://movie-explorer-frontend.nomoredomains.icu)
-[Cсылка на сайт (фронтенд часть)](https://movie-explorer-frontend.nomoredomains.icu)
 
 [Cсылка на макет для верстки, сгенерированный в фигме](https://disk.yandex.ru/d/L8CEA-QxijBcTw)
-[Cсылка на макет для верстки, сгенерированный в фигме](https://disk.yandex.ru/d/L8CEA-QxijBcTw)
+

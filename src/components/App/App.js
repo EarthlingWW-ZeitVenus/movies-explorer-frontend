@@ -277,10 +277,6 @@ function App() {
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
-        // !!! Это условие ниже, при определенных условиях
-        // не распарсивается как надо, как решить - пока не знаю !!!
-        // console.log(err);
-        // console.log(err.body);
         if (!err.ok) {
           err.json().then((jsonErr) => {
             setEmbeddedMessageText(jsonErr.message);
@@ -307,11 +303,6 @@ function App() {
         setIsInfotooltipPopupOpen(true);
       })
       .catch((err) => {
-        // !!! Это условие ниже, при определенных условиях
-        // не распарсивается как надо, как решить - пока не знаю !!!
-        // console.log(err);
-        // console.log(err.body);
-        // console.log(err.json());
         err.json().then((jsonErr) => {
           console.log(jsonErr);
           setEmbeddedMessageText(jsonErr.message);
