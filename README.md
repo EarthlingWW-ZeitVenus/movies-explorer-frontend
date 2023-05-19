@@ -12,7 +12,7 @@
 HTML, CSS, Git, JS, React, Express.js, MongoDB
 
 ## Инструкция по развертыванию проекта и системные требования
-Для просмотра проекта перейдите по ссылке снизу.
+Для просмотра проекта и/или макета перейдите по ссылкам снизу.
 Для корректного отображения потребуется наличие одного из браузеров, версии не ниже обозначенной:
 * Microsoft Edge 16 ver.
 * Mozilla Firefox 52 ver.
@@ -28,7 +28,6 @@ HTML, CSS, Git, JS, React, Express.js, MongoDB
 * Safari 10.1 ver.
 * Samsung Internet 6.2 ver.
 
+## Ссылки
 [Cсылка на сайт (фронтенд часть)](https://movie-explorer-frontend.nomoredomains.icu)
-
 [Cсылка на макет для верстки, сгенерированный в фигме](https://disk.yandex.ru/d/L8CEA-QxijBcTw)
-
