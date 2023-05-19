@@ -30,4 +30,5 @@ HTML, CSS, Git, JS, React, Express.js, MongoDB
 
 ## Ссылки
 [Cсылка на сайт (фронтенд часть)](https://movie-explorer-frontend.nomoredomains.icu)
+
 [Cсылка на макет для верстки, сгенерированный в фигме](https://disk.yandex.ru/d/L8CEA-QxijBcTw)
